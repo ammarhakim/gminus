@@ -57,10 +57,14 @@ $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
 	ar -crs $@ $(OBJS)
 
-.PHONY: check
+.PHONY: check valcheck
 # Run all unit tests
 check: ${UNITS} ## Build (if needed) and run all unit tests
 	$(foreach unit,${UNITS},echo $(unit); $(unit) -E;)
+
+valcheck: ${UNITS}   ## Run valgrind on unit test
+	$(foreach unit,$(UNITS),valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-error-list=yes $(unit) --exec=never 2>$(unit)_val_err 1>/dev/null;)
+	$(foreach unit,$(UNITS),./minus/checkval.sh $(unit);)
 
 -include $(DEPS)
 
