@@ -1,11 +1,34 @@
-# Prerequisites
-*.d
+cppcheck-err.txt
+install-deps/build-opts.sh
+build-opts.sh
+config.mak
+*.cache
+*.dat
+*~
+*.sw*
+*/.nfs*
+cuda-build/*
+cubld/*
+build/*
+bld/*
+build-*/*
+*.gkyl
+.waf*
+.lock-waf*
+waf_tools/*.pyc
+waf_tools/__pycache__/
+gkylzero-dist*
+*.json
+TAGS
+data/adas/*.npy
+*.log
 
 # Object files
 *.o
 *.ko
 *.obj
 *.elf
+*.DS_Store
 
 # Linker output
 *.ilk
@@ -42,11 +65,5 @@
 *.idb
 *.pdb
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+# Adas data files
+data/adas/*.npy
