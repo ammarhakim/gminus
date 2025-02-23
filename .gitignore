@@ -1,3 +1,5 @@
+core/build
+
 cppcheck-err.txt
 install-deps/build-opts.sh
 build-opts.sh
@@ -22,6 +24,8 @@ gkylzero-dist*
 TAGS
 data/adas/*.npy
 *.log
+
+
 
 # Object files
 *.o

@@ -1,5 +1,3 @@
-# -*- makefile-gmake -*-
-
 # Type make help to see help for this Makefile
 
 # determine date of build
@@ -18,13 +16,57 @@ UNAME = $(shell uname)
 # Include config.mak file (if it exists) to overide defaults above
 -include config.mak
 
+# Build directory
+BUILD_DIR ?= build
+
+# Directories containing source code
+SRC_DIRS := minus zero
+
+LLIB := $(BUILD_DIR)/libg0core.a
+SRCS := $(shell find $(SRC_DIRS) -name *.c)
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+DEPS := $(OBJS:.o=.d)
+UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/ctest_*.c))
+
+# list of includes from kernels
+KERN_INC_DIRS = $(shell find kernels -type d)
+KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
+INCS := -Iminus -Iminus/STC/include -Izero $(KERN_INCLUDES)
+
+EXEC_LIB_DIRS = 
+EXEC_EXT_LIBS = -lm -lpthread -ldl
+EXEC_LIBS = -Lbuild ${LLIB} ${EXEC_EXT_LIBS}
+
+unit: $(LLIB) $(UNITS) ## Build unit tests
+
 .PHONY: all
-all: core
+all: unit $(LLIB) ## Build all targets
 .DEFAULT_GOAL := all
 
-# Core library and code
-core: ## Build core infrastructure library 
-	$(MAKE) -C core
+$(BUILD_DIR)/%.c.o: %.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) -c $(CFLAGS) $(INCS) $< -o $@
+
+# Unit tests
+$(UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ${BUILD_DIR}/unit
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
+
+# build lib
+$(LLIB): $(OBJS)
+	$(MKDIR_P) $(dir $@)
+	ar -crs $@ $(OBJS)
+
+.PHONY: check
+# Run all unit tests
+check: ${UNITS} ## Build (if needed) and run all unit tests
+	$(foreach unit,${UNITS},echo $(unit); $(unit) -E;)
+
+-include $(DEPS)
+
+.PHONY: clean
+clean: ## Clean build output
+	rm -rf ${BUILD_DIR}
 
 # command to make dir
 MKDIR_P ?= mkdir -p
