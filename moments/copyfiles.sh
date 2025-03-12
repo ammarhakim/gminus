@@ -59,7 +59,6 @@ $CP_CMD $G0/zero/gkyl_eval_offset_fd.h zero/
 $CP_CMD $G0/zero/gkyl_evalf_def.h zero/
 $CP_CMD $G0/zero/gkyl_fv_proj.h zero/
 $CP_CMD $G0/zero/gkyl_gauss_quad_data.h zero/
-$CP_CMD $G0/zero/gkyl_lua_utils.h zero/
 $CP_CMD $G0/zero/gkyl_mpi_comm.h zero/
 $CP_CMD $G0/zero/gkyl_mpi_comm_priv.h zero/
 $CP_CMD $G0/zero/gkyl_null_comm.h zero/
@@ -73,7 +72,6 @@ $CP_CMD $G0/zero/gkyl_ref_count.h zero/
 $CP_CMD $G0/zero/gkyl_rrobin_decomp.h zero/
 $CP_CMD $G0/zero/gkyl_util.h zero/
 $CP_CMD $G0/zero/gkyl_vargm.h zero/
-$CP_CMD $G0/zero/lua_utils.c zero/
 $CP_CMD $G0/zero/mpi_comm.c zero/
 $CP_CMD $G0/zero/null_comm.c zero/
 $CP_CMD $G0/zero/proj_on_basis.c zero/
@@ -82,11 +80,6 @@ $CP_CMD $G0/zero/rect_decomp.c zero/
 $CP_CMD $G0/zero/rect_grid.c zero/
 $CP_CMD $G0/zero/rrobin_decomp.c zero/
 $CP_CMD $G0/zero/util.c zero/
-
-# app
-mkdir -p apps
-$CP_CMD $G0/apps/app_priv.c apps/
-$CP_CMD $G0/apps/gkyl_app_priv.h apps/
 
 # unit
 mkdir -p unit
@@ -101,4 +94,3 @@ $CP_CMD $G0/unit/ctest_range.c unit/
 $CP_CMD $G0/unit/ctest_rect_grid.c unit/
 $CP_CMD $G0/unit/mctest_mpi_comm.c unit/
 $CP_CMD $G0/unit/mctest_mpi_comm_read.c unit/
-$CP_CMD $G0/unit/lctest_lua_utils.c unit/

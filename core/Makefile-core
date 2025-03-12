@@ -3,7 +3,7 @@
 # Sqlite can't use agressive optimization flags
 SQL_CFLAGS ?= -fPIC -Wno-implicit-int-float-conversion
 
-SRC_DIRS := minus zero kernels
+SRC_DIRS := minus kernels zero apps
 
 LLIB := $(BUILD_DIR)/libg0core.a
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
@@ -15,13 +15,14 @@ LUA_UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/lctest_*.c))
 
 KERN_INC_DIRS = $(shell find kernels -type d)
 KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
-INCS := -Iminus -Iminus/STC/include -Izero -I${MPI_INC_DIR} $(KERN_INCLUDES)
+EXT_INCS := -I${MPI_INC_DIR} -I${LUA_INC_DIR} 
+INCS := ${EXT_INCS} -Iminus -Iminus/STC/include -Izero -Iapps $(KERN_INCLUDES)
 
 EXEC_LIB_DIRS = -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
 EXEC_EXT_LIBS = ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 EXEC_LIBS = -Lbuild ${LLIB} ${EXEC_EXT_LIBS}
 
-unit: $(LLIB) $(UNITS) ${MPI_UNITS} ## Build unit tests
+unit: $(LLIB) $(UNITS) ${MPI_UNITS} ${LUA_UNITS} ## Build unit tests
 
 .PHONY: all
 all: unit $(LLIB) ## Build all targets
@@ -44,6 +45,11 @@ $(UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
 
 # MPI unit tests
 $(MPI_UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ${BUILD_DIR}/unit
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
+
+# Lua unit tests
+$(LUA_UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
 	$(MKDIR_P) ${BUILD_DIR}/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
@@ -70,35 +76,15 @@ INSTALL_HEADERS += $(shell ls minus/*.h)
 .PHONY: install
 install: all
 # Construct install 
-	$(MKDIR_P) ${INSTALL_PREFIX}/gminus/include
-	${MKDIR_P} ${INSTALL_PREFIX}/gminus/lib
-	${MKDIR_P} ${INSTALL_PREFIX}/gminus/bin
-	${MKDIR_P} ${INSTALL_PREFIX}/gminus/share
+	$(MKDIR_P) ${INSTALL_PREFIX}/${PROJ_NAME}/include
+	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/lib
+	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/bin
+	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/share
 # Headers
-	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/gminus/include
-	./minus/gengkylzeroh.sh > ${INSTALL_PREFIX}/gminus/include/gkylzero.h
+	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/${PROJ_NAME}/include
 # libraries
-	cp -f $(LLIB) ${INSTALL_PREFIX}/gminus/lib/libg0core.a
-# Examples
-	test -e config.mak && cp -f config.mak ${INSTALL_PREFIX}/gminus/share/config.mak || echo "No config.mak"
+	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0core.a
 
 .PHONY: clean
 clean: ## Clean build output
 	rm -rf ${BUILD_DIR}
-
-# From: https://www.client9.com/self-documenting-makefiles/
-.PHONY: help
-help: ## Show help
-	@echo "GkylZero Makefile help. You can set parameters on the command line:"
-	@echo ""
-	@echo "make CC=nvcc -j"
-	@echo ""
-	@echo "Or run the configure script to set various parameters. Usually"
-	@echo "defaults are all you need, specially if the dependencies are in"
-	@echo "${HOME}/gkylsoft and you are using standard compilers (not building on GPUs)"
-	@echo ""
-	@echo "See ./configure --help for usage of configure script"
-	@echo ""
-	@awk -F ':|##' '/^[^\t].+?:.*?##/ {\
-        printf "\033[36m%-30s\033[0m %s\n", $$1, $$NF \
-        }' $(MAKEFILE_LIST)

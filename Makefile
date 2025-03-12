@@ -14,6 +14,7 @@ CFLAGS ?= -O3 -g -ffast-math -fPIC -MMD -MP -DGIT_COMMIT_ID=\"$(GIT_TIP)\" -DGKY
 LDFLAGS = 
 PREFIX ?= ${HOME}/gkylsoft
 INSTALL_PREFIX ?= ${PREFIX}
+PROJ_NAME ?= greorg
 
 # Determine OS we are running on
 UNAME = $(shell uname)
@@ -34,6 +35,19 @@ ifeq (${USE_MPI}, 1)
 	CFLAGS += -DGKYL_HAVE_MPI
 endif
 
+# LUA paths and flags
+USING_LUA =
+LUA_RPATH = 
+LUA_INC_DIR = core # dummy
+LUA_LIB_DIR = .
+ifeq (${USE_LUA}, 1)
+	USING_LUA = yes
+	LUA_INC_DIR = ${CONF_LUA_INC_DIR}
+	LUA_LIB_DIR = ${CONF_LUA_LIB_DIR}
+	LUA_LIBS = -l${CONF_LUA_LIB}
+	CFLAGS += -DGKYL_HAVE_LUA
+endif
+
 # Command to make dir
 MKDIR_P ?= mkdir -p
 
@@ -49,6 +63,10 @@ all: core
 core:  ## Build core infrastructure code
 	cd core && $(MAKE) -f Makefile-core
 
+core-install: ## Only install core infrastructure code
+	cd core && $(MAKE) -f Makefile-core install
+	test -e config.mak && cp -f config.mak ${INSTALL_PREFIX}/${PROJ_NAME}/share/config.mak || echo "No config.mak"
+
 core-clean: ## Only clean core infrastructure code
 	cd core && $(MAKE) -f Makefile-core clean
 
@@ -58,10 +76,13 @@ core-check: ## Only run unit tests in core
 core-valcheck: ## Only run valgrind on unit tests in core
 	cd core && $(MAKE) -f Makefile-core valcheck
 
+# Install everything
+.PHONY: install
+install: core-install
+
 # Clean everything
 .PHONY: clean
-clean: ## Clean all builds
-	cd core && $(MAKE) -f Makefile-core clean
+clean: core-clean ## Clean all builds
 
 # From: https://www.client9.com/self-documenting-makefiles/
 .PHONY: help
