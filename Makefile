@@ -15,19 +15,34 @@ LDFLAGS =
 PREFIX ?= ${HOME}/gkylsoft
 INSTALL_PREFIX ?= ${PREFIX}
 
-# determine OS we are running on
+# Determine OS we are running on
 UNAME = $(shell uname)
 
-# command to make dir
-MKDIR_P ?= mkdir -p
-
-# include config.mak file (if it exists) to overide defaults above
+# Include config.mak file (if it exists) to overide defaults above
 -include config.mak
 
-# at this point, export all top-level variables to sub-makes and
+# MPI paths and flags
+USING_MPI =
+MPI_RPATH = 
+MPI_INC_DIR = core # dummy
+MPI_LIB_DIR = .
+ifeq (${USE_MPI}, 1)
+	USING_MPI = yes
+	MPI_INC_DIR = ${CONF_MPI_INC_DIR}
+	MPI_LIB_DIR = ${CONF_MPI_LIB_DIR}
+	MPI_LIBS = -lmpi
+	CFLAGS += -DGKYL_HAVE_MPI
+endif
+
+# Command to make dir
+MKDIR_P ?= mkdir -p
+
+# At this point, export all top-level variables to sub-makes and
 # recurse downwards
 
 .EXPORT_ALL_VARIABLES:
+
+all: core
 
 # Core directory targets
 .PHONY: core core-clean core-check core-valcheck

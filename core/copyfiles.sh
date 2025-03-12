@@ -69,6 +69,7 @@ cp $G0/zero/gkyl_rect_decomp.h zero/
 cp $G0/zero/gkyl_rect_grid.h zero/
 cp $G0/zero/gkyl_rect_grid_priv.h zero/
 cp $G0/zero/gkyl_ref_count.h zero/
+cp $G0/zero/gkyl_rrobin_decomp.h zero/
 cp $G0/zero/gkyl_util.h zero/
 cp $G0/zero/gkyl_vargm.h zero/
 cp $G0/zero/mpi_comm.c zero/
@@ -77,6 +78,7 @@ cp $G0/zero/proj_on_basis.c zero/
 cp $G0/zero/range.c zero/
 cp $G0/zero/rect_decomp.c zero/
 cp $G0/zero/rect_grid.c zero/
+cp $G0/zero/rrobin_decomp.c zero/
 cp $G0/zero/util.c zero/
 
 # unit
@@ -90,3 +92,5 @@ cp $G0/unit/ctest_null_comm.c unit/
 cp $G0/unit/ctest_proj_on_basis.c unit/
 cp $G0/unit/ctest_range.c unit/
 cp $G0/unit/ctest_rect_grid.c unit/
+cp $G0/unit/mctest_mpi_comm.c unit/
+cp $G0/unit/mctest_mpi_comm_read.c unit/

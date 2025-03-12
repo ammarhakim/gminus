@@ -10,16 +10,18 @@ SRCS := $(shell find $(SRC_DIRS) -name *.c)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/ctest_*.c))
+MPI_UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/mctest_*.c))
+LUA_UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/lctest_*.c))
 
 KERN_INC_DIRS = $(shell find kernels -type d)
 KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
-INCS := -Iminus -Iminus/STC/include -Izero $(KERN_INCLUDES)
+INCS := -Iminus -Iminus/STC/include -Izero -I${MPI_INC_DIR} $(KERN_INCLUDES)
 
-EXEC_LIB_DIRS = 
-EXEC_EXT_LIBS = -lm -lpthread -ldl
+EXEC_LIB_DIRS = -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
+EXEC_EXT_LIBS = ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 EXEC_LIBS = -Lbuild ${LLIB} ${EXEC_EXT_LIBS}
 
-unit: $(LLIB) $(UNITS) ## Build unit tests
+unit: $(LLIB) $(UNITS) ${MPI_UNITS} ## Build unit tests
 
 .PHONY: all
 all: unit $(LLIB) ## Build all targets
@@ -37,6 +39,11 @@ $(BUILD_DIR)/%.c.o: %.c
 
 # Unit tests
 $(UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ${BUILD_DIR}/unit
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
+
+# MPI unit tests
+$(MPI_UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
 	$(MKDIR_P) ${BUILD_DIR}/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
