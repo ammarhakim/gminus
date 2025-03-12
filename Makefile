@@ -31,6 +31,13 @@ ifeq (${USE_MPI}, 1)
 	USING_MPI = yes
 	MPI_INC_DIR = ${CONF_MPI_INC_DIR}
 	MPI_LIB_DIR = ${CONF_MPI_LIB_DIR}
+
+ifdef USING_NVCC
+	MPI_RPATH = -Xlinker "-rpath,${CONF_MPI_LIB_DIR}"
+else
+	MPI_RPATH = -Wl,-rpath,${CONF_MPI_LIB_DIR}
+endif
+
 	MPI_LIBS = -lmpi
 	CFLAGS += -DGKYL_HAVE_MPI
 endif
@@ -44,6 +51,13 @@ ifeq (${USE_LUA}, 1)
 	USING_LUA = yes
 	LUA_INC_DIR = ${CONF_LUA_INC_DIR}
 	LUA_LIB_DIR = ${CONF_LUA_LIB_DIR}
+
+ifdef USING_NVCC
+	LUA_RPATH = -Xlinker "-rpath,${CONF_LUA_LIB_DIR}"
+else
+	LUA_RPATH = -Wl,-rpath,${CONF_LUA_LIB_DIR}
+endif
+
 	LUA_LIBS = -l${CONF_LUA_LIB}
 	CFLAGS += -DGKYL_HAVE_LUA
 endif
