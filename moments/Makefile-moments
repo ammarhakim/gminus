@@ -1,11 +1,8 @@
 # -*- makefile-gmake -*-
 
-# Sqlite can't use agressive optimization flags
-SQL_CFLAGS ?= -fPIC -Wno-implicit-int-float-conversion
+SRC_DIRS := zero apps
 
-SRC_DIRS := minus kernels zero apps
-
-LLIB := $(BUILD_DIR)/libg0core.a
+LLIB := $(BUILD_DIR)/libg0moments.a
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
@@ -13,25 +10,19 @@ UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/ctest_*.c))
 MPI_UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/mctest_*.c))
 LUA_UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/lctest_*.c))
 
-KERN_INC_DIRS = $(shell find kernels -type d)
-KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
-EXT_INCS := -I${MPI_INC_DIR} -I${LUA_INC_DIR} 
-INCS := ${EXT_INCS} -Iminus -Iminus/STC/include -Izero -Iapps $(KERN_INCLUDES)
+KERN_INC_DIRS = 
+KERN_INCLUDES = 
+INCS := -Iminus -Iminus/STC/include -Izero -I${MPI_INC_DIR} $(KERN_INCLUDES)
 
 EXEC_LIB_DIRS = -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
 EXEC_EXT_LIBS = ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 EXEC_LIBS = -Lbuild ${LLIB} ${EXEC_EXT_LIBS}
 
-unit: $(LLIB) $(UNITS) ${MPI_UNITS} ${LUA_UNITS} ## Build unit tests
+unit: $(LLIB) $(UNITS) ${MPI_UNITS} ## Build unit tests
 
 .PHONY: all
 all: $(LLIB) ## Build all targets
 .DEFAULT_GOAL := all
-
-# SQLITE needs special flags
-$(BUILD_DIR)/minus/sqlite3.c.o: minus/sqlite3.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(SQL_CFLAGS) -c $< -o $@
 
 # c -> o files
 $(BUILD_DIR)/%.c.o: %.c
@@ -45,11 +36,6 @@ $(UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
 
 # MPI unit tests
 $(MPI_UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/unit
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
-
-# Lua unit tests
-$(LUA_UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
 	$(MKDIR_P) ${BUILD_DIR}/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
@@ -71,7 +57,6 @@ valcheck: ${UNITS}   ## Run valgrind on unit test
 
 # Headers to install
 INSTALL_HEADERS := $(shell ls apps/gkyl_*.h zero/gkyl_*.h  | grep -v "priv" | sort)
-INSTALL_HEADERS += $(shell ls minus/*.h)
 
 .PHONY: install
 install: all
@@ -83,7 +68,7 @@ install: all
 # Headers
 	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/${PROJ_NAME}/include
 # libraries
-	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0core.a
+	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0moments.a
 
 .PHONY: clean
 clean: ## Clean build output

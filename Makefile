@@ -1,6 +1,6 @@
 # -*- makefile-gmake -*-
 
-# Type make help to see help for this Makefile
+# Type "make help" to see help for this Makefile
 
 # determine date of build
 BUILD_DATE = $(shell date)
@@ -77,39 +77,56 @@ all: core
 core:  ## Build core infrastructure code
 	cd core && $(MAKE) -f Makefile-core
 
-core-install: ## Only install core infrastructure code
+core-unit: ## Build core unit tests
+	cd core && $(MAKE) -f Makefile-core unit
+
+core-install: ## Install core infrastructure code
 	cd core && $(MAKE) -f Makefile-core install
 	test -e config.mak && cp -f config.mak ${INSTALL_PREFIX}/${PROJ_NAME}/share/config.mak || echo "No config.mak"
 
-core-clean: ## Only clean core infrastructure code
+core-clean: ## Clean core infrastructure code
 	cd core && $(MAKE) -f Makefile-core clean
 
-core-check: ## Only run unit tests in core
+core-check: ## Run unit tests in core
 	cd core && $(MAKE) -f Makefile-core check
 
-core-valcheck: ## Only run valgrind on unit tests in core
+core-valcheck: ## Run valgrind on unit tests in core
 	cd core && $(MAKE) -f Makefile-core valcheck
 
+
+## Targets to build things all parts of the code
+
+# build all unit tests 
+.PHONY: unit 
+unit: core-unit ## Build all unit tests
+
 # Install everything
-.PHONY: install
-install: core-install
+.PHONY: install 
+install: core-install ## Install all code
 
 # Clean everything
-.PHONY: clean
-clean: core-clean ## Clean all builds
+.PHONY: clean 
+clean: core-clean  ## Clean all builds
+
+# Check everything
+.PHONY: check
+check: core-check ## Run all unit tests
 
 # From: https://www.client9.com/self-documenting-makefiles/
 .PHONY: help
 help: ## Show help
-	@echo "GkylZero Makefile help. You can set parameters on the command line:"
+	@echo "Gkeyll Makefile help. You can set parameters on the command line:"
 	@echo ""
-	@echo "make CC=nvcc -j"
+	@echo "make CC=cc -j"
 	@echo ""
 	@echo "Or run the configure script to set various parameters. Usually"
 	@echo "defaults are all you need, specially if the dependencies are in"
-	@echo "${HOME}/gkylsoft and you are using standard compilers (not building on GPUs)"
+	@echo "${HOME}/gkylsoft and you are using standard compilers (not building on GPUs)."
 	@echo ""
-	@echo "See ./configure --help for usage of configure script"
+	@echo "See ./configure --help for usage of configure script."
+	@echo ""
+	@echo "You can build only portions of the code using the specific targers below."
+	@echo "Typing \"make all\" will build the complete code"
 	@echo ""
 	@awk -F ':|##' '/^[^\t].+?:.*?##/ {\
         printf "\033[36m%-30s\033[0m %s\n", $$1, $$NF \
