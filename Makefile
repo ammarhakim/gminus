@@ -19,6 +19,19 @@ PROJ_NAME ?= greorg
 # Determine OS we are running on
 UNAME = $(shell uname)
 
+# Default lapack include and libraries: we prefer linking to static library
+LAPACK_INC = $(PREFIX)/OpenBLAS/include
+LAPACK_LIB_DIR = $(PREFIX)/OpenBLAS/lib
+LAPACK_LIB = -lopenblas
+
+# On OSX we should use Accelerate framework
+ifeq ($(UNAME), Darwin)
+	LAPACK_LIB_DIR = .
+	LAPACK_INC = core # dummy
+	LAPACK_LIB = -framework Accelerate
+	CFLAGS += -DGKYL_USING_FRAMEWORK_ACCELERATE
+endif
+
 # Include config.mak file (if it exists) to overide defaults above
 -include config.mak
 
@@ -72,7 +85,7 @@ MKDIR_P ?= mkdir -p
 
 all: core
 
-# Core directory targets
+## Core infrastructure targets
 .PHONY: core core-clean core-check core-valcheck
 core:  ## Build core infrastructure code
 	cd core && $(MAKE) -f Makefile-core
@@ -92,6 +105,27 @@ core-check: ## Run unit tests in core
 
 core-valcheck: ## Run valgrind on unit tests in core
 	cd core && $(MAKE) -f Makefile-core valcheck
+
+## Moments infrastructure targets
+.PHONY: moments moments-clean moments-check moments-valcheck
+moments: core  ## Build moments infrastructure code
+	cd moments && $(MAKE) -f Makefile-moments
+
+moments-unit: ## Build moments unit tests
+	cd moments && $(MAKE) -f Makefile-moments unit
+
+moments-install: ## Install moments infrastructure code
+	cd moments && $(MAKE) -f Makefile-moments install
+	test -e config.mak && cp -f config.mak ${INSTALL_PREFIX}/${PROJ_NAME}/share/config.mak || echo "No config.mak"
+
+moments-clean: ## Clean moments infrastructure code
+	cd moments && $(MAKE) -f Makefile-moments clean
+
+moments-check: ## Run unit tests in moments
+	cd moments && $(MAKE) -f Makefile-moments check
+
+moments-valcheck: ## Run valgrind on unit tests in moments
+	cd moments && $(MAKE) -f Makefile-moments valcheck
 
 
 ## Targets to build things all parts of the code

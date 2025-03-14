@@ -12,7 +12,9 @@ LUA_UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/lctest_*.c))
 
 KERN_INC_DIRS = 
 KERN_INCLUDES = 
-INCS := -Iminus -Iminus/STC/include -Izero -I${MPI_INC_DIR} $(KERN_INCLUDES)
+EXT_INCS := -I${MPI_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC}
+CORE_INCS := -I../core/apps -I../core/zero -I../core/minus -I../core/minus/STC/include -I../zero
+INCS := ${EXT_INCS} ${CORE_INCS} -Izero -Iapps $(KERN_INCLUDES)
 
 EXEC_LIB_DIRS = -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
 EXEC_EXT_LIBS = ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
