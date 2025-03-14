@@ -140,7 +140,7 @@ install: core-install ## Install all code
 
 # Clean everything
 .PHONY: clean 
-clean: core-clean  ## Clean all builds
+clean: core-clean moments-clean  ## Clean all builds
 
 # Check everything
 .PHONY: check
