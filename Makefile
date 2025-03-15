@@ -111,7 +111,7 @@ core-valcheck: ## Run valgrind on unit tests in core
 moments: core  ## Build moments infrastructure code
 	cd moments && $(MAKE) -f Makefile-moments
 
-moments-unit: ## Build moments unit tests
+moments-unit: moments ## Build moments unit tests
 	cd moments && $(MAKE) -f Makefile-moments unit
 
 moments-install: core-install ## Install moments infrastructure code
