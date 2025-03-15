@@ -152,6 +152,28 @@ $CP_CMD $G0/apps/moment_multib.c apps/
 
 # unit
 mkdir -p unit
+$CP_CMD $G0/unit/ctest_wave_geom.c unit/
+$CP_CMD $G0/unit/ctest_wave_geom_helpers.c unit/
+$CP_CMD $G0/unit/ctest_wv_apply_bc.c unit/
+$CP_CMD $G0/unit/ctest_wv_euler.c unit/
+$CP_CMD $G0/unit/ctest_wv_euler_mixture.c unit/
+$CP_CMD $G0/unit/ctest_wv_gr_euler.c unit/
+$CP_CMD $G0/unit/ctest_wv_gr_euler_tetrad.c unit/
+$CP_CMD $G0/unit/ctest_wv_gr_maxwell.c unit/
+$CP_CMD $G0/unit/ctest_wv_gr_maxwell_tetrad.c unit/
+$CP_CMD $G0/unit/ctest_wv_gr_medium.c unit/
+$CP_CMD $G0/unit/ctest_wv_gr_ultra_rel_euler.c unit/
+$CP_CMD $G0/unit/ctest_wv_gr_ultra_rel_euler_tetrad.c unit/
+$CP_CMD $G0/unit/ctest_wv_iso_euler.c unit/
+$CP_CMD $G0/unit/ctest_wv_iso_euler_mixture.c unit/
+$CP_CMD $G0/unit/ctest_wv_maxwell.c unit/
+$CP_CMD $G0/unit/ctest_wv_mhd.c unit/
+$CP_CMD $G0/unit/ctest_wv_reactive_euler.c unit/
+$CP_CMD $G0/unit/ctest_wv_sr_euler.c unit/
+$CP_CMD $G0/unit/ctest_wv_ten_moment.c unit/
 
-# regression
-mkdir -p unit
+# C regression tests
+mkdir -p creg
+
+# Lua regression tests
+mkdir -p luareg

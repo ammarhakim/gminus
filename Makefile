@@ -86,7 +86,7 @@ MKDIR_P ?= mkdir -p
 all: core
 
 ## Core infrastructure targets
-.PHONY: core core-clean core-check core-valcheck
+.PHONY: core core-unit core-clean core-install core-check core-valcheck
 core:  ## Build core infrastructure code
 	cd core && $(MAKE) -f Makefile-core
 
@@ -107,14 +107,14 @@ core-valcheck: ## Run valgrind on unit tests in core
 	cd core && $(MAKE) -f Makefile-core valcheck
 
 ## Moments infrastructure targets
-.PHONY: moments moments-clean moments-check moments-valcheck
+.PHONY: moments moments-unit moments-install moments-clean moments-check moments-valcheck
 moments: core  ## Build moments infrastructure code
 	cd moments && $(MAKE) -f Makefile-moments
 
 moments-unit: ## Build moments unit tests
 	cd moments && $(MAKE) -f Makefile-moments unit
 
-moments-install: ## Install moments infrastructure code
+moments-install: core-install ## Install moments infrastructure code
 	cd moments && $(MAKE) -f Makefile-moments install
 	test -e config.mak && cp -f config.mak ${INSTALL_PREFIX}/${PROJ_NAME}/share/config.mak || echo "No config.mak"
 
