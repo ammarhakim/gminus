@@ -114,6 +114,9 @@ moments: core  ## Build moments infrastructure code
 moments-unit: moments ## Build moments unit tests
 	cd moments && $(MAKE) -f Makefile-moments unit
 
+moments-regression: moments ## Build moments regression tests
+	cd moments && $(MAKE) -f Makefile-moments regression
+
 moments-install: core-install ## Install moments infrastructure code
 	cd moments && $(MAKE) -f Makefile-moments install
 	test -e config.mak && cp -f config.mak ${INSTALL_PREFIX}/${PROJ_NAME}/share/config.mak || echo "No config.mak"
@@ -144,7 +147,7 @@ clean: core-clean moments-clean  ## Clean all builds
 
 # Check everything
 .PHONY: check
-check: core-check ## Run all unit tests
+check: core-check moments-check ## Run all unit tests
 
 # From: https://www.client9.com/self-documenting-makefiles/
 .PHONY: help
