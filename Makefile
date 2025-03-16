@@ -119,7 +119,6 @@ moments-regression: moments ## Build moments regression tests
 
 moments-install: core-install ## Install moments infrastructure code
 	cd moments && $(MAKE) -f Makefile-moments install
-	test -e config.mak && cp -f config.mak ${INSTALL_PREFIX}/${PROJ_NAME}/share/config.mak || echo "No config.mak"
 
 moments-clean: ## Clean moments infrastructure code
 	cd moments && $(MAKE) -f Makefile-moments clean
@@ -137,9 +136,13 @@ moments-valcheck: ## Run valgrind on unit tests in moments
 .PHONY: unit 
 unit: core-unit ## Build all unit tests
 
+# build all regression tests 
+.PHONY: regression
+regression: moments-regression ## Build all regression tests
+
 # Install everything
 .PHONY: install 
-install: core-install ## Install all code
+install: core-install moments-install ## Install all code
 
 # Clean everything
 .PHONY: clean 
