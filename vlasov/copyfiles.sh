@@ -1,0 +1,186 @@
+#!/bin/sh
+
+CP_CMD=cp
+RM_CMD=rm
+G0=../../gkylzero
+
+# kernels
+mkdir -p kernels/advection
+$CP_CMD $G0/kernels/advection/*.h kernels/advection/
+$CP_CMD $G0/kernels/advection/*.c kernels/advection/
+mkdir -p kernels/canonical_pb
+$CP_CMD $G0/kernels/canonical_pb/*.h kernels/canonical_pb/
+$CP_CMD $G0/kernels/canonical_pb/*.c kernels/canonical_pb/
+mkdir -p kernels/dg_diffusion_fluid
+$CP_CMD $G0/kernels/dg_diffusion_fluid/*.h kernels/dg_diffusion_fluid/
+$CP_CMD $G0/kernels/dg_diffusion_fluid/*.c kernels/dg_diffusion_fluid/
+mkdir -p kernels/dg_diffusion_gen
+$CP_CMD $G0/kernels/dg_diffusion_gen/*.h kernels/dg_diffusion_gen/
+$CP_CMD $G0/kernels/dg_diffusion_gen/*.c kernels/dg_diffusion_gen/
+mkdir -p kernels/dg_diffusion_vlasov
+$CP_CMD $G0/kernels/dg_diffusion_vlasov/*.h kernels/dg_diffusion_vlasov/
+$CP_CMD $G0/kernels/dg_diffusion_vlasov/*.c kernels/dg_diffusion_vlasov/
+mkdir -p kernels/euler
+$CP_CMD $G0/kernels/euler/*.h kernels/euler/
+$CP_CMD $G0/kernels/euler/*.c kernels/euler/
+mkdir -p kernels/fpo
+$CP_CMD $G0/kernels/fpo/*.h kernels/fpo/
+$CP_CMD $G0/kernels/fpo/*.c kernels/fpo/
+mkdir -p kernels/lbo
+$CP_CMD $G0/kernels/lbo/*.h kernels/lbo/
+$CP_CMD $G0/kernels/lbo/*.c kernels/lbo/
+mkdir -p kernels/maxwell
+$CP_CMD $G0/kernels/maxwell/*.h kernels/maxwell/
+$CP_CMD $G0/kernels/maxwell/*.c kernels/maxwell/
+mkdir -p kernels/sr_vlasov
+$CP_CMD $G0/kernels/sr_vlasov/*.h kernels/sr_vlasov/
+$CP_CMD $G0/kernels/sr_vlasov/*.c kernels/sr_vlasov/
+mkdir -p kernels/vlasov
+$CP_CMD $G0/kernels/vlasov/*.h kernels/vlasov/
+$CP_CMD $G0/kernels/vlasov/*.c kernels/vlasov/
+mkdir -p kernels/vlasov_poisson
+$CP_CMD $G0/kernels/vlasov_poisson/*.h kernels/vlasov_poisson/
+$CP_CMD $G0/kernels/vlasov_poisson/*.c kernels/vlasov_poisson/
+
+# zero
+mkdir -p zero
+$CP_CMD $G0/zero/dg_calc_vlasov_gen_geo_vars_cu.cu zero/
+$CP_CMD $G0/zero/dg_calc_vlasov_gen_geo_vars.c zero/
+$CP_CMD $G0/zero/dg_diffusion_vlasov_cu.cu zero/
+$CP_CMD $G0/zero/dg_diffusion_vlasov.c zero/
+$CP_CMD $G0/zero/dg_fpo_vlasov_diff_cu.cu zero/
+$CP_CMD $G0/zero/dg_fpo_vlasov_diff.c zero/
+$CP_CMD $G0/zero/dg_fpo_vlasov_drag_cu.cu zero/
+$CP_CMD $G0/zero/dg_fpo_vlasov_drag.c zero/
+$CP_CMD $G0/zero/dg_lbo_vlasov_diff_cu.cu zero/
+$CP_CMD $G0/zero/dg_lbo_vlasov_diff.c zero/
+$CP_CMD $G0/zero/dg_lbo_vlasov_drag_cu.cu zero/
+$CP_CMD $G0/zero/dg_lbo_vlasov_drag.c zero/
+$CP_CMD $G0/zero/dg_updater_bflux_vlasov.c zero/
+$CP_CMD $G0/zero/dg_updater_diffusion_vlasov.c zero/
+$CP_CMD $G0/zero/dg_updater_fpo_vlasov.c zero/
+$CP_CMD $G0/zero/dg_updater_lbo_vlasov.c zero/
+$CP_CMD $G0/zero/dg_updater_moment.c zero/
+$CP_CMD $G0/zero/dg_updater_rad_vlasov.c zero/
+$CP_CMD $G0/zero/dg_updater_vlasov_poisson.c zero/
+$CP_CMD $G0/zero/dg_updater_vlasov.c zero/
+$CP_CMD $G0/zero/dg_vlasov_cu.cu zero/
+$CP_CMD $G0/zero/dg_vlasov_poisson_cu.cu zero/
+$CP_CMD $G0/zero/dg_vlasov_poisson.c zero/
+$CP_CMD $G0/zero/dg_vlasov_sr_cu.cu zero/
+$CP_CMD $G0/zero/dg_vlasov_sr.c zero/
+$CP_CMD $G0/zero/dg_vlasov.c zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_vlasov_gen_geo_vars_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_vlasov_gen_geo_vars.h zero/
+$CP_CMD $G0/zero/gkyl_dg_canonical_pb_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_diffusion_vlasov_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_diffusion_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_dg_fpo_vlasov_diff_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_fpo_vlasov_diff.h zero/
+$CP_CMD $G0/zero/gkyl_dg_fpo_vlasov_drag_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_fpo_vlasov_drag.h zero/
+$CP_CMD $G0/zero/gkyl_dg_interpolate_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_lbo_vlasov_diff_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_lbo_vlasov_diff.h zero/
+$CP_CMD $G0/zero/gkyl_dg_lbo_vlasov_drag_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_lbo_vlasov_drag.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_bflux_vlasov_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_bflux_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_diffusion_vlasov_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_diffusion_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_fpo_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_lbo_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_moment.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_rad_vlasov_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_rad_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_vlasov_poisson.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_vlasov_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_vlasov_timers.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_dg_vlasov_poisson_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_vlasov_poisson.h zero/
+$CP_CMD $G0/zero/gkyl_dg_vlasov_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_vlasov_sr_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_vlasov_sr.h zero/
+$CP_CMD $G0/zero/gkyl_dg_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_mom_bcorr_lbo_vlasov_priv.h zero/
+$CP_CMD $G0/zero/gkyl_mom_bcorr_lbo_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_mom_calc_bcorr.h zero/
+$CP_CMD $G0/zero/gkyl_mom_vlasov_priv.h zero/
+$CP_CMD $G0/zero/gkyl_mom_vlasov_sr_priv.h zero/
+$CP_CMD $G0/zero/gkyl_mom_vlasov_sr.h zero/
+$CP_CMD $G0/zero/gkyl_mom_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_prim_lbo_calc.h zero/
+$CP_CMD $G0/zero/gkyl_prim_lbo_vlasov_priv.h zero/
+$CP_CMD $G0/zero/gkyl_prim_lbo_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_vlasov_lte_correct_priv.h zero/
+$CP_CMD $G0/zero/gkyl_vlasov_lte_correct.h zero/
+$CP_CMD $G0/zero/gkyl_vlasov_lte_moments_priv.h zero/
+$CP_CMD $G0/zero/gkyl_vlasov_lte_moments.h zero/
+$CP_CMD $G0/zero/gkyl_vlasov_lte_proj_on_basis_priv.h zero/
+$CP_CMD $G0/zero/gkyl_vlasov_lte_proj_on_basis.h zero/
+$CP_CMD $G0/zero/mom_bcorr_lbo_vlasov_cu.cu zero/
+$CP_CMD $G0/zero/mom_bcorr_lbo_vlasov.c zero/
+$CP_CMD $G0/zero/mom_calc_bcorr.c zero/
+$CP_CMD $G0/zero/mom_vlasov_cu.cu zero/
+$CP_CMD $G0/zero/mom_vlasov_sr_cu.cu zero/
+$CP_CMD $G0/zero/mom_vlasov_sr.c zero/
+$CP_CMD $G0/zero/mom_vlasov.c zero/
+$CP_CMD $G0/zero/prim_lbo_calc_cu.cu zero/
+$CP_CMD $G0/zero/prim_lbo_calc.c zero/
+$CP_CMD $G0/zero/prim_lbo_cross_calc_cu.cu zero/
+$CP_CMD $G0/zero/prim_lbo_cross_calc.c zero/
+$CP_CMD $G0/zero/prim_lbo_vlasov_cu.cu zero/
+$CP_CMD $G0/zero/prim_lbo_vlasov.c zero/
+$CP_CMD $G0/zero/vlasov_lte_correct_cu.cu zero/
+$CP_CMD $G0/zero/vlasov_lte_correct.c zero/
+$CP_CMD $G0/zero/vlasov_lte_moments.c zero/
+$CP_CMD $G0/zero/vlasov_lte_proj_on_basis_cu.cu zero/
+$CP_CMD $G0/zero/vlasov_lte_proj_on_basis.c zero/
+$CP_CMD $G0/zero/gkyl_dg_eqn.h zero/
+$CP_CMD $G0/zero/gkyl_dg_bin_ops.h zero/
+$CP_CMD $G0/zero/gkyl_mom_type.h zero/
+$CP_CMD $G0/zero/gkyl_hyper_dg.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_sr_vars.h zero/
+$CP_CMD $G0/zero/gkyl_velocity_map.h zero/
+
+# app
+mkdir -p apps
+$CP_CMD $G0/apps/gkyl_vlasov_comms.h apps/
+$CP_CMD $G0/apps/gkyl_vlasov_lw.h apps/
+$CP_CMD $G0/apps/gkyl_vlasov_priv.h apps/
+$CP_CMD $G0/apps/gkyl_vlasov.h apps/
+$CP_CMD $G0/apps/vlasov_comms.c apps/
+$CP_CMD $G0/apps/vlasov_forward_euler.c apps/
+$CP_CMD $G0/apps/vlasov_lw.c apps/
+$CP_CMD $G0/apps/vlasov_poisson_update_ssp_rk3.c apps/
+$CP_CMD $G0/apps/vlasov_update_implicit_coll.c apps/
+$CP_CMD $G0/apps/vlasov_update_op_split.c apps/
+$CP_CMD $G0/apps/vlasov_update_ssp_rk3.c apps/
+$CP_CMD $G0/apps/vlasov.c apps/
+$CP_CMD $G0/apps/vm_field.c apps/
+$CP_CMD $G0/apps/vm_fluid_em_coupling.c apps/
+$CP_CMD $G0/apps/vm_fluid_species_source.c apps/
+$CP_CMD $G0/apps/vm_fluid_species.c apps/
+$CP_CMD $G0/apps/vm_species_bflux.c apps/
+$CP_CMD $G0/apps/vm_species_bgk.c apps/
+$CP_CMD $G0/apps/vm_species_emission.c apps/
+$CP_CMD $G0/apps/vm_species_lbo.c apps/
+$CP_CMD $G0/apps/vm_species_lte.c apps/
+$CP_CMD $G0/apps/vm_species_moment.c apps/
+$CP_CMD $G0/apps/vm_species_projection.c apps/
+$CP_CMD $G0/apps/vm_species_radiation.c apps/
+$CP_CMD $G0/apps/vm_species_source.c apps/
+$CP_CMD $G0/apps/vm_species.c apps/
+$CP_CMD $G0/apps/vp_field.c apps/
+
+# unit
+mkdir -p unit
+
+# C regression tests
+mkdir -p creg
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_arg_parse.h creg/
+
+# Lua regression tests
+mkdir -p luareg
