@@ -31,6 +31,12 @@ $CP_CMD $G0/kernels/dg_interpolate/*.c kernels/dg_interpolate/
 mkdir -p kernels/skin_surf_from_ghost
 $CP_CMD $G0/kernels/skin_surf_from_ghost/*.h kernels/skin_surf_from_ghost/
 $CP_CMD $G0/kernels/skin_surf_from_ghost/*.c kernels/skin_surf_from_ghost/
+mkdir -p kernels/fem_poisson
+$CP_CMD $G0/kernels/fem_poisson/*.h kernels/fem_poisson/
+$CP_CMD $G0/kernels/fem_poisson/*.c kernels/fem_poisson/
+mkdir -p kernels/fem_poisson_perp
+$CP_CMD $G0/kernels/fem_poisson_perp/*.h kernels/fem_poisson_perp/
+$CP_CMD $G0/kernels/fem_poisson_perp/*.c kernels/fem_poisson_perp/
 
 $RM_CMD $G0/kernels/array_average/*.h
 $RM_CMD $G0/kernels/array_average/*.c
@@ -44,6 +50,10 @@ $RM_CMD $G0/kernels/dg_interpolate/*.h
 $RM_CMD $G0/kernels/dg_interpolate/*.c
 $RM_CMD $G0/kernels/skin_surf_from_ghost/*.h
 $RM_CMD $G0/kernels/skin_surf_from_ghost/*.c
+$RM_CMD $G0/kernels/fem_poisson/*.h
+$RM_CMD $G0/kernels/fem_poisson/*.c
+$RM_CMD $G0/kernels/fem_poisson_perp/*.h
+$RM_CMD $G0/kernels/fem_poisson_perp/*.c
 
 # minus
 mkdir -p minus
@@ -140,6 +150,59 @@ $CP_CMD $G0/zero/rect_decomp.c zero/
 $CP_CMD $G0/zero/rect_grid.c zero/
 $CP_CMD $G0/zero/rrobin_decomp.c zero/
 $CP_CMD $G0/zero/util.c zero/
+$CP_CMD $G0/zero/gkyl_dg_bin_ops.h zero/
+$CP_CMD $G0/zero/gkyl_dg_interpolate_priv.h zero/
+$CP_CMD $G0/zero/array_average_cu.cu zero/
+$CP_CMD $G0/zero/array_average.c zero/
+$CP_CMD $G0/zero/array_dg_reduce_cu.cu zero/
+$CP_CMD $G0/zero/array_dg_reduce.c zero/
+$CP_CMD $G0/zero/array_integrate_cu.cu zero/
+$CP_CMD $G0/zero/array_integrate.c zero/
+$CP_CMD $G0/zero/array_ops_cu.cu zero/
+$CP_CMD $G0/zero/cart_modal_gkhybrid_cu.cu zero/
+$CP_CMD $G0/zero/cart_modal_hybrid_cu.cu zero/
+$CP_CMD $G0/zero/cart_modal_serendip_cu.cu zero/
+$CP_CMD $G0/zero/cart_modal_tensor_cu.cu zero/
+$CP_CMD $G0/zero/cudss_ops.cu zero/
+$CP_CMD $G0/zero/cusolver_ops.cu zero/
+$CP_CMD $G0/zero/dg_basis_ops.c zero/
+$CP_CMD $G0/zero/dg_bin_ops_cu.cu zero/
+$CP_CMD $G0/zero/dg_bin_ops.c zero/
+$CP_CMD $G0/zero/dg_interpolate_cu.cu zero/
+$CP_CMD $G0/zero/dg_interpolate.c zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson_bctype.h zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson_perp_priv.h zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson_perp.h zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson_priv.h zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson.h zero/
+$CP_CMD $G0/zero/gkyl_gauss_quad_utilities_priv.h zero/
+$CP_CMD $G0/zero/gkyl_job_pool.h zero/
+$CP_CMD $G0/zero/gkyl_nccl_comm_priv.h zero/
+$CP_CMD $G0/zero/gkyl_nccl_comm.h zero/
+$CP_CMD $G0/zero/gkyl_nodal_ops.h zero/
+$CP_CMD $G0/zero/gkyl_null_pool.h zero/
+$CP_CMD $G0/zero/gkyl_skin_surf_from_ghost_priv.h zero/
+$CP_CMD $G0/zero/gkyl_skin_surf_from_ghost.h zero/
+$CP_CMD $G0/zero/gkyl_superlu_ops.h zero/
+$CP_CMD $G0/zero/gkyl_superlu.h zero/
+$CP_CMD $G0/zero/gkyl_thread_pool.h zero/
+$CP_CMD $G0/zero/job_pool.c zero/
+$CP_CMD $G0/zero/nccl_comm.c zero/
+$CP_CMD $G0/zero/nodal_ops_cu.cu zero/
+$CP_CMD $G0/zero/nodal_ops.c zero/
+$CP_CMD $G0/zero/null_pool.c zero/
+$CP_CMD $G0/zero/superlu_ops.c zero/
+$CP_CMD $G0/zero/thread_pool.c zero/
+$CP_CMD $G0/zero/gkyl_dg_basis_ops.h zero/
+$CP_CMD $G0/zero/gkyl_dg_bin_ops_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_interpolate.h zero/
+$CP_CMD $G0/zero/gkyl_dual_num.h zero/
+$CP_CMD $G0/zero/gkyl_array_average_priv.h zero/
+$CP_CMD $G0/zero/gkyl_array_average.h zero/
+$CP_CMD $G0/zero/gkyl_array_dg_reduce_priv.h zero/
+$CP_CMD $G0/zero/gkyl_array_dg_reduce.h zero/
+$CP_CMD $G0/zero/gkyl_array_integrate_priv.h zero/
+$CP_CMD $G0/zero/gkyl_array_integrate.h zero/
 
 $RM_CMD $G0/zero/alloc.c
 $RM_CMD $G0/zero/array.c
@@ -228,6 +291,59 @@ $RM_CMD $G0/zero/rect_decomp.c
 $RM_CMD $G0/zero/rect_grid.c
 $RM_CMD $G0/zero/rrobin_decomp.c
 $RM_CMD $G0/zero/util.c
+$RM_CMD $G0/zero/gkyl_dg_bin_ops.h
+$RM_CMD $G0/zero/gkyl_dg_interpolate_priv.h
+$RM_CMD $G0/zero/array_average_cu.cu
+$RM_CMD $G0/zero/array_average.c
+$RM_CMD $G0/zero/array_dg_reduce_cu.cu
+$RM_CMD $G0/zero/array_dg_reduce.c
+$RM_CMD $G0/zero/array_integrate_cu.cu
+$RM_CMD $G0/zero/array_integrate.c
+$RM_CMD $G0/zero/array_ops_cu.cu
+$RM_CMD $G0/zero/cart_modal_gkhybrid_cu.cu
+$RM_CMD $G0/zero/cart_modal_hybrid_cu.cu
+$RM_CMD $G0/zero/cart_modal_serendip_cu.cu
+$RM_CMD $G0/zero/cart_modal_tensor_cu.cu
+$RM_CMD $G0/zero/cudss_ops.cu
+$RM_CMD $G0/zero/cusolver_ops.cu
+$RM_CMD $G0/zero/dg_basis_ops.c
+$RM_CMD $G0/zero/dg_bin_ops_cu.cu
+$RM_CMD $G0/zero/dg_bin_ops.c
+$RM_CMD $G0/zero/dg_interpolate_cu.cu
+$RM_CMD $G0/zero/dg_interpolate.c
+$RM_CMD $G0/zero/gkyl_fem_poisson_bctype.h
+$RM_CMD $G0/zero/gkyl_fem_poisson_perp_priv.h
+$RM_CMD $G0/zero/gkyl_fem_poisson_perp.h
+$RM_CMD $G0/zero/gkyl_fem_poisson_priv.h
+$RM_CMD $G0/zero/gkyl_fem_poisson.h
+$RM_CMD $G0/zero/gkyl_gauss_quad_utilities_priv.h
+$RM_CMD $G0/zero/gkyl_job_pool.h
+$RM_CMD $G0/zero/gkyl_nccl_comm_priv.h
+$RM_CMD $G0/zero/gkyl_nccl_comm.h
+$RM_CMD $G0/zero/gkyl_nodal_ops.h
+$RM_CMD $G0/zero/gkyl_null_pool.h
+$RM_CMD $G0/zero/gkyl_skin_surf_from_ghost_priv.h
+$RM_CMD $G0/zero/gkyl_skin_surf_from_ghost.h
+$RM_CMD $G0/zero/gkyl_superlu_ops.h
+$RM_CMD $G0/zero/gkyl_superlu.h
+$RM_CMD $G0/zero/gkyl_thread_pool.h
+$RM_CMD $G0/zero/job_pool.c
+$RM_CMD $G0/zero/nccl_comm.c
+$RM_CMD $G0/zero/nodal_ops_cu.cu
+$RM_CMD $G0/zero/nodal_ops.c
+$RM_CMD $G0/zero/null_pool.c
+$RM_CMD $G0/zero/superlu_ops.c
+$RM_CMD $G0/zero/thread_pool.c
+$RM_CMD $G0/zero/gkyl_dg_basis_ops.h
+$RM_CMD $G0/zero/gkyl_dg_bin_ops_priv.h
+$RM_CMD $G0/zero/gkyl_dg_interpolate.h
+$RM_CMD $G0/zero/gkyl_dual_num.h
+$RM_CMD $G0/zero/gkyl_array_average_priv.h
+$RM_CMD $G0/zero/gkyl_array_average.h
+$RM_CMD $G0/zero/gkyl_array_dg_reduce_priv.h
+$RM_CMD $G0/zero/gkyl_array_dg_reduce.h
+$RM_CMD $G0/zero/gkyl_array_integrate_priv.h
+$RM_CMD $G0/zero/gkyl_array_integrate.h
 
 # app
 mkdir -p apps

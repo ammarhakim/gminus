@@ -440,7 +440,6 @@ $RM_CMD $G0/regression/rt_5m_riem.c
 $RM_CMD $G0/regression/rt_5m_rt.c
 $RM_CMD $G0/regression/rt_advect_wv.c
 $RM_CMD $G0/regression/rt_advect_wv_mp.c
-$RM_CMD $G0/regression/rt_arg_parse.h
 $RM_CMD $G0/regression/rt_burgers_shock.c
 $RM_CMD $G0/regression/rt_burgers_shock_mp.c
 $RM_CMD $G0/regression/rt_coldfluid_beach.c
