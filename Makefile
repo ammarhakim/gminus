@@ -129,6 +129,29 @@ moments-check: ## Run unit tests in moments
 moments-valcheck: ## Run valgrind on unit tests in moments
 	cd moments && $(MAKE) -f Makefile-moments valcheck
 
+## Vlasov infrastructure targets
+.PHONY: vlasov vlasov-unit vlasov-install vlasov-clean vlasov-check vlasov-valcheck
+vlasov: moments  ## Build Vlasov infrastructure code
+	cd vlasov && $(MAKE) -f Makefile-vlasov
+
+vlasov-unit: vlasov ## Build Vlasov unit tests
+	cd vlasov && $(MAKE) -f Makefile-vlasov unit
+
+vlasov-regression: vlasov ## Build Vlasov regression tests
+	cd vlasov && $(MAKE) -f Makefile-vlasov regression
+
+vlasov-install: moments-install ## Install Vlasov infrastructure code
+	cd vlasov && $(MAKE) -f Makefile-vlasov install
+
+vlasov-clean: ## Clean Vlasov infrastructure code
+	cd vlasov && $(MAKE) -f Makefile-vlasov clean
+
+vlasov-check: ## Run unit tests in Vlasov
+	cd vlasov && $(MAKE) -f Makefile-vlasov check
+
+vlasov-valcheck: ## Run valgrind on unit tests in Vlasov
+	cd vlasov && $(MAKE) -f Makefile-vlasov valcheck
+
 
 ## Targets to build things all parts of the code
 
@@ -138,19 +161,19 @@ unit: core-unit ## Build all unit tests
 
 # build all regression tests 
 .PHONY: regression
-regression: moments-regression ## Build all regression tests
+regression: moments-regression vlasov-regression ## Build all regression tests
 
 # Install everything
 .PHONY: install 
-install: core-install moments-install ## Install all code
+install: core-install moments-install vlasov-install ## Install all code
 
 # Clean everything
 .PHONY: clean 
-clean: core-clean moments-clean  ## Clean all builds
+clean: core-clean moments-clean vlasov-clean ## Clean all builds
 
 # Check everything
 .PHONY: check
-check: core-check moments-check ## Run all unit tests
+check: core-check moments-check vlasov-check ## Run all unit tests
 
 # From: https://www.client9.com/self-documenting-makefiles/
 .PHONY: help

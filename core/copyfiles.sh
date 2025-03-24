@@ -13,12 +13,37 @@ $RM_CMD $G0/data/unit/euler_riem_2d_hllc-euler_1.gkyl
 $RM_CMD $G0/data/unit/ser-euler_riem_2d_hllc-euler_1.gkyl
 
 # kernels
+mkdir -p kernels/array_average
+$CP_CMD $G0/kernels/array_average/*.h kernels/array_average/
+$CP_CMD $G0/kernels/array_average/*.c kernels/array_average/
+mkdir -p kernels/array_integrate
+$CP_CMD $G0/kernels/array_integrate/*.h kernels/array_integrate/
+$CP_CMD $G0/kernels/array_integrate/*.c kernels/array_integrate/
 mkdir -p kernels/basis
 $CP_CMD $G0/kernels/basis/*.h kernels/basis/
 $CP_CMD $G0/kernels/basis/*.c kernels/basis/
+mkdir -p kernels/bin_op
+$CP_CMD $G0/kernels/bin_op/*.h kernels/bin_op/
+$CP_CMD $G0/kernels/bin_op/*.c kernels/bin_op/
+mkdir -p kernels/dg_interpolate
+$CP_CMD $G0/kernels/dg_interpolate/*.h kernels/dg_interpolate/
+$CP_CMD $G0/kernels/dg_interpolate/*.c kernels/dg_interpolate/
+mkdir -p kernels/skin_surf_from_ghost
+$CP_CMD $G0/kernels/skin_surf_from_ghost/*.h kernels/skin_surf_from_ghost/
+$CP_CMD $G0/kernels/skin_surf_from_ghost/*.c kernels/skin_surf_from_ghost/
 
+$RM_CMD $G0/kernels/array_average/*.h
+$RM_CMD $G0/kernels/array_average/*.c
+$RM_CMD $G0/kernels/array_integrate/*.h
+$RM_CMD $G0/kernels/array_integrate/*.c
 $RM_CMD $G0/kernels/basis/*.h
 $RM_CMD $G0/kernels/basis/*.c
+$RM_CMD $G0/kernels/bin_op/*.h
+$RM_CMD $G0/kernels/bin_op/*.c
+$RM_CMD $G0/kernels/dg_interpolate/*.h
+$RM_CMD $G0/kernels/dg_interpolate/*.c
+$RM_CMD $G0/kernels/skin_surf_from_ghost/*.h
+$RM_CMD $G0/kernels/skin_surf_from_ghost/*.c
 
 # minus
 mkdir -p minus
