@@ -201,6 +201,8 @@ $CP_CMD $G0/zero/fem_poisson.c zero/
 $CP_CMD $G0/zero/gkyl_cudss_ops.h zero/
 $CP_CMD $G0/zero/gkyl_culinsolver_ops.h zero/
 $CP_CMD $G0/zero/gkyl_cusolver_ops.h zero/
+$CP_CMD $G0/zero/skin_surf_from_ghost_cu.cu zero/
+$CP_CMD $G0/zero/skin_surf_from_ghost.c zero/
 
 $RM_CMD $G0/zero/alloc.c
 $RM_CMD $G0/zero/array.c
@@ -345,6 +347,8 @@ $RM_CMD $G0/zero/fem_poisson.c
 $RM_CMD $G0/zero/gkyl_cudss_ops.h
 $RM_CMD $G0/zero/gkyl_culinsolver_ops.h
 $RM_CMD $G0/zero/gkyl_cusolver_ops.h
+$RM_CMD $G0/zero/skin_surf_from_ghost_cu.cu
+$RM_CMD $G0/zero/skin_surf_from_ghost.c
 
 # app
 mkdir -p apps

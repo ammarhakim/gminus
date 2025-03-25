@@ -152,6 +152,29 @@ vlasov-check: ## Run unit tests in Vlasov
 vlasov-valcheck: ## Run valgrind on unit tests in Vlasov
 	cd vlasov && $(MAKE) -f Makefile-vlasov valcheck
 
+## Gyrokinetic infrastructure targets
+.PHONY: gyrokinetic gyrokinetic-unit gyrokinetic-install gyrokinetic-clean gyrokinetic-check gyrokinetic-valcheck
+gyrokinetic: vlasov  ## Build Gyrokinetic infrastructure code
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic
+
+gyrokinetic-unit: gyrokinetic ## Build Gyrokinetic unit tests
+	cd gyrokinetioc && $(MAKE) -f Makefile-gyrokinetic unit
+
+gyrokinetic-regression: gyrokinetic ## Build Gyrokinetic regression tests
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic regression
+
+gyrokinetic-install: vlasov-install ## Install Gyrokinetic infrastructure code
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic install
+
+gyrokinetic-clean: ## Clean Gyrokinetic infrastructure code
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic clean
+
+gyrokinetic-check: ## Run unit tests in Gyrokinetics
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic check
+
+gyrokinetic-valcheck: ## Run valgrind on unit tests in Gyrokinetics
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic valcheck
+
 
 ## Targets to build things all parts of the code
 
@@ -161,19 +184,19 @@ unit: core-unit ## Build all unit tests
 
 # build all regression tests 
 .PHONY: regression
-regression: moments-regression vlasov-regression ## Build all regression tests
+regression: moments-regression vlasov-regression gyrokinetic-regression ## Build all regression tests
 
 # Install everything
 .PHONY: install 
-install: core-install moments-install vlasov-install ## Install all code
+install: core-install moments-install vlasov-install gyrokinetic-install ## Install all code
 
 # Clean everything
 .PHONY: clean 
-clean: core-clean moments-clean vlasov-clean ## Clean all builds
+clean: core-clean moments-clean vlasov-clean gyrokinetic-clean ## Clean all builds
 
 # Check everything
 .PHONY: check
-check: core-check moments-check vlasov-check ## Run all unit tests
+check: core-check moments-check vlasov-check gyrokinetic-check ## Run all unit tests
 
 # From: https://www.client9.com/self-documenting-makefiles/
 .PHONY: help
