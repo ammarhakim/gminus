@@ -162,6 +162,7 @@ $CP_CMD $G0/zero/vlasov_lte_proj_on_basis_cu.cu zero/
 $CP_CMD $G0/zero/vlasov_lte_proj_on_basis.c zero/
 $CP_CMD $G0/zero/gkyl_mom_type.h zero/
 $CP_CMD $G0/zero/gkyl_dg_calc_sr_vars.h zero/
+$CP_CMD $G0/zero/gkyl_velocity_map_priv.h zero/
 $CP_CMD $G0/zero/gkyl_velocity_map.h zero/
 $CP_CMD $G0/zero/gkyl_dg_eqn.h zero/
 $CP_CMD $G0/zero/gkyl_hyper_dg.h zero/
@@ -289,6 +290,8 @@ $CP_CMD $G0/zero/prim_cross_m0deltas.c zero/
 $CP_CMD $G0/zero/prim_lbo_type.c zero/
 $CP_CMD $G0/zero/spitzer_coll_freq_cu.cu zero/
 $CP_CMD $G0/zero/spitzer_coll_freq.c zero/
+$CP_CMD $G0/zero/velocity_map_cu.cu zero/
+$CP_CMD $G0/zero/velocity_map.c zero/
 
 $RM_CMD $G0/zero/dg_diffusion_vlasov_cu.cu
 $RM_CMD $G0/zero/dg_diffusion_vlasov.c
@@ -383,6 +386,7 @@ $RM_CMD $G0/zero/vlasov_lte_proj_on_basis_cu.cu
 $RM_CMD $G0/zero/vlasov_lte_proj_on_basis.c
 $RM_CMD $G0/zero/gkyl_mom_type.h
 $RM_CMD $G0/zero/gkyl_dg_calc_sr_vars.h
+$RM_CMD $G0/zero/gkyl_velocity_map_priv.h
 $RM_CMD $G0/zero/gkyl_velocity_map.h
 $RM_CMD $G0/zero/gkyl_dg_eqn.h
 $RM_CMD $G0/zero/gkyl_hyper_dg.h
@@ -510,6 +514,8 @@ $RM_CMD $G0/zero/prim_cross_m0deltas.c
 $RM_CMD $G0/zero/prim_lbo_type.c
 $RM_CMD $G0/zero/spitzer_coll_freq_cu.cu
 $RM_CMD $G0/zero/spitzer_coll_freq.c
+$RM_CMD $G0/zero/velocity_map_cu.cu
+$RM_CMD $G0/zero/velocity_map.c
 
 # app
 mkdir -p apps
