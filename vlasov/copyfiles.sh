@@ -166,6 +166,130 @@ $CP_CMD $G0/zero/gkyl_dg_calc_sr_vars.h zero/
 $CP_CMD $G0/zero/gkyl_velocity_map.h zero/
 $CP_CMD $G0/zero/gkyl_dg_eqn.h zero/
 $CP_CMD $G0/zero/gkyl_hyper_dg.h zero/
+$CP_CMD $G0/zero/bc_basic_cu.cu zero/
+$CP_CMD $G0/zero/bc_basic.c zero/
+$CP_CMD $G0/zero/bc_emission_elastic_cu.cu zero/
+$CP_CMD $G0/zero/bc_emission_elastic.c zero/
+$CP_CMD $G0/zero/bc_emission_spectrum_cu.cu zero/
+$CP_CMD $G0/zero/bc_emission_spectrum.c zero/
+$CP_CMD $G0/zero/bc_emission.c zero/
+$CP_CMD $G0/zero/bgk_collisions_cu.cu zero/
+$CP_CMD $G0/zero/bgk_collisions.c zero/
+$CP_CMD $G0/zero/dg_advection_cu.cu zero/
+$CP_CMD $G0/zero/dg_advection.c zero/
+$CP_CMD $G0/zero/dg_calc_canonical_pb_fluid_vars_cu.cu zero/
+$CP_CMD $G0/zero/dg_calc_canonical_pb_fluid_vars.c zero/
+$CP_CMD $G0/zero/dg_calc_canonical_pb_vars_cu.cu zero/
+$CP_CMD $G0/zero/dg_calc_canonical_pb_vars.c zero/
+$CP_CMD $G0/zero/dg_calc_em_vars_cu.cu zero/
+$CP_CMD $G0/zero/dg_calc_em_vars.c zero/
+$CP_CMD $G0/zero/dg_calc_fluid_em_coupling_cu.cu zero/
+$CP_CMD $G0/zero/dg_calc_fluid_em_coupling.c zero/
+$CP_CMD $G0/zero/dg_calc_fluid_vars_cu.cu zero/
+$CP_CMD $G0/zero/dg_calc_fluid_vars.c zero/
+$CP_CMD $G0/zero/dg_calc_prim_vars.c zero/
+$CP_CMD $G0/zero/dg_calc_sr_vars_cu.cu zero/
+$CP_CMD $G0/zero/dg_calc_sr_vars.c zero/
+$CP_CMD $G0/zero/dg_canonical_pb_cu.cu zero/
+$CP_CMD $G0/zero/dg_canonical_pb_fluid_cu.cu zero/
+$CP_CMD $G0/zero/dg_canonical_pb_fluid.c zero/
+$CP_CMD $G0/zero/dg_canonical_pb.c zero/
+$CP_CMD $G0/zero/dg_diffusion_fluid_cu.cu zero/
+$CP_CMD $G0/zero/dg_diffusion_fluid.c zero/
+$CP_CMD $G0/zero/dg_diffusion_gen_cu.cu zero/
+$CP_CMD $G0/zero/dg_diffusion_gen.c zero/
+$CP_CMD $G0/zero/dg_eqn.c zero/
+$CP_CMD $G0/zero/dg_euler_cu.cu zero/
+$CP_CMD $G0/zero/dg_euler.c zero/
+$CP_CMD $G0/zero/dg_maxwell_cu.cu zero/
+$CP_CMD $G0/zero/dg_maxwell.c zero/
+$CP_CMD $G0/zero/dg_updater_diffusion_fluid.c zero/
+$CP_CMD $G0/zero/dg_updater_diffusion_gen.c zero/
+$CP_CMD $G0/zero/dg_updater_fluid.c zero/
+$CP_CMD $G0/zero/emission_elastic_model.c zero/
+$CP_CMD $G0/zero/emission_spectrum_model_cu.cu zero/
+$CP_CMD $G0/zero/emission_spectrum_model.c zero/
+$CP_CMD $G0/zero/emission_yield_model_cu.cu zero/
+$CP_CMD $G0/zero/emission_yield_model.c zero/
+$CP_CMD $G0/zero/ghost_surf_calc_cu.cu zero/
+$CP_CMD $G0/zero/ghost_surf_calc.c zero/
+$CP_CMD $G0/zero/gkyl_bc_basic_priv.h zero/
+$CP_CMD $G0/zero/gkyl_bc_basic.h zero/
+$CP_CMD $G0/zero/gkyl_bc_emission_elastic_priv.h zero/
+$CP_CMD $G0/zero/gkyl_bc_emission_elastic.h zero/
+$CP_CMD $G0/zero/gkyl_bc_emission_spectrum_priv.h zero/
+$CP_CMD $G0/zero/gkyl_bc_emission_spectrum.h zero/
+$CP_CMD $G0/zero/gkyl_bc_emission.h zero/
+$CP_CMD $G0/zero/gkyl_bgk_collisions_priv.h zero/
+$CP_CMD $G0/zero/gkyl_bgk_collisions.h zero/
+$CP_CMD $G0/zero/gkyl_dg_advection_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_advection.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_canonical_pb_fluid_vars_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_canonical_pb_fluid_vars.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_canonical_pb_vars_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_canonical_pb_vars.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_em_vars_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_em_vars.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_fluid_em_coupling_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_fluid_em_coupling.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_fluid_vars_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_fluid_vars.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_prim_vars.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_sr_vars_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_canonical_pb_fluid_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_canonical_pb_fluid.h zero/
+$CP_CMD $G0/zero/gkyl_dg_canonical_pb.h zero/
+$CP_CMD $G0/zero/gkyl_dg_diffusion_fluid_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_diffusion_fluid.h zero/
+$CP_CMD $G0/zero/gkyl_dg_diffusion_gen_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_diffusion_gen.h zero/
+$CP_CMD $G0/zero/gkyl_dg_euler_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_euler.h zero/
+$CP_CMD $G0/zero/gkyl_dg_maxwell_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_maxwell.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_collisions_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_diffusion_fluid_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_diffusion_fluid.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_diffusion_gen_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_diffusion_gen.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_fluid_priv.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_fluid.h zero/
+$CP_CMD $G0/zero/gkyl_dg_updater_moment_priv.h zero/
+$CP_CMD $G0/zero/gkyl_emission_elastic_model.h zero/
+$CP_CMD $G0/zero/gkyl_emission_spectrum_model.h zero/
+$CP_CMD $G0/zero/gkyl_emission_yield_model.h zero/
+$CP_CMD $G0/zero/gkyl_ghost_surf_calc_priv.h zero/
+$CP_CMD $G0/zero/gkyl_ghost_surf_calc.h zero/
+$CP_CMD $G0/zero/gkyl_hyper_dg_priv.h zero/
+$CP_CMD $G0/zero/gkyl_mom_calc_bcorr_priv.h zero/
+$CP_CMD $G0/zero/gkyl_mom_calc_priv.h zero/
+$CP_CMD $G0/zero/gkyl_mom_calc.h zero/
+$CP_CMD $G0/zero/gkyl_mom_canonical_pb_priv.h zero/
+$CP_CMD $G0/zero/gkyl_mom_canonical_pb.h zero/
+$CP_CMD $G0/zero/gkyl_prim_bgk_cross_calc.h zero/
+$CP_CMD $G0/zero/gkyl_prim_cross_m0deltas_priv.h zero/
+$CP_CMD $G0/zero/gkyl_prim_cross_m0deltas.h zero/
+$CP_CMD $G0/zero/gkyl_prim_lbo_calc_priv.h zero/
+$CP_CMD $G0/zero/gkyl_prim_lbo_cross_calc_priv.h zero/
+$CP_CMD $G0/zero/gkyl_prim_lbo_cross_calc.h zero/
+$CP_CMD $G0/zero/gkyl_prim_lbo_type.h zero/
+$CP_CMD $G0/zero/gkyl_spitzer_coll_freq_priv.h zero/
+$CP_CMD $G0/zero/gkyl_spitzer_coll_freq.h zero/
+$CP_CMD $G0/zero/hyper_dg_cu.cu zero/
+$CP_CMD $G0/zero/hyper_dg.c zero/
+$CP_CMD $G0/zero/mom_calc_bcorr_cu.cu zero/
+$CP_CMD $G0/zero/mom_calc_cu.cu zero/
+$CP_CMD $G0/zero/mom_calc.c zero/
+$CP_CMD $G0/zero/mom_canonical_pb_cu.cu zero/
+$CP_CMD $G0/zero/mom_canonical_pb.c zero/
+$CP_CMD $G0/zero/mom_type.c zero/
+$CP_CMD $G0/zero/prim_bgk_cross_calc_cu.cu zero/
+$CP_CMD $G0/zero/prim_bgk_cross_calc.c zero/
+$CP_CMD $G0/zero/prim_cross_m0deltas_cu.cu zero/
+$CP_CMD $G0/zero/prim_cross_m0deltas.c zero/
+$CP_CMD $G0/zero/prim_lbo_type.c zero/
+$CP_CMD $G0/zero/spitzer_coll_freq_cu.cu zero/
+$CP_CMD $G0/zero/spitzer_coll_freq.c zero/
 
 $RM_CMD $G0/zero/dg_calc_vlasov_gen_geo_vars_cu.cu
 $RM_CMD $G0/zero/dg_calc_vlasov_gen_geo_vars.c
@@ -264,6 +388,130 @@ $RM_CMD $G0/zero/gkyl_dg_calc_sr_vars.h
 $RM_CMD $G0/zero/gkyl_velocity_map.h
 $RM_CMD $G0/zero/gkyl_dg_eqn.h
 $RM_CMD $G0/zero/gkyl_hyper_dg.h
+$RM_CMD $G0/zero/bc_basic_cu.cu
+$RM_CMD $G0/zero/bc_basic.c
+$RM_CMD $G0/zero/bc_emission_elastic_cu.cu
+$RM_CMD $G0/zero/bc_emission_elastic.c
+$RM_CMD $G0/zero/bc_emission_spectrum_cu.cu
+$RM_CMD $G0/zero/bc_emission_spectrum.c
+$RM_CMD $G0/zero/bc_emission.c
+$RM_CMD $G0/zero/bgk_collisions_cu.cu
+$RM_CMD $G0/zero/bgk_collisions.c
+$RM_CMD $G0/zero/dg_advection_cu.cu
+$RM_CMD $G0/zero/dg_advection.c
+$RM_CMD $G0/zero/dg_calc_canonical_pb_fluid_vars_cu.cu
+$RM_CMD $G0/zero/dg_calc_canonical_pb_fluid_vars.c
+$RM_CMD $G0/zero/dg_calc_canonical_pb_vars_cu.cu
+$RM_CMD $G0/zero/dg_calc_canonical_pb_vars.c
+$RM_CMD $G0/zero/dg_calc_em_vars_cu.cu
+$RM_CMD $G0/zero/dg_calc_em_vars.c
+$RM_CMD $G0/zero/dg_calc_fluid_em_coupling_cu.cu
+$RM_CMD $G0/zero/dg_calc_fluid_em_coupling.c
+$RM_CMD $G0/zero/dg_calc_fluid_vars_cu.cu
+$RM_CMD $G0/zero/dg_calc_fluid_vars.c
+$RM_CMD $G0/zero/dg_calc_prim_vars.c
+$RM_CMD $G0/zero/dg_calc_sr_vars_cu.cu
+$RM_CMD $G0/zero/dg_calc_sr_vars.c
+$RM_CMD $G0/zero/dg_canonical_pb_cu.cu
+$RM_CMD $G0/zero/dg_canonical_pb_fluid_cu.cu
+$RM_CMD $G0/zero/dg_canonical_pb_fluid.c
+$RM_CMD $G0/zero/dg_canonical_pb.c
+$RM_CMD $G0/zero/dg_diffusion_fluid_cu.cu
+$RM_CMD $G0/zero/dg_diffusion_fluid.c
+$RM_CMD $G0/zero/dg_diffusion_gen_cu.cu
+$RM_CMD $G0/zero/dg_diffusion_gen.c
+$RM_CMD $G0/zero/dg_eqn.c
+$RM_CMD $G0/zero/dg_euler_cu.cu
+$RM_CMD $G0/zero/dg_euler.c
+$RM_CMD $G0/zero/dg_maxwell_cu.cu
+$RM_CMD $G0/zero/dg_maxwell.c
+$RM_CMD $G0/zero/dg_updater_diffusion_fluid.c
+$RM_CMD $G0/zero/dg_updater_diffusion_gen.c
+$RM_CMD $G0/zero/dg_updater_fluid.c
+$RM_CMD $G0/zero/emission_elastic_model.c
+$RM_CMD $G0/zero/emission_spectrum_model_cu.cu
+$RM_CMD $G0/zero/emission_spectrum_model.c
+$RM_CMD $G0/zero/emission_yield_model_cu.cu
+$RM_CMD $G0/zero/emission_yield_model.c
+$RM_CMD $G0/zero/ghost_surf_calc_cu.cu
+$RM_CMD $G0/zero/ghost_surf_calc.c
+$RM_CMD $G0/zero/gkyl_bc_basic_priv.h
+$RM_CMD $G0/zero/gkyl_bc_basic.h
+$RM_CMD $G0/zero/gkyl_bc_emission_elastic_priv.h
+$RM_CMD $G0/zero/gkyl_bc_emission_elastic.h
+$RM_CMD $G0/zero/gkyl_bc_emission_spectrum_priv.h
+$RM_CMD $G0/zero/gkyl_bc_emission_spectrum.h
+$RM_CMD $G0/zero/gkyl_bc_emission.h
+$RM_CMD $G0/zero/gkyl_bgk_collisions_priv.h
+$RM_CMD $G0/zero/gkyl_bgk_collisions.h
+$RM_CMD $G0/zero/gkyl_dg_advection_priv.h
+$RM_CMD $G0/zero/gkyl_dg_advection.h
+$RM_CMD $G0/zero/gkyl_dg_calc_canonical_pb_fluid_vars_priv.h
+$RM_CMD $G0/zero/gkyl_dg_calc_canonical_pb_fluid_vars.h
+$RM_CMD $G0/zero/gkyl_dg_calc_canonical_pb_vars_priv.h
+$RM_CMD $G0/zero/gkyl_dg_calc_canonical_pb_vars.h
+$RM_CMD $G0/zero/gkyl_dg_calc_em_vars_priv.h
+$RM_CMD $G0/zero/gkyl_dg_calc_em_vars.h
+$RM_CMD $G0/zero/gkyl_dg_calc_fluid_em_coupling_priv.h
+$RM_CMD $G0/zero/gkyl_dg_calc_fluid_em_coupling.h
+$RM_CMD $G0/zero/gkyl_dg_calc_fluid_vars_priv.h
+$RM_CMD $G0/zero/gkyl_dg_calc_fluid_vars.h
+$RM_CMD $G0/zero/gkyl_dg_calc_prim_vars.h
+$RM_CMD $G0/zero/gkyl_dg_calc_sr_vars_priv.h
+$RM_CMD $G0/zero/gkyl_dg_canonical_pb_fluid_priv.h
+$RM_CMD $G0/zero/gkyl_dg_canonical_pb_fluid.h
+$RM_CMD $G0/zero/gkyl_dg_canonical_pb.h
+$RM_CMD $G0/zero/gkyl_dg_diffusion_fluid_priv.h
+$RM_CMD $G0/zero/gkyl_dg_diffusion_fluid.h
+$RM_CMD $G0/zero/gkyl_dg_diffusion_gen_priv.h
+$RM_CMD $G0/zero/gkyl_dg_diffusion_gen.h
+$RM_CMD $G0/zero/gkyl_dg_euler_priv.h
+$RM_CMD $G0/zero/gkyl_dg_euler.h
+$RM_CMD $G0/zero/gkyl_dg_maxwell_priv.h
+$RM_CMD $G0/zero/gkyl_dg_maxwell.h
+$RM_CMD $G0/zero/gkyl_dg_updater_collisions_priv.h
+$RM_CMD $G0/zero/gkyl_dg_updater_diffusion_fluid_priv.h
+$RM_CMD $G0/zero/gkyl_dg_updater_diffusion_fluid.h
+$RM_CMD $G0/zero/gkyl_dg_updater_diffusion_gen_priv.h
+$RM_CMD $G0/zero/gkyl_dg_updater_diffusion_gen.h
+$RM_CMD $G0/zero/gkyl_dg_updater_fluid_priv.h
+$RM_CMD $G0/zero/gkyl_dg_updater_fluid.h
+$RM_CMD $G0/zero/gkyl_dg_updater_moment_priv.h
+$RM_CMD $G0/zero/gkyl_emission_elastic_model.h
+$RM_CMD $G0/zero/gkyl_emission_spectrum_model.h
+$RM_CMD $G0/zero/gkyl_emission_yield_model.h
+$RM_CMD $G0/zero/gkyl_ghost_surf_calc_priv.h
+$RM_CMD $G0/zero/gkyl_ghost_surf_calc.h
+$RM_CMD $G0/zero/gkyl_hyper_dg_priv.h
+$RM_CMD $G0/zero/gkyl_mom_calc_bcorr_priv.h
+$RM_CMD $G0/zero/gkyl_mom_calc_priv.h
+$RM_CMD $G0/zero/gkyl_mom_calc.h
+$RM_CMD $G0/zero/gkyl_mom_canonical_pb_priv.h
+$RM_CMD $G0/zero/gkyl_mom_canonical_pb.h
+$RM_CMD $G0/zero/gkyl_prim_bgk_cross_calc.h
+$RM_CMD $G0/zero/gkyl_prim_cross_m0deltas_priv.h
+$RM_CMD $G0/zero/gkyl_prim_cross_m0deltas.h
+$RM_CMD $G0/zero/gkyl_prim_lbo_calc_priv.h
+$RM_CMD $G0/zero/gkyl_prim_lbo_cross_calc_priv.h
+$RM_CMD $G0/zero/gkyl_prim_lbo_cross_calc.h
+$RM_CMD $G0/zero/gkyl_prim_lbo_type.h
+$RM_CMD $G0/zero/gkyl_spitzer_coll_freq_priv.h
+$RM_CMD $G0/zero/gkyl_spitzer_coll_freq.h
+$RM_CMD $G0/zero/hyper_dg_cu.cu
+$RM_CMD $G0/zero/hyper_dg.c
+$RM_CMD $G0/zero/mom_calc_bcorr_cu.cu
+$RM_CMD $G0/zero/mom_calc_cu.cu
+$RM_CMD $G0/zero/mom_calc.c
+$RM_CMD $G0/zero/mom_canonical_pb_cu.cu
+$RM_CMD $G0/zero/mom_canonical_pb.c
+$RM_CMD $G0/zero/mom_type.c
+$RM_CMD $G0/zero/prim_bgk_cross_calc_cu.cu
+$RM_CMD $G0/zero/prim_bgk_cross_calc.c
+$RM_CMD $G0/zero/prim_cross_m0deltas_cu.cu
+$RM_CMD $G0/zero/prim_cross_m0deltas.c
+$RM_CMD $G0/zero/prim_lbo_type.c
+$RM_CMD $G0/zero/spitzer_coll_freq_cu.cu
+$RM_CMD $G0/zero/spitzer_coll_freq.c
 
 # app
 mkdir -p apps

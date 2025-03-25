@@ -34,9 +34,6 @@ $CP_CMD $G0/kernels/skin_surf_from_ghost/*.c kernels/skin_surf_from_ghost/
 mkdir -p kernels/fem_poisson
 $CP_CMD $G0/kernels/fem_poisson/*.h kernels/fem_poisson/
 $CP_CMD $G0/kernels/fem_poisson/*.c kernels/fem_poisson/
-mkdir -p kernels/fem_poisson_perp
-$CP_CMD $G0/kernels/fem_poisson_perp/*.h kernels/fem_poisson_perp/
-$CP_CMD $G0/kernels/fem_poisson_perp/*.c kernels/fem_poisson_perp/
 
 $RM_CMD $G0/kernels/array_average/*.h
 $RM_CMD $G0/kernels/array_average/*.c
@@ -52,8 +49,6 @@ $RM_CMD $G0/kernels/skin_surf_from_ghost/*.h
 $RM_CMD $G0/kernels/skin_surf_from_ghost/*.c
 $RM_CMD $G0/kernels/fem_poisson/*.h
 $RM_CMD $G0/kernels/fem_poisson/*.c
-$RM_CMD $G0/kernels/fem_poisson_perp/*.h
-$RM_CMD $G0/kernels/fem_poisson_perp/*.c
 
 # minus
 mkdir -p minus
@@ -171,8 +166,6 @@ $CP_CMD $G0/zero/dg_bin_ops.c zero/
 $CP_CMD $G0/zero/dg_interpolate_cu.cu zero/
 $CP_CMD $G0/zero/dg_interpolate.c zero/
 $CP_CMD $G0/zero/gkyl_fem_poisson_bctype.h zero/
-$CP_CMD $G0/zero/gkyl_fem_poisson_perp_priv.h zero/
-$CP_CMD $G0/zero/gkyl_fem_poisson_perp.h zero/
 $CP_CMD $G0/zero/gkyl_fem_poisson_priv.h zero/
 $CP_CMD $G0/zero/gkyl_fem_poisson.h zero/
 $CP_CMD $G0/zero/gkyl_gauss_quad_utilities_priv.h zero/
@@ -203,6 +196,11 @@ $CP_CMD $G0/zero/gkyl_array_dg_reduce_priv.h zero/
 $CP_CMD $G0/zero/gkyl_array_dg_reduce.h zero/
 $CP_CMD $G0/zero/gkyl_array_integrate_priv.h zero/
 $CP_CMD $G0/zero/gkyl_array_integrate.h zero/
+$CP_CMD $G0/zero/fem_poisson_cu.cu zero/
+$CP_CMD $G0/zero/fem_poisson.c zero/
+$CP_CMD $G0/zero/gkyl_cudss_ops.h zero/
+$CP_CMD $G0/zero/gkyl_culinsolver_ops.h zero/
+$CP_CMD $G0/zero/gkyl_cusolver_ops.h zero/
 
 $RM_CMD $G0/zero/alloc.c
 $RM_CMD $G0/zero/array.c
@@ -312,8 +310,6 @@ $RM_CMD $G0/zero/dg_bin_ops.c
 $RM_CMD $G0/zero/dg_interpolate_cu.cu
 $RM_CMD $G0/zero/dg_interpolate.c
 $RM_CMD $G0/zero/gkyl_fem_poisson_bctype.h
-$RM_CMD $G0/zero/gkyl_fem_poisson_perp_priv.h
-$RM_CMD $G0/zero/gkyl_fem_poisson_perp.h
 $RM_CMD $G0/zero/gkyl_fem_poisson_priv.h
 $RM_CMD $G0/zero/gkyl_fem_poisson.h
 $RM_CMD $G0/zero/gkyl_gauss_quad_utilities_priv.h
@@ -344,6 +340,11 @@ $RM_CMD $G0/zero/gkyl_array_dg_reduce_priv.h
 $RM_CMD $G0/zero/gkyl_array_dg_reduce.h
 $RM_CMD $G0/zero/gkyl_array_integrate_priv.h
 $RM_CMD $G0/zero/gkyl_array_integrate.h
+$RM_CMD $G0/zero/fem_poisson_cu.cu
+$RM_CMD $G0/zero/fem_poisson.c
+$RM_CMD $G0/zero/gkyl_cudss_ops.h
+$RM_CMD $G0/zero/gkyl_culinsolver_ops.h
+$RM_CMD $G0/zero/gkyl_cusolver_ops.h
 
 # app
 mkdir -p apps
