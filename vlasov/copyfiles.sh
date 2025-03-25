@@ -581,7 +581,227 @@ mkdir -p unit
 # C regression tests
 mkdir -p creg
 $CP_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_2x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_cylindrical_sodshock_im_1x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_cylindrical_sodshock_im_1x3v_p2.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_cylindrical_sodshock_im_2x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_cylindrical_sodshock_im_2x3v_p2.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_cylindrical_sodshock_im_3x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_sphere_sodshock_im_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_sphere_sodshock_im_1x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_sphere_sodshock_im_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_sphere_sodshock_im_2x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_sphere.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_toroidal_sodshock_im_2x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_toroidal_sodshock_im_2x3v_p2.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_toroidal_sodshock_im_3x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_can_pb_ex_bgk_surf_flat_sq_ic.c creg/
+$CP_CMD $G0/regression/rt_can_pb_ex_bgk_surf_flat.c creg/
+$CP_CMD $G0/regression/rt_can_pb_free_streaming_surf_sphere.c creg/
+$CP_CMD $G0/regression/rt_can_pb_im_bgk_surf_flat_sq_ic.c creg/
+$CP_CMD $G0/regression/rt_can_pb_im_bgk_surf_flat.c creg/
+$CP_CMD $G0/regression/rt_can_pb_neut_bgk_sodshock_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_can_pb_neut_bgk_sodshock_im_1x1v_p1.c creg/
+$CP_CMD $G0/regression/rt_can_pb_neut_bgk_sodshock_im_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_can_pb_neut_bgk_sodshock_im_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_can_pb_neut_bgk_sodshock_im_1x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_dg_5m_mom_beach_p2.c creg/
+$CP_CMD $G0/regression/rt_dg_5m_mom_beach_p3.c creg/
+$CP_CMD $G0/regression/rt_dg_accel_1x1v.c creg/
+$CP_CMD $G0/regression/rt_dg_euler_kh_2d.c creg/
+$CP_CMD $G0/regression/rt_dg_euler_p_perturbation_p1.c creg/
+$CP_CMD $G0/regression/rt_dg_euler_p_perturbation_p2.c creg/
+$CP_CMD $G0/regression/rt_dg_euler_sodshock_p1.c creg/
+$CP_CMD $G0/regression/rt_dg_euler_sodshock_p2.c creg/
+$CP_CMD $G0/regression/rt_dg_maxwell_plane_wave_2d.c creg/
+$CP_CMD $G0/regression/rt_dg_maxwell_wg_2d.c creg/
+$CP_CMD $G0/regression/rt_diffusion_1x.c creg/
+$CP_CMD $G0/regression/rt_diffusion_2x.c creg/
+$CP_CMD $G0/regression/rt_diffusion_const_1x.c creg/
+$CP_CMD $G0/regression/rt_diffusion_const_2x.c creg/
+$CP_CMD $G0/regression/rt_diffusion_const_3x.c creg/
+$CP_CMD $G0/regression/rt_diffusion_gen_2x.c creg/
+$CP_CMD $G0/regression/rt_diffusion_gen_3x.c creg/
+$CP_CMD $G0/regression/rt_diffusion4_const_1x.c creg/
+$CP_CMD $G0/regression/rt_diffusion4_const_2x.c creg/
+$CP_CMD $G0/regression/rt_diffusion4_const_3x.c creg/
+$CP_CMD $G0/regression/rt_diffusion6_const_1x.c creg/
+$CP_CMD $G0/regression/rt_diffusion6_const_2x.c creg/
+$CP_CMD $G0/regression/rt_diffusion6_const_3x.c creg/
+$CP_CMD $G0/regression/rt_escreen_sr.c creg/
+$CP_CMD $G0/regression/rt_vlasov_advect_1x.c creg/
+$CP_CMD $G0/regression/rt_vlasov_advect_2x.c creg/
+$CP_CMD $G0/regression/rt_vlasov_bgk_relax_1x1v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_bgk_relax_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_bgk_relax_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_bgk_relax_1x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_bgk_relax_1x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_bgk_relax_1x3v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_em_advect_1x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_em_advect_resonant_1x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_emission_spectrum_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_es_pot_well.c creg/
+$CP_CMD $G0/regression/rt_vlasov_es_shock_lbo_1x1v.c creg/
+$CP_CMD $G0/regression/rt_vlasov_es_shock_lbo_1x3v.c creg/
+$CP_CMD $G0/regression/rt_vlasov_es_shock.c creg/
+$CP_CMD $G0/regression/rt_vlasov_freestream_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_freestream_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_landau_damping_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_landau_damping_1x3v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_lbo_cross_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_lbo_cross_1x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_lbo_relax_1x1v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_lbo_relax_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_lbo_relax_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_lbo_relax_1x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_lbo_relax_1x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_lbo_relax_1x3v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x1v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x3v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_neut_lbo_sodshock_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_neut_lbo_sodshock_1x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_neut_lbo_sodshock_1x3v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_neut_lbo_wall.c creg/
+$CP_CMD $G0/regression/rt_vlasov_poisson_emission_spectrum_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_sheath_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_sheath_bgk_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_sr_bgk_relax_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_sr_freestream.c creg/
+$CP_CMD $G0/regression/rt_vlasov_sr_neut_bgk_sodshock_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_sr_twostream_1x1v.c creg/
+$CP_CMD $G0/regression/rt_vlasov_sr_twostream_1x3v.c creg/
+$CP_CMD $G0/regression/rt_vlasov_sr_weibel_1x3v.c creg/
+$CP_CMD $G0/regression/rt_vlasov_twostream_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_twostream_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_weibel_1x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_weibel_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_vlasov_weibel_2x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_vlasov_weibel_lbo_2x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_vp_landau_damping_1x1v_p1.c creg/
+$CP_CMD $G0/regression/rt_vp_landau_damping_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vp_sheath_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vp_sheath_Aext_1x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_vp_sheath_Bext_1x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_vp_sheath_feedback_sources_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_vp_sheath_feedback_sources_bgk_1x1v_p2.c creg/
 $CP_CMD $G0/regression/rt_arg_parse.h creg/
+
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p1.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p2.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_2x2v_p1.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_2x2v_p2.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_cylindrical_sodshock_im_1x3v_p1.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_cylindrical_sodshock_im_1x3v_p2.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_cylindrical_sodshock_im_2x3v_p1.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_cylindrical_sodshock_im_2x3v_p2.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_cylindrical_sodshock_im_3x3v_p1.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_sphere_sodshock_im_1x2v_p1.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_sphere_sodshock_im_1x2v_p2.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_sphere_sodshock_im_2x2v_p1.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_sphere_sodshock_im_2x2v_p2.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_sphere.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_toroidal_sodshock_im_2x3v_p1.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_toroidal_sodshock_im_2x3v_p2.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_toroidal_sodshock_im_3x3v_p1.c
+$RM_CMD $G0/regression/rt_can_pb_ex_bgk_surf_flat_sq_ic.c
+$RM_CMD $G0/regression/rt_can_pb_ex_bgk_surf_flat.c
+$RM_CMD $G0/regression/rt_can_pb_free_streaming_surf_sphere.c
+$RM_CMD $G0/regression/rt_can_pb_im_bgk_surf_flat_sq_ic.c
+$RM_CMD $G0/regression/rt_can_pb_im_bgk_surf_flat.c
+$RM_CMD $G0/regression/rt_can_pb_neut_bgk_sodshock_1x1v_p2.c
+$RM_CMD $G0/regression/rt_can_pb_neut_bgk_sodshock_im_1x1v_p1.c
+$RM_CMD $G0/regression/rt_can_pb_neut_bgk_sodshock_im_1x1v_p2.c
+$RM_CMD $G0/regression/rt_can_pb_neut_bgk_sodshock_im_1x2v_p1.c
+$RM_CMD $G0/regression/rt_can_pb_neut_bgk_sodshock_im_1x2v_p2.c
+$RM_CMD $G0/regression/rt_dg_5m_mom_beach_p2.c
+$RM_CMD $G0/regression/rt_dg_5m_mom_beach_p3.c
+$RM_CMD $G0/regression/rt_dg_accel_1x1v.c
+$RM_CMD $G0/regression/rt_dg_euler_kh_2d.c
+$RM_CMD $G0/regression/rt_dg_euler_p_perturbation_p1.c
+$RM_CMD $G0/regression/rt_dg_euler_p_perturbation_p2.c
+$RM_CMD $G0/regression/rt_dg_euler_sodshock_p1.c
+$RM_CMD $G0/regression/rt_dg_euler_sodshock_p2.c
+$RM_CMD $G0/regression/rt_dg_maxwell_plane_wave_2d.c
+$RM_CMD $G0/regression/rt_dg_maxwell_wg_2d.c
+$RM_CMD $G0/regression/rt_diffusion_1x.c
+$RM_CMD $G0/regression/rt_diffusion_2x.c
+$RM_CMD $G0/regression/rt_diffusion_const_1x.c
+$RM_CMD $G0/regression/rt_diffusion_const_2x.c
+$RM_CMD $G0/regression/rt_diffusion_const_3x.c
+$RM_CMD $G0/regression/rt_diffusion_gen_2x.c
+$RM_CMD $G0/regression/rt_diffusion_gen_3x.c
+$RM_CMD $G0/regression/rt_diffusion4_const_1x.c
+$RM_CMD $G0/regression/rt_diffusion4_const_2x.c
+$RM_CMD $G0/regression/rt_diffusion4_const_3x.c
+$RM_CMD $G0/regression/rt_diffusion6_const_1x.c
+$RM_CMD $G0/regression/rt_diffusion6_const_2x.c
+$RM_CMD $G0/regression/rt_diffusion6_const_3x.c
+$RM_CMD $G0/regression/rt_escreen_sr.c
+$RM_CMD $G0/regression/rt_vlasov_advect_1x.c
+$RM_CMD $G0/regression/rt_vlasov_advect_2x.c
+$RM_CMD $G0/regression/rt_vlasov_bgk_relax_1x1v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_bgk_relax_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_bgk_relax_1x2v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_bgk_relax_1x2v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_bgk_relax_1x3v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_bgk_relax_1x3v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_em_advect_1x3v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_em_advect_resonant_1x3v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_emission_spectrum_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_es_pot_well.c
+$RM_CMD $G0/regression/rt_vlasov_es_shock_lbo_1x1v.c
+$RM_CMD $G0/regression/rt_vlasov_es_shock_lbo_1x3v.c
+$RM_CMD $G0/regression/rt_vlasov_es_shock.c
+$RM_CMD $G0/regression/rt_vlasov_freestream_p1.c
+$RM_CMD $G0/regression/rt_vlasov_freestream_p2.c
+$RM_CMD $G0/regression/rt_vlasov_landau_damping_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_landau_damping_1x3v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_lbo_cross_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_lbo_cross_1x2v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_lbo_relax_1x1v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_lbo_relax_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_lbo_relax_1x2v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_lbo_relax_1x2v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_lbo_relax_1x3v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_lbo_relax_1x3v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x1v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x2v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x2v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x3v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_neut_bgk_sodshock_1x3v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_neut_lbo_sodshock_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_neut_lbo_sodshock_1x2v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_neut_lbo_sodshock_1x3v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_neut_lbo_wall.c
+$RM_CMD $G0/regression/rt_vlasov_poisson_emission_spectrum_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_sheath_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_sheath_bgk_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_sr_bgk_relax_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_sr_freestream.c
+$RM_CMD $G0/regression/rt_vlasov_sr_neut_bgk_sodshock_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_sr_twostream_1x1v.c
+$RM_CMD $G0/regression/rt_vlasov_sr_twostream_1x3v.c
+$RM_CMD $G0/regression/rt_vlasov_sr_weibel_1x3v.c
+$RM_CMD $G0/regression/rt_vlasov_twostream_p1.c
+$RM_CMD $G0/regression/rt_vlasov_twostream_p2.c
+$RM_CMD $G0/regression/rt_vlasov_weibel_1x2v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_weibel_2x2v_p1.c
+$RM_CMD $G0/regression/rt_vlasov_weibel_2x2v_p2.c
+$RM_CMD $G0/regression/rt_vlasov_weibel_lbo_2x2v_p2.c
+$RM_CMD $G0/regression/rt_vp_landau_damping_1x1v_p1.c
+$RM_CMD $G0/regression/rt_vp_landau_damping_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vp_sheath_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vp_sheath_Aext_1x2v_p2.c
+$RM_CMD $G0/regression/rt_vp_sheath_Bext_1x2v_p2.c
+$RM_CMD $G0/regression/rt_vp_sheath_feedback_sources_1x1v_p2.c
+$RM_CMD $G0/regression/rt_vp_sheath_feedback_sources_bgk_1x1v_p2.c
 
 # Lua regression tests
 mkdir -p luareg

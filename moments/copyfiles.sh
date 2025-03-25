@@ -319,7 +319,6 @@ $CP_CMD $G0/regression/rt_5m_riem.c creg/
 $CP_CMD $G0/regression/rt_5m_rt.c creg/
 $CP_CMD $G0/regression/rt_advect_wv.c creg/
 $CP_CMD $G0/regression/rt_advect_wv_mp.c creg/
-$CP_CMD $G0/regression/rt_arg_parse.h creg/
 $CP_CMD $G0/regression/rt_burgers_shock.c creg/
 $CP_CMD $G0/regression/rt_burgers_shock_mp.c creg/
 $CP_CMD $G0/regression/rt_coldfluid_beach.c creg/
@@ -408,6 +407,7 @@ $CP_CMD $G0/regression/rt_reactive_euler_detonation.c creg/
 $CP_CMD $G0/regression/rt_sr_euler_KH_2d.c creg/
 $CP_CMD $G0/regression/rt_sr_euler_riem_2d.c creg/
 $CP_CMD $G0/regression/rt_sr_euler_sodshock.c creg/
+$CP_CMD $G0/regression/rt_arg_parse.h creg/
 
 $RM_CMD $G0/regression/rt_10m_burch.c
 $RM_CMD $G0/regression/rt_10m_burch_grad_closure.c
