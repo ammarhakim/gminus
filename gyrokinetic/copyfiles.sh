@@ -295,6 +295,9 @@ $CP_CMD $G0/zero/mom_bcorr_lbo_gyrokinetic_cu.cu zero/
 $CP_CMD $G0/zero/mom_bcorr_lbo_gyrokinetic.c zero/
 $CP_CMD $G0/zero/prim_lbo_gyrokinetic_cu.cu zero/
 $CP_CMD $G0/zero/prim_lbo_gyrokinetic.c zero/
+$CP_CMD $G0/zero/mom_calc_bcorr_gyrokinetic.c zero/
+$CP_CMD $G0/zero/prim_lbo_calc_gyrokinetic.c zero/
+$CP_CMD $G0/zero/prim_lbo_cross_calc_gyrokinetic.c zero/
 
 $RM_CMD $G0/zero/ambi_bolt_potential_cu.cu
 $RM_CMD $G0/zero/ambi_bolt_potential.c
@@ -482,6 +485,9 @@ $RM_CMD $G0/zero/mom_bcorr_lbo_gyrokinetic_cu.cu
 $RM_CMD $G0/zero/mom_bcorr_lbo_gyrokinetic.c
 $RM_CMD $G0/zero/prim_lbo_gyrokinetic_cu.cu
 $RM_CMD $G0/zero/prim_lbo_gyrokinetic.c
+$RM_CMD $G0/zero/mom_calc_bcorr_gyrokinetic.c
+$RM_CMD $G0/zero/prim_lbo_calc_gyrokinetic.c
+$RM_CMD $G0/zero/prim_lbo_cross_calc_gyrokinetic.c
 
 # app
 mkdir -p apps
