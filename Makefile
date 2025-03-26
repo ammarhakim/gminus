@@ -32,6 +32,19 @@ ifeq ($(UNAME), Darwin)
 	CFLAGS += -DGKYL_USING_FRAMEWORK_ACCELERATE
 endif
 
+# Directory for storing shared data, like ADAS reaction rates and radiation fits
+GKYL_SHARE_DIR ?= "${INSTALL_PREFIX}/${PROJ_NAME}/share"
+CFLAGS += -DGKYL_SHARE_DIR=$(GKYL_SHARE_DIR)
+
+# Read ADAS paths and flags if needed 
+USING_ADAS =
+ADAS_INC_DIR = zero # dummy
+ADAS_LIB_DIR = .
+ifeq (${USE_ADAS}, 1)
+	USING_ADAS = yes
+	CFLAGS += -DGKYL_HAVE_ADAS
+endif
+
 # Include config.mak file (if it exists) to overide defaults above
 -include config.mak
 
@@ -158,7 +171,7 @@ gyrokinetic: vlasov  ## Build Gyrokinetic infrastructure code
 	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic
 
 gyrokinetic-unit: gyrokinetic ## Build Gyrokinetic unit tests
-	cd gyrokinetioc && $(MAKE) -f Makefile-gyrokinetic unit
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic unit
 
 gyrokinetic-regression: gyrokinetic ## Build Gyrokinetic regression tests
 	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic regression

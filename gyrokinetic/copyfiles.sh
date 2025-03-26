@@ -4,6 +4,26 @@ CP_CMD=cp
 RM_CMD=rm
 G0=../../gkylzero
 
+# data
+mkdir -p data/adas
+$CP_CMD $G0/data/adas/adas_to_numpy.py data/adas/
+$CP_CMD $G0/data/adas/adf11.py data/adas/
+$CP_CMD $G0/data/adas/download_adas.py data/adas/
+$CP_CMD $G0/data/adas/radiation_fit_parameters.txt data/adas/
+$CP_CMD $G0/data/adas/read_adas.c data/adas/
+$CP_CMD $G0/data/adas/read_adas.h data/adas/
+$CP_CMD $G0/data/adas/read_radiation.py data/adas/
+$CP_CMD $G0/data/adas/README.md data/adas/
+
+$RM_CMD $G0/data/adas/adas_to_numpy.py
+$RM_CMD $G0/data/adas/adf11.py
+$RM_CMD $G0/data/adas/download_adas.py
+$RM_CMD $G0/data/adas/radiation_fit_parameters.txt
+$RM_CMD $G0/data/adas/read_adas.c
+$RM_CMD $G0/data/adas/read_adas.h
+$RM_CMD $G0/data/adas/read_radiation.py
+$RM_CMD $G0/data/adas/README.md
+
 # kernels
 mkdir -p kernels/ambi_bolt_potential
 $CP_CMD $G0/kernels/ambi_bolt_potential/*.h kernels/ambi_bolt_potential/

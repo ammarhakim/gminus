@@ -1,6 +1,6 @@
 # -*- makefile-gmake -*-
 
-SRC_DIRS := kernels zero apps
+SRC_DIRS := kernels zero apps data/adas
 
 PREFIX ?= ${HOME}/gkylsoft
 SUPERLU_INC = $(PREFIX)/superlu/include
@@ -25,11 +25,11 @@ REGS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard creg/rt_*.c))
 
 KERN_INC_DIRS = $(shell find kernels -type d)
 KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
-EXT_INCS := -I${MPI_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC}
+EXT_INCS := -I${MPI_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC} -I${SUPERLU_INC}
 CORE_INCS := -I../core/kernels/array_average -I../core/kernels/array_integrate -I../core/kernels/basis -I../core/kernels/bin_op -I../core/kernels/dg_interpolate -I../core/kernels/skin_surf_from_ghost -I../core/apps -I../core/zero -I../core/minus -I../core/minus/STC/include -I../zero
 MOMENTS_INCS := -I../moments/apps -I../moments/zero
 VLASOV_INCS := -I../vlasov/kernels/advection -I../vlasov/kernels/canonical_pb -I../vlasov/kernels/dg_diffusion_fluid -I../vlasov/kernels/dg_diffusion_gen -I../vlasov/kernels/dg_diffusion_vlasov -I../vlasov/kernels/euler -I../vlasov/kernels/fpo -I../vlasov/kernels/lbo -I../vlasov/kernels/maxwell -I../vlasov/kernels/sr_vlasov -I../vlasov/kernels/vlasov -I../vlasov/kernels/vlasov_poisson -I../vlasov/apps -I../vlasov/zero
-INCS := ${EXT_INCS} ${CORE_INCS} ${MOMENTS_INCS} ${VLASOV_INCS} -Ikernels -Izero -Iapps -Icreg  $(KERN_INCLUDES)
+INCS := ${EXT_INCS} ${CORE_INCS} ${MOMENTS_INCS} ${VLASOV_INCS} -Ikernels -Izero -Iapps -Icreg -Idata/adas $(KERN_INCLUDES)
 
 CORE_LIB_DIR := -L../core/build
 CORE_LIB := -lg0core
@@ -49,6 +49,8 @@ regression: ${LLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
 
 .PHONY: all
 all: $(LLIB) ## Build all targets
+	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
+	cp ./data/adas/radiation_fit_parameters.txt ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 .DEFAULT_GOAL := all
 
 # c -> o files
@@ -88,7 +90,7 @@ valcheck: ${UNITS}   ## Run valgrind on unit test
 -include $(DEPS)
 
 # Headers to install
-INSTALL_HEADERS := $(shell ls kernels/gkyl_*.h apps/gkyl_*.h zero/gkyl_*.h  | grep -v "priv" | sort)
+INSTALL_HEADERS := $(shell ls kernels/gkyl_*.h apps/gkyl_*.h zero/gkyl_*.h data/adas/*.h | grep -v "priv" | sort)
 
 .PHONY: install
 install: all
@@ -97,6 +99,7 @@ install: all
 	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/lib
 	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/bin
 	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/share
+	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 # Headers
 	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/${PROJ_NAME}/include
 # libraries
