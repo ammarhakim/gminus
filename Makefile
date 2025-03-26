@@ -83,7 +83,7 @@ MKDIR_P ?= mkdir -p
 
 .EXPORT_ALL_VARIABLES:
 
-all: core
+all: moments ## Builds all apps. Does not build unit or regression tests
 
 ## Core infrastructure targets
 .PHONY: core core-unit core-clean core-install core-check core-valcheck
@@ -134,7 +134,7 @@ moments-valcheck: ## Run valgrind on unit tests in moments
 
 # build all unit tests 
 .PHONY: unit 
-unit: core-unit ## Build all unit tests
+unit: core-unit moments-unit ## Build all unit tests
 
 # build all regression tests 
 .PHONY: regression

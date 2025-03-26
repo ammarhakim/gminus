@@ -8,7 +8,6 @@ mkdir -p zero
 $CP_CMD $G0/zero/gkyl_gr_blackhole.h  zero/
 $CP_CMD $G0/zero/gkyl_gr_minkowski.h  zero/
 $CP_CMD $G0/zero/gkyl_gr_neutronstar.h  zero/
-$CP_CMD $G0/zero/gkyl_gr_spacetime.h  zero/
 $CP_CMD $G0/zero/gkyl_gr_spacetime.h zero/
 $CP_CMD $G0/zero/gkyl_gr_spacetime_diff.h  zero/
 $CP_CMD $G0/zero/gkyl_kep_scheme.h zero/
@@ -39,16 +38,10 @@ $CP_CMD $G0/zero/gkyl_wv_euler_mixture.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_euler_mixture_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_euler_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_euler.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_euler.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_euler_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_euler_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_euler_tetrad.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_euler_tetrad.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_euler_tetrad_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_euler_tetrad_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_maxwell.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_maxwell.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_maxwell_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_maxwell_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_maxwell_tetrad.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_maxwell_tetrad.h  zero/
