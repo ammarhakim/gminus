@@ -97,6 +97,8 @@ MKDIR_P ?= mkdir -p
 .EXPORT_ALL_VARIABLES:
 
 all: core
+	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
+	cp ./data/adas/radiation_fit_parameters.txt ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 
 ## Core infrastructure targets
 .PHONY: core core-unit core-clean core-install core-check core-valcheck
@@ -188,6 +190,29 @@ gyrokinetic-check: ## Run unit tests in Gyrokinetics
 gyrokinetic-valcheck: ## Run valgrind on unit tests in Gyrokinetics
 	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic valcheck
 
+## PKPM infrastructure targets
+.PHONY: pkpm pkpm-unit pkpm-install pkpm-clean pkpm-check pkpm-valcheck
+pkpm: gyrokinetic  ## Build PKPM infrastructure code
+	cd pkpm && $(MAKE) -f Makefile-pkpm
+
+pkpm-unit: pkpm ## Build PKPM unit tests
+	cd pkpm && $(MAKE) -f Makefile-pkpm unit
+
+pkpm-regression: pkpm ## Build PKM regression tests
+	cd pkpm && $(MAKE) -f Makefile-pkpm regression
+
+pkpm-install: gyrokinetic-install ## Install PKPM infrastructure code
+	cd pkpm && $(MAKE) -f Makefile-pkpm install
+
+pkpm-clean: ## Clean PKPM infrastructure code
+	cd pkpm && $(MAKE) -f Makefile-pkpm clean
+
+pkpm-check: ## Run unit tests in PKPM
+	cd pkpm && $(MAKE) -f Makefile-pkpm check
+
+pkpm-valcheck: ## Run valgrind on unit tests in PKPM
+	cd pkpm && $(MAKE) -f Makefile-pkpm valcheck
+
 
 ## Targets to build things all parts of the code
 
@@ -197,19 +222,19 @@ unit: core-unit ## Build all unit tests
 
 # build all regression tests 
 .PHONY: regression
-regression: moments-regression vlasov-regression gyrokinetic-regression ## Build all regression tests
+regression: moments-regression vlasov-regression gyrokinetic-regression pkpm-regression ## Build all regression tests
 
 # Install everything
 .PHONY: install 
-install: core-install moments-install vlasov-install gyrokinetic-install ## Install all code
+install: core-install moments-install vlasov-install gyrokinetic-install pkpm-install ## Install all code
 
 # Clean everything
 .PHONY: clean 
-clean: core-clean moments-clean vlasov-clean gyrokinetic-clean ## Clean all builds
+clean: core-clean moments-clean vlasov-clean gyrokinetic-clean pkpm-clean ## Clean all builds
 
 # Check everything
 .PHONY: check
-check: core-check moments-check vlasov-check gyrokinetic-check ## Run all unit tests
+check: core-check moments-check vlasov-check gyrokinetic-check pkpm-check ## Run all unit tests
 
 # From: https://www.client9.com/self-documenting-makefiles/
 .PHONY: help
