@@ -573,4 +573,160 @@ mkdir -p unit
 # C regression tests
 mkdir -p creg
 $CP_CMD $G0/regression/rt_gk_ar_react_nonuniformv_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_bgk_asdex_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_bgk_cross_relax_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_bgk_im_asdex_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_bgk_im_cross_relax_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_bgk_im_periodic_sod_shock_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_bgk_periodic_sodshock_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_bgk_relax_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_bgk_relax_bimaxwellian_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_bgk_relax_bimaxwellian_nonuniformv_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_d3d_iwl_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_d3d_iwl_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_ion_sound_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_ion_sound_adiabatic_elc_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_ion_sound_nonuniformv_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_lapd_cart_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_lapd_cyl_3x2v_p1_nonuniformr.c creg/
+$CP_CMD $G0/regression/rt_gk_lapd_cyl_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_lbo_cross_relax_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_lbo_relax_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_lbo_relax_bimaxwellian_nonuniformv_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_lbo_relax_bimaxwellian_nonuniformv_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_lbo_relax_nonuniformv_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_lbo_relax_varnu_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_li_react_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_li_react_nonuniformv_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_ltx_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_ltx_boltz_elc_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_mdpx_cart_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_mirror_boltz_elc_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_mirror_kinetic_elc_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_multib_sheath_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_multib_slab_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_multib_step_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_multib_step_sol_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_multib_step_sol_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_nozzle_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_nozzle_half_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_rad_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_rad_low_Te_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_rad_nonuniformv_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_1x2v_p1_cons.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_3x2v_p1_cons.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_bgk_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_cx_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_flr_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_neut_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_nonuniformv_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_nonuniformv_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_nonuniformv_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_nonuniformx_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_nonuniformx_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_sheath_nonuniformx_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_slab_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_solovev_out_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_static_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_step_1x2v_p1_cons.c creg/
+$CP_CMD $G0/regression/rt_gk_step_3x2v_p1_cons.c creg/
+$CP_CMD $G0/regression/rt_gk_step_nonuniformx_1x2v_p1_cons_numeric.c creg/
+$CP_CMD $G0/regression/rt_gk_step_nonuniformx_1x2v_p1_cons.c creg/
+$CP_CMD $G0/regression/rt_gk_step_nonuniformx_2x2v_p1_out.c creg/
+$CP_CMD $G0/regression/rt_gk_step_nonuniformx_3x2v_p1_cons.c creg/
+$CP_CMD $G0/regression/rt_gk_step_out_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_1x2v_p1_static_field.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_1x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_2xIC_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_boltz_elc_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_nonuniformx_1x2v_p1_numeric.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_nonuniformx_1x2v_p1_polynomial.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_nonuniformx_2x2v_p1_numeric.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_nonuniformx_2x2v_p1_polynomial.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_numeric.c creg/
+$CP_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_polynomial.c creg/
 $CP_CMD $G0/regression/rt_arg_parse.h creg/
+
+$RM_CMD $G0/regression/rt_gk_ar_react_nonuniformv_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_bgk_asdex_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_bgk_cross_relax_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_bgk_im_asdex_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_bgk_im_cross_relax_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_bgk_im_periodic_sod_shock_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_bgk_periodic_sodshock_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_bgk_relax_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_bgk_relax_bimaxwellian_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_bgk_relax_bimaxwellian_nonuniformv_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_d3d_iwl_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_d3d_iwl_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_ion_sound_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_ion_sound_adiabatic_elc_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_ion_sound_nonuniformv_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_lapd_cart_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_lapd_cyl_3x2v_p1_nonuniformr.c
+$RM_CMD $G0/regression/rt_gk_lapd_cyl_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_lbo_cross_relax_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_lbo_relax_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_lbo_relax_bimaxwellian_nonuniformv_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_lbo_relax_bimaxwellian_nonuniformv_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_lbo_relax_nonuniformv_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_lbo_relax_varnu_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_li_react_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_li_react_nonuniformv_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_ltx_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_ltx_boltz_elc_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_mdpx_cart_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_mirror_boltz_elc_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_mirror_kinetic_elc_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_multib_sheath_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_multib_slab_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_multib_step_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_multib_step_sol_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_multib_step_sol_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_nozzle_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_nozzle_half_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_rad_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_rad_low_Te_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_rad_nonuniformv_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_1x2v_p1_cons.c
+$RM_CMD $G0/regression/rt_gk_sheath_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_3x2v_p1_cons.c
+$RM_CMD $G0/regression/rt_gk_sheath_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_bgk_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_cx_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_flr_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_neut_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_nonuniformv_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_nonuniformv_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_nonuniformv_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_nonuniformx_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_nonuniformx_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_sheath_nonuniformx_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_slab_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_solovev_out_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_static_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_step_1x2v_p1_cons.c
+$RM_CMD $G0/regression/rt_gk_step_3x2v_p1_cons.c
+$RM_CMD $G0/regression/rt_gk_step_nonuniformx_1x2v_p1_cons_numeric.c
+$RM_CMD $G0/regression/rt_gk_step_nonuniformx_1x2v_p1_cons.c
+$RM_CMD $G0/regression/rt_gk_step_nonuniformx_2x2v_p1_out.c
+$RM_CMD $G0/regression/rt_gk_step_nonuniformx_3x2v_p1_cons.c
+$RM_CMD $G0/regression/rt_gk_step_out_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_wham_1x2v_p1_static_field.c
+$RM_CMD $G0/regression/rt_gk_wham_1x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_wham_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_wham_2xIC_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_wham_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_wham_boltz_elc_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_wham_nonuniformx_1x2v_p1_numeric.c
+$RM_CMD $G0/regression/rt_gk_wham_nonuniformx_1x2v_p1_polynomial.c
+$RM_CMD $G0/regression/rt_gk_wham_nonuniformx_2x2v_p1_numeric.c
+$RM_CMD $G0/regression/rt_gk_wham_nonuniformx_2x2v_p1_polynomial.c
+$RM_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_numeric.c
+$RM_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_polynomial.c
