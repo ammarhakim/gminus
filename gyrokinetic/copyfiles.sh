@@ -24,6 +24,45 @@ $RM_CMD $G0/data/adas/read_adas.h
 $RM_CMD $G0/data/adas/read_radiation.py
 $RM_CMD $G0/data/adas/README.md
 
+mkdir -p data/eqdsk
+$CP_CMD $G0/data/eqdsk/asdex.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/cerfon.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/elliptical.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/mast.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/single_coil.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/solovev.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/step.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/straight_cylinder.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/tcv_upper_SN.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/tcv.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/wham_hires.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/wham.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/write_efit_cerfon.py data/eqdsk/
+$CP_CMD $G0/data/eqdsk/write_efit_elliptical.py data/eqdsk/
+$CP_CMD $G0/data/eqdsk/write_efit_single_coil.py data/eqdsk/
+$CP_CMD $G0/data/eqdsk/write_efit_solovev.py data/eqdsk/
+$CP_CMD $G0/data/eqdsk/write_efit_straight_cylinder.py data/eqdsk/
+$CP_CMD $G0/data/eqdsk/README data/eqdsk/
+
+$RM_CMD $G0/data/eqdsk/asdex.geqdsk
+$RM_CMD $G0/data/eqdsk/cerfon.geqdsk
+$RM_CMD $G0/data/eqdsk/elliptical.geqdsk
+$RM_CMD $G0/data/eqdsk/mast.geqdsk
+$RM_CMD $G0/data/eqdsk/single_coil.geqdsk
+$RM_CMD $G0/data/eqdsk/solovev.geqdsk
+$RM_CMD $G0/data/eqdsk/step.geqdsk
+$RM_CMD $G0/data/eqdsk/straight_cylinder.geqdsk
+$RM_CMD $G0/data/eqdsk/tcv_upper_SN.geqdsk
+$RM_CMD $G0/data/eqdsk/tcv.geqdsk
+$RM_CMD $G0/data/eqdsk/wham_hires.geqdsk
+$RM_CMD $G0/data/eqdsk/wham.geqdsk
+$RM_CMD $G0/data/eqdsk/write_efit_cerfon.py
+$RM_CMD $G0/data/eqdsk/write_efit_elliptical.py
+$RM_CMD $G0/data/eqdsk/write_efit_single_coil.py
+$RM_CMD $G0/data/eqdsk/write_efit_solovev.py
+$RM_CMD $G0/data/eqdsk/write_efit_straight_cylinder.py
+$RM_CMD $G0/data/eqdsk/README
+
 # kernels
 mkdir -p kernels/ambi_bolt_potential
 $CP_CMD $G0/kernels/ambi_bolt_potential/*.h kernels/ambi_bolt_potential/
