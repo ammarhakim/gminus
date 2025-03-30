@@ -4,6 +4,14 @@ CP_CMD=cp
 RM_CMD=rm
 G0=../../gkylzero
 
+# kernels
+mkdir -p kernels/fem_poisson
+$CP_CMD $G0/kernels/fem_poisson/*.h kernels/fem_poisson/
+$CP_CMD $G0/kernels/fem_poisson/*.c kernels/fem_poisson/
+
+$RM_CMD $G0/kernels/fem_poisson/*.h
+$RM_CMD $G0/kernels/fem_poisson/*.c
+
 # zero
 mkdir -p zero
 $CP_CMD $G0/zero/gkyl_gr_blackhole.h  zero/
@@ -107,6 +115,11 @@ $CP_CMD $G0/zero/wv_reactive_euler.c  zero/
 $CP_CMD $G0/zero/wv_sr_euler.c  zero/
 $CP_CMD $G0/zero/wv_ten_moment.c  zero/
 $CP_CMD $G0/zero/wv_ten_moment_cu.cu zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson_bctype.h zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson_priv.h zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson.h zero/
+$CP_CMD $G0/zero/fem_poisson_cu.cu zero/
+$CP_CMD $G0/zero/fem_poisson.c zero/
 
 $RM_CMD $G0/zero/gkyl_gr_blackhole.h
 $RM_CMD $G0/zero/gkyl_gr_minkowski.h
@@ -209,6 +222,11 @@ $RM_CMD $G0/zero/wv_reactive_euler.c
 $RM_CMD $G0/zero/wv_sr_euler.c
 $RM_CMD $G0/zero/wv_ten_moment.c
 $RM_CMD $G0/zero/wv_ten_moment_cu.cu
+$RM_CMD $G0/zero/gkyl_fem_poisson_bctype.h
+$RM_CMD $G0/zero/gkyl_fem_poisson_priv.h
+$RM_CMD $G0/zero/gkyl_fem_poisson.h
+$RM_CMD $G0/zero/fem_poisson_cu.cu
+$RM_CMD $G0/zero/fem_poisson.c
 
 # app
 mkdir -p apps
@@ -284,7 +302,6 @@ $RM_CMD $G0/unit/ctest_wv_mhd.c
 $RM_CMD $G0/unit/ctest_wv_reactive_euler.c
 $RM_CMD $G0/unit/ctest_wv_sr_euler.c
 $RM_CMD $G0/unit/ctest_wv_ten_moment.c
-
 
 # C regression tests
 mkdir -p creg

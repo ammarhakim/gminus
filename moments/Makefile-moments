@@ -1,6 +1,6 @@
 # -*- makefile-gmake -*-
 
-SRC_DIRS := zero apps
+SRC_DIRS := zero kernels apps
 
 PREFIX ?= ${HOME}/gkylsoft
 SUPERLU_INC = $(PREFIX)/superlu/include
@@ -23,11 +23,11 @@ LUA_UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/lctest_*.c))
 
 REGS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard creg/rt_*.c))
 
-KERN_INC_DIRS = 
-KERN_INCLUDES = 
+KERN_INC_DIRS = $(shell find kernels -type d)
+KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
 EXT_INCS := -I${MPI_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC}
-CORE_INCS := -I../core/kernels/array_average -I../core/kernels/array_integrate -I../core/kernels/basis -I../core/kernels/bin_op -I../core/kernels/dg_interpolate -I../core/kernels/skin_surf_from_ghost -I../core/kernels/fem_poisson -I../core/kernels/fem_poisson_perp -I../core/apps -I../core/zero -I../core/minus -I../core/minus/STC/include -I../zero
-INCS := ${EXT_INCS} ${CORE_INCS} -Izero -Iapps -Icreg  $(KERN_INCLUDES)
+CORE_INCS := -I../core/kernels/array_average -I../core/kernels/array_integrate -I../core/kernels/basis -I../core/kernels/bin_op -I../core/kernels/dg_interpolate -I../core/kernels/skin_surf_from_ghost -I../core/apps -I../core/zero -I../core/minus -I../core/minus/STC/include -I../zero
+INCS := ${EXT_INCS} ${CORE_INCS} -Izero -Iapps -Icreg -I${SUPERLU_INC} $(KERN_INCLUDES)
 
 CORE_LIB_DIR := -L../core/build
 CORE_LIB := -lg0core
