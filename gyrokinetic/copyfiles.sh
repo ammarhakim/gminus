@@ -608,6 +608,85 @@ $RM_CMD $G0/apps/multib_conn.c
 
 # unit
 mkdir -p unit
+$CP_CMD $G0/unit/ctest_ambi_bolt_potential.c unit/
+$CP_CMD $G0/unit/ctest_asdex.c unit/
+$CP_CMD $G0/unit/ctest_bc_sheath_gyrokinetic.c unit/
+$CP_CMD $G0/unit/ctest_bc_twistshift.c unit/
+$CP_CMD $G0/unit/ctest_block_tensor.c unit/
+$CP_CMD $G0/unit/ctest_cerfon.c unit/
+$CP_CMD $G0/unit/ctest_coll_cx.c unit/
+$CP_CMD $G0/unit/ctest_coll_iz.c unit/
+$CP_CMD $G0/unit/ctest_coll_recomb.c unit/
+$CP_CMD $G0/unit/ctest_correct_maxwellian_gyrokinetic.c unit/
+$CP_CMD $G0/unit/ctest_deflate_zsurf.c unit/
+$CP_CMD $G0/unit/ctest_deflated_dg_bin_ops.c unit/
+$CP_CMD $G0/unit/ctest_deflated_fem_poisson.c unit/
+$CP_CMD $G0/unit/ctest_dg_gyrokinetic_kern_tm.c unit/
+$CP_CMD $G0/unit/ctest_dg_gyrokinetic.c unit/
+$CP_CMD $G0/unit/ctest_dg_interpolate.c unit/
+$CP_CMD $G0/unit/ctest_dg_rad_gyrokinetic.c unit/
+$CP_CMD $G0/unit/ctest_efit.c unit/
+$CP_CMD $G0/unit/ctest_fem_parproj.c unit/
+$CP_CMD $G0/unit/ctest_fem_poisson_perp.c unit/
+$CP_CMD $G0/unit/ctest_gk_geometry_mapc2p.c unit/
+$CP_CMD $G0/unit/ctest_gk_geometry_mirror.c unit/
+$CP_CMD $G0/unit/ctest_gk_geometry_tok.c unit/
+$CP_CMD $G0/unit/ctest_gkgeom.c unit/
+$CP_CMD $G0/unit/ctest_gyrokinetic_cross_prim_moms_bgk.c unit/
+$CP_CMD $G0/unit/ctest_gyrokinetic_pol_density.c unit/
+$CP_CMD $G0/unit/ctest_integrated_moms.c unit/
+$CP_CMD $G0/unit/ctest_mom_gyrokinetic.c unit/
+$CP_CMD $G0/unit/ctest_nodal_ops.c unit/
+$CP_CMD $G0/unit/ctest_position_map.c unit/
+$CP_CMD $G0/unit/ctest_positivity_shift_gyrokinetic.c unit/
+$CP_CMD $G0/unit/ctest_proj_gk_bimaxwellian_on_basis.c unit/
+$CP_CMD $G0/unit/ctest_proj_gk_maxwellian_on_basis.c unit/
+$CP_CMD $G0/unit/ctest_proj_powsqrt_on_basis.c unit/
+$CP_CMD $G0/unit/ctest_rescale_ghost_jacf.c unit/
+$CP_CMD $G0/unit/ctest_step_compare.c unit/
+$CP_CMD $G0/unit/ctest_step_outboard.c unit/
+$CP_CMD $G0/unit/ctest_time_roots.c unit/
+$CP_CMD $G0/unit/ctest_translate_dim_gyrokinetic.c unit/
+
+$RM_CMD $G0/unit/ctest_ambi_bolt_potential.c
+$RM_CMD $G0/unit/ctest_asdex.c
+$RM_CMD $G0/unit/ctest_bc_sheath_gyrokinetic.c
+$RM_CMD $G0/unit/ctest_bc_twistshift.c
+$RM_CMD $G0/unit/ctest_block_tensor.c
+$RM_CMD $G0/unit/ctest_cerfon.c
+$RM_CMD $G0/unit/ctest_coll_cx.c
+$RM_CMD $G0/unit/ctest_coll_iz.c
+$RM_CMD $G0/unit/ctest_coll_recomb.c
+$RM_CMD $G0/unit/ctest_correct_maxwellian_gyrokinetic.c
+$RM_CMD $G0/unit/ctest_deflate_zsurf.c
+$RM_CMD $G0/unit/ctest_deflated_dg_bin_ops.c
+$RM_CMD $G0/unit/ctest_deflated_fem_poisson.c
+$RM_CMD $G0/unit/ctest_dg_gyrokinetic_kern_tm.c
+$RM_CMD $G0/unit/ctest_dg_gyrokinetic.c
+$RM_CMD $G0/unit/ctest_dg_interpolate.c
+$RM_CMD $G0/unit/ctest_dg_rad_gyrokinetic.c
+$RM_CMD $G0/unit/ctest_efit.c
+$RM_CMD $G0/unit/ctest_fem_parproj.c
+$RM_CMD $G0/unit/ctest_fem_poisson_perp.c
+$RM_CMD $G0/unit/ctest_gk_geometry_mapc2p.c
+$RM_CMD $G0/unit/ctest_gk_geometry_mirror.c
+$RM_CMD $G0/unit/ctest_gk_geometry_tok.c
+$RM_CMD $G0/unit/ctest_gkgeom.c
+$RM_CMD $G0/unit/ctest_gyrokinetic_cross_prim_moms_bgk.c
+$RM_CMD $G0/unit/ctest_gyrokinetic_pol_density.c
+$RM_CMD $G0/unit/ctest_integrated_moms.c
+$RM_CMD $G0/unit/ctest_mom_gyrokinetic.c
+$RM_CMD $G0/unit/ctest_nodal_ops.c
+$RM_CMD $G0/unit/ctest_position_map.c
+$RM_CMD $G0/unit/ctest_positivity_shift_gyrokinetic.c
+$RM_CMD $G0/unit/ctest_proj_gk_bimaxwellian_on_basis.c
+$RM_CMD $G0/unit/ctest_proj_gk_maxwellian_on_basis.c
+$RM_CMD $G0/unit/ctest_proj_powsqrt_on_basis.c
+$RM_CMD $G0/unit/ctest_rescale_ghost_jacf.c
+$RM_CMD $G0/unit/ctest_step_compare.c
+$RM_CMD $G0/unit/ctest_step_outboard.c
+$RM_CMD $G0/unit/ctest_time_roots.c
+$RM_CMD $G0/unit/ctest_translate_dim_gyrokinetic.c
 
 # C regression tests
 mkdir -p creg
@@ -689,6 +768,7 @@ $CP_CMD $G0/regression/rt_gk_wham_nonuniformx_2x2v_p1_numeric.c creg/
 $CP_CMD $G0/regression/rt_gk_wham_nonuniformx_2x2v_p1_polynomial.c creg/
 $CP_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_numeric.c creg/
 $CP_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_polynomial.c creg/
+$CP_CMD $G0/regression/rt_gkgeom.c creg/
 $CP_CMD $G0/regression/rt_arg_parse.h creg/
 
 $RM_CMD $G0/regression/rt_gk_ar_react_nonuniformv_1x2v_p1.c
@@ -769,3 +849,4 @@ $RM_CMD $G0/regression/rt_gk_wham_nonuniformx_2x2v_p1_numeric.c
 $RM_CMD $G0/regression/rt_gk_wham_nonuniformx_2x2v_p1_polynomial.c
 $RM_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_numeric.c
 $RM_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_polynomial.c
+$RM_CMD $G0/regression/rt_gkgeom.c

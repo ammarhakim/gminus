@@ -7,7 +7,7 @@ BUILD_DATE = $(shell date)
 GIT_TIP = $(shell git describe --abbrev=12 --always --dirty=+)
 
 # Build directory
-BUILD_DIR ?= build
+BUILD_DIR ?= ../build
 
 ARCH_FLAGS ?= -march=native
 CFLAGS ?= -O3 -g -ffast-math -fPIC -MMD -MP -DGIT_COMMIT_ID=\"$(GIT_TIP)\" -DGKYL_BUILD_DATE="${BUILD_DATE}" -DGKYL_GIT_CHANGESET="${GIT_TIP}"
@@ -101,12 +101,15 @@ all: core
 	cp ./data/adas/radiation_fit_parameters.txt ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 
 ## Core infrastructure targets
-.PHONY: core core-unit core-clean core-install core-check core-valcheck
+.PHONY: core core-unit core-clean core-install core-check core-valcheck core-regression
 core:  ## Build core infrastructure code
 	cd core && $(MAKE) -f Makefile-core
 
 core-unit: ## Build core unit tests
 	cd core && $(MAKE) -f Makefile-core unit
+
+core-regression: ## Build core regression tests
+	cd core && $(MAKE) -f Makefile-core regression
 
 core-install: ## Install core infrastructure code
 	cd core && $(MAKE) -f Makefile-core install
@@ -122,7 +125,7 @@ core-valcheck: ## Run valgrind on unit tests in core
 	cd core && $(MAKE) -f Makefile-core valcheck
 
 ## Moments infrastructure targets
-.PHONY: moments moments-unit moments-install moments-clean moments-check moments-valcheck
+.PHONY: moments moments-unit moments-install moments-clean moments-check moments-valcheck moments-regression
 moments: core  ## Build moments infrastructure code
 	cd moments && $(MAKE) -f Makefile-moments
 
@@ -131,6 +134,9 @@ moments-unit: moments ## Build moments unit tests
 
 moments-regression: moments ## Build moments regression tests
 	cd moments && $(MAKE) -f Makefile-moments regression
+
+moments-amr-regression: moments ## Build moments AMR regression tests
+	cd moments && $(MAKE) -f Makefile-moments amr_regression
 
 moments-install: core-install ## Install moments infrastructure code
 	cd moments && $(MAKE) -f Makefile-moments install
@@ -145,7 +151,7 @@ moments-valcheck: ## Run valgrind on unit tests in moments
 	cd moments && $(MAKE) -f Makefile-moments valcheck
 
 ## Vlasov infrastructure targets
-.PHONY: vlasov vlasov-unit vlasov-install vlasov-clean vlasov-check vlasov-valcheck
+.PHONY: vlasov vlasov-unit vlasov-install vlasov-clean vlasov-check vlasov-valcheck vlasov-regression
 vlasov: moments  ## Build Vlasov infrastructure code
 	cd vlasov && $(MAKE) -f Makefile-vlasov
 
@@ -168,7 +174,7 @@ vlasov-valcheck: ## Run valgrind on unit tests in Vlasov
 	cd vlasov && $(MAKE) -f Makefile-vlasov valcheck
 
 ## Gyrokinetic infrastructure targets
-.PHONY: gyrokinetic gyrokinetic-unit gyrokinetic-install gyrokinetic-clean gyrokinetic-check gyrokinetic-valcheck
+.PHONY: gyrokinetic gyrokinetic-unit gyrokinetic-install gyrokinetic-clean gyrokinetic-check gyrokinetic-valcheck gyrokinetic-regression
 gyrokinetic: vlasov  ## Build Gyrokinetic infrastructure code
 	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic
 
@@ -191,7 +197,7 @@ gyrokinetic-valcheck: ## Run valgrind on unit tests in Gyrokinetics
 	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic valcheck
 
 ## PKPM infrastructure targets
-.PHONY: pkpm pkpm-unit pkpm-install pkpm-clean pkpm-check pkpm-valcheck
+.PHONY: pkpm pkpm-unit pkpm-install pkpm-clean pkpm-check pkpm-valcheck pkpm-regression
 pkpm: gyrokinetic  ## Build PKPM infrastructure code
 	cd pkpm && $(MAKE) -f Makefile-pkpm
 
@@ -213,16 +219,15 @@ pkpm-check: ## Run unit tests in PKPM
 pkpm-valcheck: ## Run valgrind on unit tests in PKPM
 	cd pkpm && $(MAKE) -f Makefile-pkpm valcheck
 
-
 ## Targets to build things all parts of the code
 
 # build all unit tests 
 .PHONY: unit 
-unit: core-unit ## Build all unit tests
+unit: core-unit moments-unit vlasov-unit gyrokinetic-unit pkpm-unit ## Build all unit tests
 
 # build all regression tests 
 .PHONY: regression
-regression: moments-regression vlasov-regression gyrokinetic-regression pkpm-regression ## Build all regression tests
+regression: core-regression moments-regression vlasov-regression gyrokinetic-regression pkpm-regression ## Build all regression tests
 
 # Install everything
 .PHONY: install 

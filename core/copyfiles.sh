@@ -375,6 +375,33 @@ $CP_CMD $G0/unit/lctest_lua_utils.c unit/
 $CP_CMD $G0/unit/mctest_mpi_comm.c unit/
 $CP_CMD $G0/unit/mctest_mpi_comm_read.c unit/
 $CP_CMD $G0/unit/mctest_multib_sync.c unit/
+$CP_CMD $G0/unit/ctest_alloc_cu.cu unit/
+$CP_CMD $G0/unit/ctest_alloc.c unit/
+$CP_CMD $G0/unit/ctest_array_average.c unit/
+$CP_CMD $G0/unit/ctest_array_cu.cu unit/
+$CP_CMD $G0/unit/ctest_array_dg_reduce.c unit/
+$CP_CMD $G0/unit/ctest_array_integrate.c unit/
+$CP_CMD $G0/unit/ctest_array_ops.c unit/
+$CP_CMD $G0/unit/ctest_basis_cu.cu unit/
+$CP_CMD $G0/unit/ctest_cudss.cu unit/
+$CP_CMD $G0/unit/ctest_cusolver.cu unit/
+$CP_CMD $G0/unit/ctest_dg_basis_ops.c unit/
+$CP_CMD $G0/unit/ctest_dg_bin_ops.c unit/
+$CP_CMD $G0/unit/ctest_dual_num.c unit/
+$CP_CMD $G0/unit/ctest_gauss_quad.c unit/
+$CP_CMD $G0/unit/ctest_linsolvers.c unit/
+$CP_CMD $G0/unit/ctest_math.c unit/
+$CP_CMD $G0/unit/ctest_mpack.c unit/
+$CP_CMD $G0/unit/ctest_range_cu.cu unit/
+$CP_CMD $G0/unit/ctest_rect_decomp.c unit/
+$CP_CMD $G0/unit/ctest_rect_grid_cu.cu unit/
+$CP_CMD $G0/unit/ctest_ref_count.c unit/
+$CP_CMD $G0/unit/ctest_rrobin_decomp.c unit/
+$CP_CMD $G0/unit/ctest_struct_of_arrays_cu.cu unit/
+$CP_CMD $G0/unit/ctest_struct_of_arrays.c unit/
+$CP_CMD $G0/unit/mctest_nccl_comm.c unit/
+$CP_CMD $G0/unit/ctest_skin_surf_from_ghost.c unit/
+$CP_CMD $G0/unit/mctest_multib_allgather.c unit/
 
 $RM_CMD $G0/unit/ctest_array.c
 $RM_CMD $G0/unit/ctest_array_reduce.c
@@ -396,3 +423,43 @@ $RM_CMD $G0/unit/lctest_lua_utils.c
 $RM_CMD $G0/unit/mctest_mpi_comm.c
 $RM_CMD $G0/unit/mctest_mpi_comm_read.c
 $RM_CMD $G0/unit/mctest_multib_sync.c
+$RM_CMD $G0/unit/ctest_alloc_cu.cu
+$RM_CMD $G0/unit/ctest_alloc.c
+$RM_CMD $G0/unit/ctest_array_average.c
+$RM_CMD $G0/unit/ctest_array_cu.cu
+$RM_CMD $G0/unit/ctest_array_dg_reduce.c
+$RM_CMD $G0/unit/ctest_array_integrate.c
+$RM_CMD $G0/unit/ctest_array_ops.c
+$RM_CMD $G0/unit/ctest_basis_cu.cu
+$RM_CMD $G0/unit/ctest_cudss.cu
+$RM_CMD $G0/unit/ctest_cusolver.cu
+$RM_CMD $G0/unit/ctest_dg_basis_ops.c
+$RM_CMD $G0/unit/ctest_dg_bin_ops.c
+$RM_CMD $G0/unit/ctest_dual_num.c
+$RM_CMD $G0/unit/ctest_gauss_quad.c
+$RM_CMD $G0/unit/ctest_linsolvers.c
+$RM_CMD $G0/unit/ctest_math.c
+$RM_CMD $G0/unit/ctest_mpack.c
+$RM_CMD $G0/unit/ctest_range_cu.cu
+$RM_CMD $G0/unit/ctest_rect_decomp.c
+$RM_CMD $G0/unit/ctest_rect_grid_cu.cu
+$RM_CMD $G0/unit/ctest_ref_count.c
+$RM_CMD $G0/unit/ctest_rrobin_decomp.c
+$RM_CMD $G0/unit/ctest_struct_of_arrays_cu.cu
+$RM_CMD $G0/unit/ctest_struct_of_arrays.c
+$RM_CMD $G0/unit/mctest_nccl_comm.c
+$RM_CMD $G0/unit/ctest_skin_surf_from_ghost.c
+$RM_CMD $G0/unit/mctest_multib_allgather.c
+
+# C regression tests
+mkdir -p creg
+$CP_CMD $G0/regression/rt_dg_basis_ops.c creg/
+$CP_CMD $G0/regression/rt_eval_on_nodes.c creg/
+$CP_CMD $G0/regression/rt_job_pool_proj.c creg/
+$CP_CMD $G0/regression/rt_proj_on_basis.c creg/
+$CP_CMD $G0/regression/rt_arg_parse.h creg/
+
+$RM_CMD $G0/regression/rt_dg_basis_ops.c
+$RM_CMD $G0/regression/rt_eval_on_nodes.c
+$RM_CMD $G0/regression/rt_job_pool_proj.c
+$RM_CMD $G0/regression/rt_proj_on_basis.c

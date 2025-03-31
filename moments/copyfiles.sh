@@ -260,6 +260,37 @@ $RM_CMD $G0/apps/moment.c
 $RM_CMD $G0/apps/moment_lw.c
 $RM_CMD $G0/apps/moment_multib.c
 
+# AMR
+mkdir -p amr
+$CP_CMD $G0/amr/amr_block_coupled.c amr/
+$CP_CMD $G0/amr/amr_block.c amr/
+$CP_CMD $G0/amr/amr_core_euler_mixture.c amr/
+$CP_CMD $G0/amr/amr_core_euler.c amr/
+$CP_CMD $G0/amr/amr_core_five_moment.c amr/
+$CP_CMD $G0/amr/amr_core_gr_euler.c amr/
+$CP_CMD $G0/amr/amr_core_ten_moment.c amr/
+$CP_CMD $G0/amr/amr_patch_coupled.c amr/
+$CP_CMD $G0/amr/amr_patch.c amr/
+$CP_CMD $G0/amr/gkyl_amr_block_coupled_priv.h amr/
+$CP_CMD $G0/amr/gkyl_amr_block_priv.h amr/
+$CP_CMD $G0/amr/gkyl_amr_core.h amr/
+$CP_CMD $G0/amr/gkyl_amr_patch_coupled_priv.h amr/
+$CP_CMD $G0/amr/gkyl_amr_patch_priv.h amr/
+
+$RM_CMD $G0/amr/amr_block_coupled.c
+$RM_CMD $G0/amr/amr_block.c
+$RM_CMD $G0/amr/amr_core_euler_mixture.c
+$RM_CMD $G0/amr/amr_core_euler.c
+$RM_CMD $G0/amr/amr_core_five_moment.c
+$RM_CMD $G0/amr/amr_core_gr_euler.c
+$RM_CMD $G0/amr/amr_core_ten_moment.c
+$RM_CMD $G0/amr/amr_patch_coupled.c
+$RM_CMD $G0/amr/amr_patch.c
+$RM_CMD $G0/amr/gkyl_amr_block_coupled_priv.h
+$RM_CMD $G0/amr/gkyl_amr_block_priv.h
+$RM_CMD $G0/amr/gkyl_amr_core.h
+$RM_CMD $G0/amr/gkyl_amr_patch_coupled_priv.h
+$RM_CMD $G0/amr/gkyl_amr_patch_priv.h
 
 # unit
 mkdir -p unit
@@ -282,6 +313,14 @@ $CP_CMD $G0/unit/ctest_wv_mhd.c unit/
 $CP_CMD $G0/unit/ctest_wv_reactive_euler.c unit/
 $CP_CMD $G0/unit/ctest_wv_sr_euler.c unit/
 $CP_CMD $G0/unit/ctest_wv_ten_moment.c unit/
+$CP_CMD $G0/unit/ctest_gr_spacetime.c unit/
+$CP_CMD $G0/unit/ctest_wv_euler_cu.cu unit/
+$CP_CMD $G0/unit/ctest_wv_maxwell_cu.cu unit/
+$CP_CMD $G0/unit/ctest_wv_ten_moment_cu.cu unit/
+$CP_CMD $G0/unit/ctest_wave_geom_cu.cu unit/
+$CP_CMD $G0/unit/ctest_fem_poisson.c unit/
+$CP_CMD $G0/unit/ctest_fem_poisson_vareps.c unit/
+$CP_CMD $G0/unit/ctest_fem_helmholtz.c unit/
 
 $RM_CMD $G0/unit/ctest_wave_geom.c
 $RM_CMD $G0/unit/ctest_wave_geom_helpers.c
@@ -302,6 +341,14 @@ $RM_CMD $G0/unit/ctest_wv_mhd.c
 $RM_CMD $G0/unit/ctest_wv_reactive_euler.c
 $RM_CMD $G0/unit/ctest_wv_sr_euler.c
 $RM_CMD $G0/unit/ctest_wv_ten_moment.c
+$RM_CMD $G0/unit/ctest_gr_spacetime.c
+$RM_CMD $G0/unit/ctest_wv_euler_cu.cu
+$RM_CMD $G0/unit/ctest_wv_maxwell_cu.cu
+$RM_CMD $G0/unit/ctest_wv_ten_moment_cu.cu
+$RM_CMD $G0/unit/ctest_wave_geom_cu.cu
+$RM_CMD $G0/unit/ctest_fem_poisson.c
+$RM_CMD $G0/unit/ctest_fem_poisson_vareps.c
+$RM_CMD $G0/unit/ctest_fem_helmholtz.c
 
 # C regression tests
 mkdir -p creg
@@ -424,6 +471,8 @@ $CP_CMD $G0/regression/rt_reactive_euler_detonation.c creg/
 $CP_CMD $G0/regression/rt_sr_euler_KH_2d.c creg/
 $CP_CMD $G0/regression/rt_sr_euler_riem_2d.c creg/
 $CP_CMD $G0/regression/rt_sr_euler_sodshock.c creg/
+$CP_CMD $G0/regression/rt_euler_multiblock.c creg/
+$CP_CMD $G0/regression/rt_multib_euler_2d.c creg/
 $CP_CMD $G0/regression/rt_arg_parse.h creg/
 
 $RM_CMD $G0/regression/rt_10m_burch.c
@@ -545,6 +594,82 @@ $RM_CMD $G0/regression/rt_reactive_euler_detonation.c
 $RM_CMD $G0/regression/rt_sr_euler_KH_2d.c
 $RM_CMD $G0/regression/rt_sr_euler_riem_2d.c
 $RM_CMD $G0/regression/rt_sr_euler_sodshock.c
+$RM_CMD $G0/regression/rt_euler_multiblock.c
+$RM_CMD $G0/regression/rt_multib_euler_2d.c
 
 # Lua regression tests
 mkdir -p luareg
+
+# AMR C regression tests
+mkdir -p amr_creg
+$CP_CMD $G0/amr_regression/rt_amr_5m_gem_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_5m_gem_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_5m_riem_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_5m_riem_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_10m_gem_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_10m_gem_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_10m_riem_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_cart_axi_sodshock_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_cart_axi_sodshock_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_mixture_fedkiw_shock_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_mixture_fedkiw_shock_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_mixture_shock_bubble_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_mixture_shock_bubble_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_riem_2d_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_riem_2d_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_shock_bubble_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_shock_bubble_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_sodshock_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_sodshock_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_bhl_spinning_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_bhl_spinning_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_bhl_static_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_bhl_static_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_blackhole_spinning_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_blackhole_spinning_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_blackhole_static_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_blackhole_static_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_mild_shock_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_mild_shock_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_perturbed_density_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_perturbed_density_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_quadrants_2d_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_quadrants_2d_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_strong_blast_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_strong_blast_l2.c amr_creg/
+
+$RM_CMD $G0/amr_regression/rt_amr_5m_gem_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_5m_gem_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_5m_riem_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_5m_riem_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_10m_gem_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_10m_gem_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_10m_riem_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_cart_axi_sodshock_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_cart_axi_sodshock_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_mixture_fedkiw_shock_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_mixture_fedkiw_shock_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_mixture_shock_bubble_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_mixture_shock_bubble_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_riem_2d_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_riem_2d_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_shock_bubble_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_shock_bubble_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_sodshock_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_sodshock_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_bhl_spinning_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_bhl_spinning_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_bhl_static_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_bhl_static_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_blackhole_spinning_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_blackhole_spinning_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_blackhole_static_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_blackhole_static_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_mild_shock_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_mild_shock_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_perturbed_density_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_perturbed_density_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_quadrants_2d_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_quadrants_2d_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_strong_blast_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_strong_blast_l2.c

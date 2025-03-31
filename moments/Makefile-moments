@@ -1,6 +1,6 @@
 # -*- makefile-gmake -*-
 
-SRC_DIRS := zero kernels apps
+SRC_DIRS := zero kernels apps amr
 
 PREFIX ?= ${HOME}/gkylsoft
 SUPERLU_INC = $(PREFIX)/superlu/include
@@ -12,55 +12,62 @@ else
 	SUPERLU_LIB = $(PREFIX)/superlu/lib/libsuperlu.a
 endif
 
-LLIB := $(BUILD_DIR)/libg0moments.a
+LLIB := $(BUILD_DIR)/moments/libg0moments.a
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
-OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+OBJS := $(SRCS:%=$(BUILD_DIR)/moments/%.o)
 DEPS := $(OBJS:.o=.d)
 
-UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/ctest_*.c))
-MPI_UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/mctest_*.c))
-LUA_UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/lctest_*.c))
+UNITS := $(patsubst %.c,${BUILD_DIR}/moments/%,$(wildcard unit/ctest_*.c))
+MPI_UNITS := $(patsubst %.c,${BUILD_DIR}/moments/%,$(wildcard unit/mctest_*.c))
+LUA_UNITS := $(patsubst %.c,${BUILD_DIR}/moments/%,$(wildcard unit/lctest_*.c))
 
-REGS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard creg/rt_*.c))
+REGS := $(patsubst %.c,${BUILD_DIR}/moments/%,$(wildcard creg/rt_*.c))
+AMR_REGS := $(patsubst %.c,${BUILD_DIR}/moments/%,$(wildcard amr_creg/rt_*.c))
 
 KERN_INC_DIRS = $(shell find kernels -type d)
 KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
 EXT_INCS := -I${MPI_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC}
 CORE_INCS := -I../core/kernels/array_average -I../core/kernels/array_integrate -I../core/kernels/basis -I../core/kernels/bin_op -I../core/kernels/dg_interpolate -I../core/kernels/skin_surf_from_ghost -I../core/apps -I../core/zero -I../core/minus -I../core/minus/STC/include -I../zero
-INCS := ${EXT_INCS} ${CORE_INCS} -Izero -Iapps -Icreg -I${SUPERLU_INC} $(KERN_INCLUDES)
+INCS := ${EXT_INCS} ${CORE_INCS} -Izero -Iapps -Icreg -Ikernels -Iamr -I${SUPERLU_INC} $(KERN_INCLUDES)
 
-CORE_LIB_DIR := -L../core/build
+CORE_LIB_DIR := -L${BUILD_DIR}/core
 CORE_LIB := -lg0core
 
 EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
 EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
-EXEC_LIBS = -Lbuild ${LLIB} ${CORE_LIB_DIR} ${CORE_LIB} ${EXEC_EXT_LIBS}
+EXEC_LIBS = -L${BUILD_DIR}/moments ${LLIB} ${CORE_LIB_DIR} ${CORE_LIB} ${EXEC_EXT_LIBS}
 
 unit: ${LLIB} $(UNITS) ${MPI_UNITS} ## Build unit tests
 regression: ${LLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
+amr_regression: ${LLIB} ${AMR_REGS} ## Build AMR regression tests
 
 .PHONY: all
 all: $(LLIB) ## Build all targets
 .DEFAULT_GOAL := all
 
 # c -> o files
-$(BUILD_DIR)/%.c.o: %.c
+$(BUILD_DIR)/moments/%.c.o: %.c
 	$(MKDIR_P) $(dir $@)
 	$(CC) -c $(CFLAGS) $(INCS) $< -o $@
 
 # Unit tests
-$(UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/unit
+$(UNITS): ${BUILD_DIR}/moments/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ${BUILD_DIR}/moments/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # MPI unit tests
-$(MPI_UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/unit
+$(MPI_UNITS): ${BUILD_DIR}/moments/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ${BUILD_DIR}/moments/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # Regression tests
-$(REGS): ${BUILD_DIR}/creg/%: creg/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/creg
+$(REGS): ${BUILD_DIR}/moments/creg/%: creg/%.c $(LLIB)
+	$(MKDIR_P) ${BUILD_DIR}/moments/creg
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
+
+# AMR regression tests
+$(AMR_REGS): ${BUILD_DIR}/moments/amr_creg/%: amr_creg/%.c $(LLIB)
+	$(MKDIR_P) ${BUILD_DIR}/moments/amr_creg
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # build lib
@@ -80,7 +87,7 @@ valcheck: ${UNITS}   ## Run valgrind on unit test
 -include $(DEPS)
 
 # Headers to install
-INSTALL_HEADERS := $(shell ls apps/gkyl_*.h zero/gkyl_*.h  | grep -v "priv" | sort)
+INSTALL_HEADERS := $(shell ls apps/gkyl_*.h zero/gkyl_*.h amr/gkyl_*.h kernels/*/gkyl_*.h | grep -v "priv" | sort)
 
 .PHONY: install
 install: all
@@ -96,4 +103,4 @@ install: all
 
 .PHONY: clean
 clean: ## Clean build output
-	rm -rf ${BUILD_DIR}
+	rm -rf ${BUILD_DIR}/moments

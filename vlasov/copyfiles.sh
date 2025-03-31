@@ -577,6 +577,47 @@ $RM_CMD $G0/apps/vp_field.c
 
 # unit
 mkdir -p unit
+$CP_CMD $G0/unit/ctest_bc_basic.c unit/
+$CP_CMD $G0/unit/ctest_canonical_pb_continuity.c unit/
+$CP_CMD $G0/unit/ctest_canonical_pb_equilibrium.c unit/
+$CP_CMD $G0/unit/ctest_correct_maxwellian.c unit/
+$CP_CMD $G0/unit/ctest_correct_mj_integrated.c unit/
+$CP_CMD $G0/unit/ctest_dg_lbo_vlasov.c unit/
+$CP_CMD $G0/unit/ctest_dg_maxwell_cu.cu unit/
+$CP_CMD $G0/unit/ctest_dg_maxwell.c unit/
+$CP_CMD $G0/unit/ctest_dg_vlasov_cu.cu unit/
+$CP_CMD $G0/unit/ctest_dg_vlasov.c unit/
+$CP_CMD $G0/unit/ctest_hyper_dg_cu.cu unit/
+$CP_CMD $G0/unit/ctest_hyper_dg.c unit/
+$CP_CMD $G0/unit/ctest_hyper3x_dg.c unit/
+$CP_CMD $G0/unit/ctest_mom_vlasov_cu.cu unit/
+$CP_CMD $G0/unit/ctest_mom_vlasov.c unit/
+$CP_CMD $G0/unit/ctest_prim_vlasov.c unit/
+$CP_CMD $G0/unit/ctest_proj_mj_on_basis.c unit/
+$CP_CMD $G0/unit/ctest_spitzer_coll_freq.c unit/
+$CP_CMD $G0/unit/ctest_dg_em_vars.c unit/
+$CP_CMD $G0/unit/ctest_velocity_map.c unit/
+
+$RM_CMD $G0/unit/ctest_bc_basic.c
+$RM_CMD $G0/unit/ctest_canonical_pb_continuity.c
+$RM_CMD $G0/unit/ctest_canonical_pb_equilibrium.c
+$RM_CMD $G0/unit/ctest_correct_maxwellian.c
+$RM_CMD $G0/unit/ctest_correct_mj_integrated.c
+$RM_CMD $G0/unit/ctest_dg_lbo_vlasov.c
+$RM_CMD $G0/unit/ctest_dg_maxwell_cu.cu
+$RM_CMD $G0/unit/ctest_dg_maxwell.c
+$RM_CMD $G0/unit/ctest_dg_vlasov_cu.cu
+$RM_CMD $G0/unit/ctest_dg_vlasov.c
+$RM_CMD $G0/unit/ctest_hyper_dg_cu.cu
+$RM_CMD $G0/unit/ctest_hyper_dg.c
+$RM_CMD $G0/unit/ctest_hyper3x_dg.c
+$RM_CMD $G0/unit/ctest_mom_vlasov_cu.cu
+$RM_CMD $G0/unit/ctest_mom_vlasov.c
+$RM_CMD $G0/unit/ctest_prim_vlasov.c
+$RM_CMD $G0/unit/ctest_proj_mj_on_basis.c
+$RM_CMD $G0/unit/ctest_spitzer_coll_freq.c
+$RM_CMD $G0/unit/ctest_dg_em_vars.c
+$RM_CMD $G0/unit/ctest_velocity_map.c
 
 # C regression tests
 mkdir -p creg
@@ -690,6 +731,9 @@ $CP_CMD $G0/regression/rt_vp_sheath_Aext_1x2v_p2.c creg/
 $CP_CMD $G0/regression/rt_vp_sheath_Bext_1x2v_p2.c creg/
 $CP_CMD $G0/regression/rt_vp_sheath_feedback_sources_1x1v_p2.c creg/
 $CP_CMD $G0/regression/rt_vp_sheath_feedback_sources_bgk_1x1v_p2.c creg/
+$CP_CMD $G0/regression/rt_hyper_vlasov_tm.c creg/
+$CP_CMD $G0/regression/rt_vlasov_kerntm.c creg/
+$CP_CMD $G0/regression/rt_vlasov_moments.c creg/
 $CP_CMD $G0/regression/rt_arg_parse.h creg/
 
 $RM_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p1.c
@@ -802,6 +846,9 @@ $RM_CMD $G0/regression/rt_vp_sheath_Aext_1x2v_p2.c
 $RM_CMD $G0/regression/rt_vp_sheath_Bext_1x2v_p2.c
 $RM_CMD $G0/regression/rt_vp_sheath_feedback_sources_1x1v_p2.c
 $RM_CMD $G0/regression/rt_vp_sheath_feedback_sources_bgk_1x1v_p2.c
+$RM_CMD $G0/regression/rt_hyper_vlasov_tm.c
+$RM_CMD $G0/regression/rt_vlasov_kerntm.c
+$RM_CMD $G0/regression/rt_vlasov_moments.c
 
 # Lua regression tests
 mkdir -p luareg
