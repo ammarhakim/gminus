@@ -96,7 +96,7 @@ MKDIR_P ?= mkdir -p
 
 .EXPORT_ALL_VARIABLES:
 
-all: core
+all: core moments vlasov gyrokinetic pkpm
 	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 	cp ./data/adas/radiation_fit_parameters.txt ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 
@@ -222,7 +222,7 @@ pkpm-valcheck: ## Run valgrind on unit tests in PKPM
 ## Targets to build things all parts of the code
 
 # build all unit tests 
-.PHONY: unit 
+.PHONY: unit
 unit: core-unit moments-unit vlasov-unit gyrokinetic-unit pkpm-unit ## Build all unit tests
 
 # build all regression tests 
