@@ -5,52 +5,70 @@ SQL_CFLAGS ?= -fPIC -Wno-implicit-int-float-conversion
 
 SRC_DIRS := minus kernels zero apps
 
-LLIB := $(BUILD_DIR)/libg0core.a
+PREFIX ?= ${HOME}/gkylsoft
+SUPERLU_INC = $(PREFIX)/superlu/include
+ifeq ($(UNAME_S),Linux)
+	SUPERLU_LIB_DIR = $(PREFIX)/superlu/lib64
+	SUPERLU_LIB = $(PREFIX)/superlu/lib64/libsuperlu.a
+else
+	SUPERLU_LIB_DIR = $(PREFIX)/superlu/lib
+	SUPERLU_LIB = $(PREFIX)/superlu/lib/libsuperlu.a
+endif
+
+LLIB := $(BUILD_DIR)/core/libg0core.a
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
-OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+OBJS := $(SRCS:%=$(BUILD_DIR)/core/%.o)
 DEPS := $(OBJS:.o=.d)
-UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/ctest_*.c))
-MPI_UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/mctest_*.c))
-LUA_UNITS := $(patsubst %.c,${BUILD_DIR}/%,$(wildcard unit/lctest_*.c))
+UNITS := $(patsubst %.c,${BUILD_DIR}/core/%,$(wildcard unit/ctest_*.c))
+MPI_UNITS := $(patsubst %.c,${BUILD_DIR}/core/%,$(wildcard unit/mctest_*.c))
+LUA_UNITS := $(patsubst %.c,${BUILD_DIR}/core/%,$(wildcard unit/lctest_*.c))
+
+REGS := $(patsubst %.c,${BUILD_DIR}/core/%,$(wildcard creg/rt_*.c))
 
 KERN_INC_DIRS = $(shell find kernels -type d)
 KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
 EXT_INCS := -I${MPI_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC}
-INCS := ${EXT_INCS} -Iminus -Iminus/STC/include -Izero -Iapps $(KERN_INCLUDES)
+INCS := ${EXT_INCS} -Iminus -Iminus/STC/include -Izero -Iapps -I${SUPERLU_INC} $(KERN_INCLUDES)
 
-EXEC_LIB_DIRS = -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR}
-EXEC_EXT_LIBS = ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
-EXEC_LIBS = -Lbuild ${LLIB} ${EXEC_EXT_LIBS}
+EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR}
+EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+EXEC_LIBS = -L${BUILD_DIR}/core ${LLIB} ${EXEC_EXT_LIBS}
 
 unit: $(LLIB) $(UNITS) ${MPI_UNITS} ${LUA_UNITS} ## Build unit tests
+regression: ${LLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
 
 .PHONY: all
 all: $(LLIB) ## Build all targets
 .DEFAULT_GOAL := all
 
 # SQLITE needs special flags
-$(BUILD_DIR)/minus/sqlite3.c.o: minus/sqlite3.c
+$(BUILD_DIR)/core/minus/sqlite3.c.o: minus/sqlite3.c
 	$(MKDIR_P) $(dir $@)
 	$(CC) $(SQL_CFLAGS) -c $< -o $@
 
 # c -> o files
-$(BUILD_DIR)/%.c.o: %.c
+$(BUILD_DIR)/core/%.c.o: %.c
 	$(MKDIR_P) $(dir $@)
 	$(CC) -c $(CFLAGS) $(INCS) $< -o $@
 
 # Unit tests
-$(UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/unit
+$(UNITS): ${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ${BUILD_DIR}/core/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # MPI unit tests
-$(MPI_UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/unit
+$(MPI_UNITS): ${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ${BUILD_DIR}/core/unit
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
+
+# Regression tests
+$(REGS): ${BUILD_DIR}/core/creg/%: creg/%.c $(LLIB)
+	$(MKDIR_P) ${BUILD_DIR}/core/creg
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # Lua unit tests
-$(LUA_UNITS): ${BUILD_DIR}/unit/%: unit/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/unit
+$(LUA_UNITS): ${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ${BUILD_DIR}/core/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # build lib
@@ -70,7 +88,7 @@ valcheck: ${UNITS}   ## Run valgrind on unit test
 -include $(DEPS)
 
 # Headers to install
-INSTALL_HEADERS := $(shell ls apps/gkyl_*.h zero/gkyl_*.h  | grep -v "priv" | sort)
+INSTALL_HEADERS := $(shell ls apps/gkyl_*.h zero/gkyl_*.h kernels/*/gkyl_*.h | grep -v "priv" | sort)
 INSTALL_HEADERS += $(shell ls minus/*.h)
 
 .PHONY: install
@@ -87,4 +105,4 @@ install: all
 
 .PHONY: clean
 clean: ## Clean build output
-	rm -rf ${BUILD_DIR}
+	rm -rf ${BUILD_DIR}/core

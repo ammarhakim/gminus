@@ -1,14 +1,23 @@
 #!/bin/sh
 
 CP_CMD=cp
-G0=/home/gandalf/research/gkyl-project/g0-branches/dir-reorg-fixes/gkylzero
+RM_CMD=rm
+G0=../../gkylzero
+
+# kernels
+mkdir -p kernels/fem_poisson
+$CP_CMD $G0/kernels/fem_poisson/*.h kernels/fem_poisson/
+$CP_CMD $G0/kernels/fem_poisson/*.c kernels/fem_poisson/
+
+$RM_CMD $G0/kernels/fem_poisson/*.h
+$RM_CMD $G0/kernels/fem_poisson/*.c
 
 # zero
 mkdir -p zero
 $CP_CMD $G0/zero/gkyl_gr_blackhole.h  zero/
 $CP_CMD $G0/zero/gkyl_gr_minkowski.h  zero/
 $CP_CMD $G0/zero/gkyl_gr_neutronstar.h  zero/
-$CP_CMD $G0/zero/gkyl_gr_spacetime.h zero/
+$CP_CMD $G0/zero/gkyl_gr_spacetime.h  zero/
 $CP_CMD $G0/zero/gkyl_gr_spacetime_diff.h  zero/
 $CP_CMD $G0/zero/gkyl_kep_scheme.h zero/
 $CP_CMD $G0/zero/gkyl_mhd_src.h zero/
@@ -44,20 +53,12 @@ $CP_CMD $G0/zero/gkyl_wv_gr_euler_tetrad_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_maxwell.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_maxwell_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_maxwell_tetrad.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_maxwell_tetrad.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_maxwell_tetrad_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_maxwell_tetrad_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_medium.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_medium.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_medium_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_medium_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler_tetrad.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler_tetrad.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler_tetrad_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler_tetrad_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_iso_euler.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_iso_euler_mixture.h  zero/
@@ -70,12 +71,10 @@ $CP_CMD $G0/zero/gkyl_wv_reactive_euler_priv.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_sr_euler.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_ten_moment.h  zero/
 $CP_CMD $G0/zero/gkyl_wv_ten_moment_priv.h  zero/
-$CP_CMD $G0/zero/gkyl_wv_ten_moment_priv.h zero/
 $CP_CMD $G0/zero/gr_blackhole.c  zero/
 $CP_CMD $G0/zero/gr_minkowski.c  zero/
 $CP_CMD $G0/zero/gr_neutronstar.c  zero/
 $CP_CMD $G0/zero/gr_spacetime.c  zero/
-$CP_CMD $G0/zero/gr_spacetime.c zero/
 $CP_CMD $G0/zero/gr_spacetime_diff.c  zero/
 $CP_CMD $G0/zero/kep_scheme.c zero/
 $CP_CMD $G0/zero/mhd_src.c zero/
@@ -101,18 +100,11 @@ $CP_CMD $G0/zero/wv_euler.c  zero/
 $CP_CMD $G0/zero/wv_euler_cu.cu  zero/
 $CP_CMD $G0/zero/wv_euler_mixture.c  zero/
 $CP_CMD $G0/zero/wv_gr_euler.c  zero/
-$CP_CMD $G0/zero/wv_gr_euler.c  zero/
-$CP_CMD $G0/zero/wv_gr_euler_tetrad.c  zero/
 $CP_CMD $G0/zero/wv_gr_euler_tetrad.c  zero/
 $CP_CMD $G0/zero/wv_gr_maxwell.c  zero/
-$CP_CMD $G0/zero/wv_gr_maxwell.c  zero/
-$CP_CMD $G0/zero/wv_gr_maxwell_tetrad.c  zero/
 $CP_CMD $G0/zero/wv_gr_maxwell_tetrad.c  zero/
 $CP_CMD $G0/zero/wv_gr_medium.c  zero/
-$CP_CMD $G0/zero/wv_gr_medium.c  zero/
 $CP_CMD $G0/zero/wv_gr_ultra_rel_euler.c  zero/
-$CP_CMD $G0/zero/wv_gr_ultra_rel_euler.c  zero/
-$CP_CMD $G0/zero/wv_gr_ultra_rel_euler_tetrad.c  zero/
 $CP_CMD $G0/zero/wv_gr_ultra_rel_euler_tetrad.c  zero/
 $CP_CMD $G0/zero/wv_iso_euler.c  zero/
 $CP_CMD $G0/zero/wv_iso_euler_mixture.c  zero/
@@ -122,8 +114,119 @@ $CP_CMD $G0/zero/wv_mhd.c  zero/
 $CP_CMD $G0/zero/wv_reactive_euler.c  zero/
 $CP_CMD $G0/zero/wv_sr_euler.c  zero/
 $CP_CMD $G0/zero/wv_ten_moment.c  zero/
-$CP_CMD $G0/zero/wv_ten_moment_cu.cu  zero/
 $CP_CMD $G0/zero/wv_ten_moment_cu.cu zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson_bctype.h zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson_priv.h zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson.h zero/
+$CP_CMD $G0/zero/fem_poisson_cu.cu zero/
+$CP_CMD $G0/zero/fem_poisson.c zero/
+
+$RM_CMD $G0/zero/gkyl_gr_blackhole.h
+$RM_CMD $G0/zero/gkyl_gr_minkowski.h
+$RM_CMD $G0/zero/gkyl_gr_neutronstar.h
+$RM_CMD $G0/zero/gkyl_gr_spacetime.h
+$RM_CMD $G0/zero/gkyl_gr_spacetime_diff.h
+$RM_CMD $G0/zero/gkyl_kep_scheme.h
+$RM_CMD $G0/zero/gkyl_mhd_src.h
+$RM_CMD $G0/zero/gkyl_moment_braginskii.h
+$RM_CMD $G0/zero/gkyl_moment_em_coupling.h
+$RM_CMD $G0/zero/gkyl_moment_em_coupling_priv.h
+$RM_CMD $G0/zero/gkyl_moment_non_ideal_priv.h
+$RM_CMD $G0/zero/gkyl_moment_prim_iso_euler.h
+$RM_CMD $G0/zero/gkyl_moment_prim_mhd.h
+$RM_CMD $G0/zero/gkyl_moment_prim_sr_euler.h
+$RM_CMD $G0/zero/gkyl_mp_scheme.h
+$RM_CMD $G0/zero/gkyl_sources_explicit_priv.h
+$RM_CMD $G0/zero/gkyl_sources_implicit_priv.h
+$RM_CMD $G0/zero/gkyl_ten_moment_grad_closure.h
+$RM_CMD $G0/zero/gkyl_wave_geom.h
+$RM_CMD $G0/zero/gkyl_wave_geom_priv.h
+$RM_CMD $G0/zero/gkyl_wave_prop.h
+$RM_CMD $G0/zero/gkyl_wv_advect.h
+$RM_CMD $G0/zero/gkyl_wv_apply_bc.h
+$RM_CMD $G0/zero/gkyl_wv_burgers.h
+$RM_CMD $G0/zero/gkyl_wv_canonical_pb_fluid.h
+$RM_CMD $G0/zero/gkyl_wv_canonical_pb_fluid_priv.h
+$RM_CMD $G0/zero/gkyl_wv_coldfluid.h
+$RM_CMD $G0/zero/gkyl_wv_eqn.h
+$RM_CMD $G0/zero/gkyl_wv_euler.h
+$RM_CMD $G0/zero/gkyl_wv_euler_mixture.h
+$RM_CMD $G0/zero/gkyl_wv_euler_mixture_priv.h
+$RM_CMD $G0/zero/gkyl_wv_euler_priv.h
+$RM_CMD $G0/zero/gkyl_wv_gr_euler.h
+$RM_CMD $G0/zero/gkyl_wv_gr_euler_priv.h
+$RM_CMD $G0/zero/gkyl_wv_gr_euler_tetrad.h
+$RM_CMD $G0/zero/gkyl_wv_gr_euler_tetrad_priv.h
+$RM_CMD $G0/zero/gkyl_wv_gr_maxwell.h
+$RM_CMD $G0/zero/gkyl_wv_gr_maxwell_priv.h
+$RM_CMD $G0/zero/gkyl_wv_gr_maxwell_tetrad.h
+$RM_CMD $G0/zero/gkyl_wv_gr_maxwell_tetrad_priv.h
+$RM_CMD $G0/zero/gkyl_wv_gr_medium.h
+$RM_CMD $G0/zero/gkyl_wv_gr_medium_priv.h
+$RM_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler.h
+$RM_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler_priv.h
+$RM_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler_tetrad.h
+$RM_CMD $G0/zero/gkyl_wv_gr_ultra_rel_euler_tetrad_priv.h
+$RM_CMD $G0/zero/gkyl_wv_iso_euler.h
+$RM_CMD $G0/zero/gkyl_wv_iso_euler_mixture.h
+$RM_CMD $G0/zero/gkyl_wv_iso_euler_mixture_priv.h
+$RM_CMD $G0/zero/gkyl_wv_maxwell.h
+$RM_CMD $G0/zero/gkyl_wv_maxwell_priv.h
+$RM_CMD $G0/zero/gkyl_wv_mhd.h
+$RM_CMD $G0/zero/gkyl_wv_reactive_euler.h
+$RM_CMD $G0/zero/gkyl_wv_reactive_euler_priv.h
+$RM_CMD $G0/zero/gkyl_wv_sr_euler.h
+$RM_CMD $G0/zero/gkyl_wv_ten_moment.h
+$RM_CMD $G0/zero/gkyl_wv_ten_moment_priv.h
+$RM_CMD $G0/zero/gr_blackhole.c
+$RM_CMD $G0/zero/gr_minkowski.c
+$RM_CMD $G0/zero/gr_neutronstar.c
+$RM_CMD $G0/zero/gr_spacetime.c
+$RM_CMD $G0/zero/gr_spacetime_diff.c
+$RM_CMD $G0/zero/kep_scheme.c
+$RM_CMD $G0/zero/mhd_src.c
+$RM_CMD $G0/zero/moment_braginskii.c
+$RM_CMD $G0/zero/moment_em_coupling.c
+$RM_CMD $G0/zero/moment_prim_iso_euler.c
+$RM_CMD $G0/zero/moment_prim_mhd.c
+$RM_CMD $G0/zero/moment_prim_sr_euler.c
+$RM_CMD $G0/zero/mp_scheme.c
+$RM_CMD $G0/zero/sources_explicit.c
+$RM_CMD $G0/zero/sources_implicit.c
+$RM_CMD $G0/zero/ten_moment_grad_closure.c
+$RM_CMD $G0/zero/wave_geom.c
+$RM_CMD $G0/zero/wave_geom_cu.cu
+$RM_CMD $G0/zero/wave_prop.c
+$RM_CMD $G0/zero/wv_advect.c
+$RM_CMD $G0/zero/wv_apply_bc.c
+$RM_CMD $G0/zero/wv_burgers.c
+$RM_CMD $G0/zero/wv_canonical_pb_fluid.c
+$RM_CMD $G0/zero/wv_coldfluid.c
+$RM_CMD $G0/zero/wv_eqn.c
+$RM_CMD $G0/zero/wv_euler.c
+$RM_CMD $G0/zero/wv_euler_cu.cu
+$RM_CMD $G0/zero/wv_euler_mixture.c
+$RM_CMD $G0/zero/wv_gr_euler.c
+$RM_CMD $G0/zero/wv_gr_euler_tetrad.c
+$RM_CMD $G0/zero/wv_gr_maxwell.c
+$RM_CMD $G0/zero/wv_gr_maxwell_tetrad.c
+$RM_CMD $G0/zero/wv_gr_medium.c
+$RM_CMD $G0/zero/wv_gr_ultra_rel_euler.c
+$RM_CMD $G0/zero/wv_gr_ultra_rel_euler_tetrad.c
+$RM_CMD $G0/zero/wv_iso_euler.c
+$RM_CMD $G0/zero/wv_iso_euler_mixture.c
+$RM_CMD $G0/zero/wv_maxwell.c
+$RM_CMD $G0/zero/wv_maxwell_cu.cu
+$RM_CMD $G0/zero/wv_mhd.c
+$RM_CMD $G0/zero/wv_reactive_euler.c
+$RM_CMD $G0/zero/wv_sr_euler.c
+$RM_CMD $G0/zero/wv_ten_moment.c
+$RM_CMD $G0/zero/wv_ten_moment_cu.cu
+$RM_CMD $G0/zero/gkyl_fem_poisson_bctype.h
+$RM_CMD $G0/zero/gkyl_fem_poisson_priv.h
+$RM_CMD $G0/zero/gkyl_fem_poisson.h
+$RM_CMD $G0/zero/fem_poisson_cu.cu
+$RM_CMD $G0/zero/fem_poisson.c
 
 # app
 mkdir -p apps
@@ -142,6 +245,52 @@ $CP_CMD $G0/apps/moment.c apps/
 $CP_CMD $G0/apps/moment_lw.c apps/
 $CP_CMD $G0/apps/moment_multib.c apps/
 
+$RM_CMD $G0/apps/gkyl_moment.h
+$RM_CMD $G0/apps/gkyl_moment_lw.h
+$RM_CMD $G0/apps/gkyl_moment_multib.h
+$RM_CMD $G0/apps/gkyl_moment_multib_priv.h
+$RM_CMD $G0/apps/gkyl_moment_priv.h
+$RM_CMD $G0/apps/mom_coupling.c
+$RM_CMD $G0/apps/mom_field.c
+$RM_CMD $G0/apps/mom_priv.c
+$RM_CMD $G0/apps/mom_species.c
+$RM_CMD $G0/apps/mom_update_one_step.c
+$RM_CMD $G0/apps/mom_update_ssp_rk.c
+$RM_CMD $G0/apps/moment.c
+$RM_CMD $G0/apps/moment_lw.c
+$RM_CMD $G0/apps/moment_multib.c
+
+# AMR
+mkdir -p amr
+$CP_CMD $G0/amr/amr_block_coupled.c amr/
+$CP_CMD $G0/amr/amr_block.c amr/
+$CP_CMD $G0/amr/amr_core_euler_mixture.c amr/
+$CP_CMD $G0/amr/amr_core_euler.c amr/
+$CP_CMD $G0/amr/amr_core_five_moment.c amr/
+$CP_CMD $G0/amr/amr_core_gr_euler.c amr/
+$CP_CMD $G0/amr/amr_core_ten_moment.c amr/
+$CP_CMD $G0/amr/amr_patch_coupled.c amr/
+$CP_CMD $G0/amr/amr_patch.c amr/
+$CP_CMD $G0/amr/gkyl_amr_block_coupled_priv.h amr/
+$CP_CMD $G0/amr/gkyl_amr_block_priv.h amr/
+$CP_CMD $G0/amr/gkyl_amr_core.h amr/
+$CP_CMD $G0/amr/gkyl_amr_patch_coupled_priv.h amr/
+$CP_CMD $G0/amr/gkyl_amr_patch_priv.h amr/
+
+$RM_CMD $G0/amr/amr_block_coupled.c
+$RM_CMD $G0/amr/amr_block.c
+$RM_CMD $G0/amr/amr_core_euler_mixture.c
+$RM_CMD $G0/amr/amr_core_euler.c
+$RM_CMD $G0/amr/amr_core_five_moment.c
+$RM_CMD $G0/amr/amr_core_gr_euler.c
+$RM_CMD $G0/amr/amr_core_ten_moment.c
+$RM_CMD $G0/amr/amr_patch_coupled.c
+$RM_CMD $G0/amr/amr_patch.c
+$RM_CMD $G0/amr/gkyl_amr_block_coupled_priv.h
+$RM_CMD $G0/amr/gkyl_amr_block_priv.h
+$RM_CMD $G0/amr/gkyl_amr_core.h
+$RM_CMD $G0/amr/gkyl_amr_patch_coupled_priv.h
+$RM_CMD $G0/amr/gkyl_amr_patch_priv.h
 
 # unit
 mkdir -p unit
@@ -164,6 +313,42 @@ $CP_CMD $G0/unit/ctest_wv_mhd.c unit/
 $CP_CMD $G0/unit/ctest_wv_reactive_euler.c unit/
 $CP_CMD $G0/unit/ctest_wv_sr_euler.c unit/
 $CP_CMD $G0/unit/ctest_wv_ten_moment.c unit/
+$CP_CMD $G0/unit/ctest_gr_spacetime.c unit/
+$CP_CMD $G0/unit/ctest_wv_euler_cu.cu unit/
+$CP_CMD $G0/unit/ctest_wv_maxwell_cu.cu unit/
+$CP_CMD $G0/unit/ctest_wv_ten_moment_cu.cu unit/
+$CP_CMD $G0/unit/ctest_wave_geom_cu.cu unit/
+$CP_CMD $G0/unit/ctest_fem_poisson.c unit/
+$CP_CMD $G0/unit/ctest_fem_poisson_vareps.c unit/
+$CP_CMD $G0/unit/ctest_fem_helmholtz.c unit/
+
+$RM_CMD $G0/unit/ctest_wave_geom.c
+$RM_CMD $G0/unit/ctest_wave_geom_helpers.c
+$RM_CMD $G0/unit/ctest_wv_apply_bc.c
+$RM_CMD $G0/unit/ctest_wv_euler.c
+$RM_CMD $G0/unit/ctest_wv_euler_mixture.c
+$RM_CMD $G0/unit/ctest_wv_gr_euler.c
+$RM_CMD $G0/unit/ctest_wv_gr_euler_tetrad.c
+$RM_CMD $G0/unit/ctest_wv_gr_maxwell.c
+$RM_CMD $G0/unit/ctest_wv_gr_maxwell_tetrad.c
+$RM_CMD $G0/unit/ctest_wv_gr_medium.c
+$RM_CMD $G0/unit/ctest_wv_gr_ultra_rel_euler.c
+$RM_CMD $G0/unit/ctest_wv_gr_ultra_rel_euler_tetrad.c
+$RM_CMD $G0/unit/ctest_wv_iso_euler.c
+$RM_CMD $G0/unit/ctest_wv_iso_euler_mixture.c
+$RM_CMD $G0/unit/ctest_wv_maxwell.c
+$RM_CMD $G0/unit/ctest_wv_mhd.c
+$RM_CMD $G0/unit/ctest_wv_reactive_euler.c
+$RM_CMD $G0/unit/ctest_wv_sr_euler.c
+$RM_CMD $G0/unit/ctest_wv_ten_moment.c
+$RM_CMD $G0/unit/ctest_gr_spacetime.c
+$RM_CMD $G0/unit/ctest_wv_euler_cu.cu
+$RM_CMD $G0/unit/ctest_wv_maxwell_cu.cu
+$RM_CMD $G0/unit/ctest_wv_ten_moment_cu.cu
+$RM_CMD $G0/unit/ctest_wave_geom_cu.cu
+$RM_CMD $G0/unit/ctest_fem_poisson.c
+$RM_CMD $G0/unit/ctest_fem_poisson_vareps.c
+$RM_CMD $G0/unit/ctest_fem_helmholtz.c
 
 # C regression tests
 mkdir -p creg
@@ -198,7 +383,6 @@ $CP_CMD $G0/regression/rt_5m_riem.c creg/
 $CP_CMD $G0/regression/rt_5m_rt.c creg/
 $CP_CMD $G0/regression/rt_advect_wv.c creg/
 $CP_CMD $G0/regression/rt_advect_wv_mp.c creg/
-$CP_CMD $G0/regression/rt_arg_parse.h creg/
 $CP_CMD $G0/regression/rt_burgers_shock.c creg/
 $CP_CMD $G0/regression/rt_burgers_shock_mp.c creg/
 $CP_CMD $G0/regression/rt_coldfluid_beach.c creg/
@@ -287,6 +471,205 @@ $CP_CMD $G0/regression/rt_reactive_euler_detonation.c creg/
 $CP_CMD $G0/regression/rt_sr_euler_KH_2d.c creg/
 $CP_CMD $G0/regression/rt_sr_euler_riem_2d.c creg/
 $CP_CMD $G0/regression/rt_sr_euler_sodshock.c creg/
+$CP_CMD $G0/regression/rt_euler_multiblock.c creg/
+$CP_CMD $G0/regression/rt_multib_euler_2d.c creg/
+$CP_CMD $G0/regression/rt_arg_parse.h creg/
+
+$RM_CMD $G0/regression/rt_10m_burch.c
+$RM_CMD $G0/regression/rt_10m_burch_grad_closure.c
+$RM_CMD $G0/regression/rt_10m_expanding.c
+$RM_CMD $G0/regression/rt_10m_expanding_axi_sodshock.c
+$RM_CMD $G0/regression/rt_10m_expanding_sodshock.c
+$RM_CMD $G0/regression/rt_10m_gem.c
+$RM_CMD $G0/regression/rt_10m_gem_grad_closure.c
+$RM_CMD $G0/regression/rt_10m_lhdi.c
+$RM_CMD $G0/regression/rt_10m_lhdi_grad_closure.c
+$RM_CMD $G0/regression/rt_10m_par_firehose.c
+$RM_CMD $G0/regression/rt_10m_par_firehose_grad_closure.c
+$RM_CMD $G0/regression/rt_10m_riem.c
+$RM_CMD $G0/regression/rt_10m_riem_grad_closure.c
+$RM_CMD $G0/regression/rt_10m_sodshock.c
+$RM_CMD $G0/regression/rt_10m_sodshock_lax.c
+$RM_CMD $G0/regression/rt_5m_burch.c
+$RM_CMD $G0/regression/rt_5m_elc_heat_flux.c
+$RM_CMD $G0/regression/rt_5m_em_advect.c
+$RM_CMD $G0/regression/rt_5m_em_advect_resonant.c
+$RM_CMD $G0/regression/rt_5m_expanding.c
+$RM_CMD $G0/regression/rt_5m_expanding_axi_sodshock.c
+$RM_CMD $G0/regression/rt_5m_expanding_sodshock.c
+$RM_CMD $G0/regression/rt_5m_friction.c
+$RM_CMD $G0/regression/rt_5m_gem.c
+$RM_CMD $G0/regression/rt_5m_hartmann.c
+$RM_CMD $G0/regression/rt_5m_ion_heat_flux.c
+$RM_CMD $G0/regression/rt_5m_mom_beach.c
+$RM_CMD $G0/regression/rt_5m_riem.c
+$RM_CMD $G0/regression/rt_5m_rt.c
+$RM_CMD $G0/regression/rt_advect_wv.c
+$RM_CMD $G0/regression/rt_advect_wv_mp.c
+$RM_CMD $G0/regression/rt_burgers_shock.c
+$RM_CMD $G0/regression/rt_burgers_shock_mp.c
+$RM_CMD $G0/regression/rt_coldfluid_beach.c
+$RM_CMD $G0/regression/rt_coldfluid_clouda.c
+$RM_CMD $G0/regression/rt_coldfluid_em_coupling.c
+$RM_CMD $G0/regression/rt_euler_axi_sodshock.c
+$RM_CMD $G0/regression/rt_euler_axi_vac_riem.c
+$RM_CMD $G0/regression/rt_euler_bump_in_channel.c
+$RM_CMD $G0/regression/rt_euler_c2p_sodshock.c
+$RM_CMD $G0/regression/rt_euler_cart_axi_sodshock.c
+$RM_CMD $G0/regression/rt_euler_kh_2d.c
+$RM_CMD $G0/regression/rt_euler_mixture_fedkiw_shock.c
+$RM_CMD $G0/regression/rt_euler_mixture_shock_bubble.c
+$RM_CMD $G0/regression/rt_euler_noh_1d.c
+$RM_CMD $G0/regression/rt_euler_p_perturbation.c
+$RM_CMD $G0/regression/rt_euler_reflect_2d.c
+$RM_CMD $G0/regression/rt_euler_riem_2d_hll.c
+$RM_CMD $G0/regression/rt_euler_riem_2d_hllc.c
+$RM_CMD $G0/regression/rt_euler_riem_2d_lax.c
+$RM_CMD $G0/regression/rt_euler_riem_2d_roe.c
+$RM_CMD $G0/regression/rt_euler_riem_3d.c
+$RM_CMD $G0/regression/rt_euler_rt.c
+$RM_CMD $G0/regression/rt_euler_sodshock.c
+$RM_CMD $G0/regression/rt_euler_sodshock_lax.c
+$RM_CMD $G0/regression/rt_euler_sodshock_mp.c
+$RM_CMD $G0/regression/rt_euler_superwedge.c
+$RM_CMD $G0/regression/rt_euler_vac.c
+$RM_CMD $G0/regression/rt_euler_vac_riem_1d.c
+$RM_CMD $G0/regression/rt_euler_wave_2d_kep.c
+$RM_CMD $G0/regression/rt_euler_wave_2d_mp.c
+$RM_CMD $G0/regression/rt_euler_wave_2d_wv.c
+$RM_CMD $G0/regression/rt_euler_wedge_sodshock.c
+$RM_CMD $G0/regression/rt_gr_bhl_spinning.c
+$RM_CMD $G0/regression/rt_gr_bhl_spinning_tetrad.c
+$RM_CMD $G0/regression/rt_gr_bhl_static.c
+$RM_CMD $G0/regression/rt_gr_bhl_static_neutronstar.c
+$RM_CMD $G0/regression/rt_gr_bhl_static_tetrad.c
+$RM_CMD $G0/regression/rt_gr_blackhole_spinning.c
+$RM_CMD $G0/regression/rt_gr_blackhole_static.c
+$RM_CMD $G0/regression/rt_gr_bz_monopole_fast.c
+$RM_CMD $G0/regression/rt_gr_bz_monopole_fast_tetrad.c
+$RM_CMD $G0/regression/rt_gr_bz_monopole_slow.c
+$RM_CMD $G0/regression/rt_gr_bz_monopole_slow_tetrad.c
+$RM_CMD $G0/regression/rt_gr_current_sheet.c
+$RM_CMD $G0/regression/rt_gr_current_sheet_tetrad.c
+$RM_CMD $G0/regression/rt_gr_einstein_plane_shock.c
+$RM_CMD $G0/regression/rt_gr_kh_2d.c
+$RM_CMD $G0/regression/rt_gr_mild_shock.c
+$RM_CMD $G0/regression/rt_gr_mild_shock_tetrad.c
+$RM_CMD $G0/regression/rt_gr_perturbed_density.c
+$RM_CMD $G0/regression/rt_gr_quadrants_2d.c
+$RM_CMD $G0/regression/rt_gr_strong_blast.c
+$RM_CMD $G0/regression/rt_gr_ultra_rel_bhl_spinning.c
+$RM_CMD $G0/regression/rt_gr_ultra_rel_bhl_spinning_tetrad.c
+$RM_CMD $G0/regression/rt_gr_ultra_rel_bhl_static.c
+$RM_CMD $G0/regression/rt_gr_ultra_rel_bhl_static_tetrad.c
+$RM_CMD $G0/regression/rt_gr_ultra_rel_shock.c
+$RM_CMD $G0/regression/rt_gr_ultra_rel_shock_tetrad.c
+$RM_CMD $G0/regression/rt_gr_wald_magnetosphere_spinning.c
+$RM_CMD $G0/regression/rt_gr_wald_magnetosphere_spinning_tetrad.c
+$RM_CMD $G0/regression/rt_gr_wald_magnetosphere_static.c
+$RM_CMD $G0/regression/rt_gr_wald_magnetosphere_static_neutronstar.c
+$RM_CMD $G0/regression/rt_gr_wald_magnetosphere_static_tetrad.c
+$RM_CMD $G0/regression/rt_iso_euler_friction.c
+$RM_CMD $G0/regression/rt_iso_euler_hartmann.c
+$RM_CMD $G0/regression/rt_iso_euler_mixture_fedkiw_shock.c
+$RM_CMD $G0/regression/rt_iso_euler_mixture_shock_bubble.c
+$RM_CMD $G0/regression/rt_iso_euler_sodshock.c
+$RM_CMD $G0/regression/rt_iso_euler_sodshock_lax.c
+$RM_CMD $G0/regression/rt_iso_gem.c
+$RM_CMD $G0/regression/rt_maxwell_annular_wg.c
+$RM_CMD $G0/regression/rt_maxwell_annulus.c
+$RM_CMD $G0/regression/rt_maxwell_axi_wg.c
+$RM_CMD $G0/regression/rt_maxwell_expanding.c
+$RM_CMD $G0/regression/rt_maxwell_expanding_2d.c
+$RM_CMD $G0/regression/rt_maxwell_plane_wave_1d.c
+$RM_CMD $G0/regression/rt_maxwell_plane_wave_1d_mp.c
+$RM_CMD $G0/regression/rt_maxwell_plane_wave_2d.c
+$RM_CMD $G0/regression/rt_maxwell_plane_wave_2d_mp.c
+$RM_CMD $G0/regression/rt_maxwell_reflect_2d.c
+$RM_CMD $G0/regression/rt_maxwell_wg_2d.c
+$RM_CMD $G0/regression/rt_mhd_brio_wu.c
+$RM_CMD $G0/regression/rt_mhd_ot.c
+$RM_CMD $G0/regression/rt_mhd_rj2.c
+$RM_CMD $G0/regression/rt_reactive_euler_detonation.c
+$RM_CMD $G0/regression/rt_sr_euler_KH_2d.c
+$RM_CMD $G0/regression/rt_sr_euler_riem_2d.c
+$RM_CMD $G0/regression/rt_sr_euler_sodshock.c
+$RM_CMD $G0/regression/rt_euler_multiblock.c
+$RM_CMD $G0/regression/rt_multib_euler_2d.c
 
 # Lua regression tests
 mkdir -p luareg
+
+# AMR C regression tests
+mkdir -p amr_creg
+$CP_CMD $G0/amr_regression/rt_amr_5m_gem_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_5m_gem_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_5m_riem_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_5m_riem_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_10m_gem_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_10m_gem_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_10m_riem_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_cart_axi_sodshock_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_cart_axi_sodshock_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_mixture_fedkiw_shock_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_mixture_fedkiw_shock_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_mixture_shock_bubble_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_mixture_shock_bubble_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_riem_2d_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_riem_2d_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_shock_bubble_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_shock_bubble_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_sodshock_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_euler_sodshock_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_bhl_spinning_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_bhl_spinning_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_bhl_static_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_bhl_static_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_blackhole_spinning_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_blackhole_spinning_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_blackhole_static_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_blackhole_static_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_mild_shock_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_mild_shock_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_perturbed_density_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_perturbed_density_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_quadrants_2d_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_quadrants_2d_l2.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_strong_blast_l1.c amr_creg/
+$CP_CMD $G0/amr_regression/rt_amr_gr_strong_blast_l2.c amr_creg/
+
+$RM_CMD $G0/amr_regression/rt_amr_5m_gem_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_5m_gem_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_5m_riem_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_5m_riem_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_10m_gem_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_10m_gem_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_10m_riem_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_cart_axi_sodshock_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_cart_axi_sodshock_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_mixture_fedkiw_shock_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_mixture_fedkiw_shock_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_mixture_shock_bubble_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_mixture_shock_bubble_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_riem_2d_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_riem_2d_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_shock_bubble_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_shock_bubble_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_sodshock_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_euler_sodshock_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_bhl_spinning_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_bhl_spinning_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_bhl_static_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_bhl_static_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_blackhole_spinning_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_blackhole_spinning_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_blackhole_static_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_blackhole_static_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_mild_shock_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_mild_shock_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_perturbed_density_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_perturbed_density_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_quadrants_2d_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_quadrants_2d_l2.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_strong_blast_l1.c
+$RM_CMD $G0/amr_regression/rt_amr_gr_strong_blast_l2.c

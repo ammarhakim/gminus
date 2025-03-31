@@ -7,7 +7,7 @@ BUILD_DATE = $(shell date)
 GIT_TIP = $(shell git describe --abbrev=12 --always --dirty=+)
 
 # Build directory
-BUILD_DIR ?= build
+BUILD_DIR ?= ../build
 
 ARCH_FLAGS ?= -march=native
 CFLAGS ?= -O3 -g -ffast-math -fPIC -MMD -MP -DGIT_COMMIT_ID=\"$(GIT_TIP)\" -DGKYL_BUILD_DATE="${BUILD_DATE}" -DGKYL_GIT_CHANGESET="${GIT_TIP}"
@@ -30,6 +30,19 @@ ifeq ($(UNAME), Darwin)
 	LAPACK_INC = core # dummy
 	LAPACK_LIB = -framework Accelerate
 	CFLAGS += -DGKYL_USING_FRAMEWORK_ACCELERATE
+endif
+
+# Directory for storing shared data, like ADAS reaction rates and radiation fits
+GKYL_SHARE_DIR ?= "${INSTALL_PREFIX}/${PROJ_NAME}/share"
+CFLAGS += -DGKYL_SHARE_DIR=$(GKYL_SHARE_DIR)
+
+# Read ADAS paths and flags if needed 
+USING_ADAS =
+ADAS_INC_DIR = zero # dummy
+ADAS_LIB_DIR = .
+ifeq (${USE_ADAS}, 1)
+	USING_ADAS = yes
+	CFLAGS += -DGKYL_HAVE_ADAS
 endif
 
 # Include config.mak file (if it exists) to overide defaults above
@@ -83,15 +96,20 @@ MKDIR_P ?= mkdir -p
 
 .EXPORT_ALL_VARIABLES:
 
-all: moments ## Builds all apps. Does not build unit or regression tests
+all: core moments vlasov gyrokinetic pkpm
+	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
+	cp ./data/adas/radiation_fit_parameters.txt ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 
 ## Core infrastructure targets
-.PHONY: core core-unit core-clean core-install core-check core-valcheck
+.PHONY: core core-unit core-clean core-install core-check core-valcheck core-regression
 core:  ## Build core infrastructure code
 	cd core && $(MAKE) -f Makefile-core
 
 core-unit: ## Build core unit tests
 	cd core && $(MAKE) -f Makefile-core unit
+
+core-regression: ## Build core regression tests
+	cd core && $(MAKE) -f Makefile-core regression
 
 core-install: ## Install core infrastructure code
 	cd core && $(MAKE) -f Makefile-core install
@@ -107,7 +125,7 @@ core-valcheck: ## Run valgrind on unit tests in core
 	cd core && $(MAKE) -f Makefile-core valcheck
 
 ## Moments infrastructure targets
-.PHONY: moments moments-unit moments-install moments-clean moments-check moments-valcheck
+.PHONY: moments moments-unit moments-install moments-clean moments-check moments-valcheck moments-regression
 moments: core  ## Build moments infrastructure code
 	cd moments && $(MAKE) -f Makefile-moments
 
@@ -116,6 +134,9 @@ moments-unit: moments ## Build moments unit tests
 
 moments-regression: moments ## Build moments regression tests
 	cd moments && $(MAKE) -f Makefile-moments regression
+
+moments-amr-regression: moments ## Build moments AMR regression tests
+	cd moments && $(MAKE) -f Makefile-moments amr_regression
 
 moments-install: core-install ## Install moments infrastructure code
 	cd moments && $(MAKE) -f Makefile-moments install
@@ -129,28 +150,96 @@ moments-check: ## Run unit tests in moments
 moments-valcheck: ## Run valgrind on unit tests in moments
 	cd moments && $(MAKE) -f Makefile-moments valcheck
 
+## Vlasov infrastructure targets
+.PHONY: vlasov vlasov-unit vlasov-install vlasov-clean vlasov-check vlasov-valcheck vlasov-regression
+vlasov: moments  ## Build Vlasov infrastructure code
+	cd vlasov && $(MAKE) -f Makefile-vlasov
+
+vlasov-unit: vlasov ## Build Vlasov unit tests
+	cd vlasov && $(MAKE) -f Makefile-vlasov unit
+
+vlasov-regression: vlasov ## Build Vlasov regression tests
+	cd vlasov && $(MAKE) -f Makefile-vlasov regression
+
+vlasov-install: moments-install ## Install Vlasov infrastructure code
+	cd vlasov && $(MAKE) -f Makefile-vlasov install
+
+vlasov-clean: ## Clean Vlasov infrastructure code
+	cd vlasov && $(MAKE) -f Makefile-vlasov clean
+
+vlasov-check: ## Run unit tests in Vlasov
+	cd vlasov && $(MAKE) -f Makefile-vlasov check
+
+vlasov-valcheck: ## Run valgrind on unit tests in Vlasov
+	cd vlasov && $(MAKE) -f Makefile-vlasov valcheck
+
+## Gyrokinetic infrastructure targets
+.PHONY: gyrokinetic gyrokinetic-unit gyrokinetic-install gyrokinetic-clean gyrokinetic-check gyrokinetic-valcheck gyrokinetic-regression
+gyrokinetic: vlasov  ## Build Gyrokinetic infrastructure code
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic
+
+gyrokinetic-unit: gyrokinetic ## Build Gyrokinetic unit tests
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic unit
+
+gyrokinetic-regression: gyrokinetic ## Build Gyrokinetic regression tests
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic regression
+
+gyrokinetic-install: vlasov-install ## Install Gyrokinetic infrastructure code
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic install
+
+gyrokinetic-clean: ## Clean Gyrokinetic infrastructure code
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic clean
+
+gyrokinetic-check: ## Run unit tests in Gyrokinetics
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic check
+
+gyrokinetic-valcheck: ## Run valgrind on unit tests in Gyrokinetics
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic valcheck
+
+## PKPM infrastructure targets
+.PHONY: pkpm pkpm-unit pkpm-install pkpm-clean pkpm-check pkpm-valcheck pkpm-regression
+pkpm: gyrokinetic  ## Build PKPM infrastructure code
+	cd pkpm && $(MAKE) -f Makefile-pkpm
+
+pkpm-unit: pkpm ## Build PKPM unit tests
+	cd pkpm && $(MAKE) -f Makefile-pkpm unit
+
+pkpm-regression: pkpm ## Build PKM regression tests
+	cd pkpm && $(MAKE) -f Makefile-pkpm regression
+
+pkpm-install: gyrokinetic-install ## Install PKPM infrastructure code
+	cd pkpm && $(MAKE) -f Makefile-pkpm install
+
+pkpm-clean: ## Clean PKPM infrastructure code
+	cd pkpm && $(MAKE) -f Makefile-pkpm clean
+
+pkpm-check: ## Run unit tests in PKPM
+	cd pkpm && $(MAKE) -f Makefile-pkpm check
+
+pkpm-valcheck: ## Run valgrind on unit tests in PKPM
+	cd pkpm && $(MAKE) -f Makefile-pkpm valcheck
 
 ## Targets to build things all parts of the code
 
 # build all unit tests 
-.PHONY: unit 
-unit: core-unit moments-unit ## Build all unit tests
+.PHONY: unit
+unit: core-unit moments-unit vlasov-unit gyrokinetic-unit pkpm-unit ## Build all unit tests
 
 # build all regression tests 
 .PHONY: regression
-regression: moments-regression ## Build all regression tests
+regression: core-regression moments-regression vlasov-regression gyrokinetic-regression pkpm-regression ## Build all regression tests
 
 # Install everything
 .PHONY: install 
-install: core-install moments-install ## Install all code
+install: core-install moments-install vlasov-install gyrokinetic-install pkpm-install ## Install all code
 
 # Clean everything
 .PHONY: clean 
-clean: core-clean moments-clean  ## Clean all builds
+clean: core-clean moments-clean vlasov-clean gyrokinetic-clean pkpm-clean ## Clean all builds
 
 # Check everything
 .PHONY: check
-check: core-check moments-check ## Run all unit tests
+check: core-check moments-check vlasov-check gyrokinetic-check pkpm-check ## Run all unit tests
 
 # From: https://www.client9.com/self-documenting-makefiles/
 .PHONY: help
