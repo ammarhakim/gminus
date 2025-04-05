@@ -84,7 +84,11 @@ $(REGS): ../${BUILD_DIR}/pkpm/creg/%: creg/%.c $(LLIB)
 # build lib
 $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
+ifeq ($(UNAME),Linux)
+	$(CC) -shared -o $@ $(OBJS) -Wl,-soname,libg0pkpm.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${GYROKINETIC_LIB_DIR} ${GYROKINETIC_LIB} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+else
 	$(CC) -shared -o $@ $(OBJS) -Wl,-install_name,@rpath/libg0pkpm.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${GYROKINETIC_LIB_DIR} ${GYROKINETIC_LIB} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+endif
 
 .PHONY: check valcheck
 # Run all unit tests
