@@ -374,7 +374,6 @@ $CP_CMD $G0/unit/ctest_rect_grid.c unit/
 $CP_CMD $G0/unit/lctest_lua_utils.c unit/
 $CP_CMD $G0/unit/mctest_mpi_comm.c unit/
 $CP_CMD $G0/unit/mctest_mpi_comm_read.c unit/
-$CP_CMD $G0/unit/mctest_multib_sync.c unit/
 $CP_CMD $G0/unit/ctest_alloc_cu.cu unit/
 $CP_CMD $G0/unit/ctest_alloc.c unit/
 $CP_CMD $G0/unit/ctest_array_average.c unit/
@@ -401,7 +400,6 @@ $CP_CMD $G0/unit/ctest_struct_of_arrays_cu.cu unit/
 $CP_CMD $G0/unit/ctest_struct_of_arrays.c unit/
 $CP_CMD $G0/unit/mctest_nccl_comm.c unit/
 $CP_CMD $G0/unit/ctest_skin_surf_from_ghost.c unit/
-$CP_CMD $G0/unit/mctest_multib_allgather.c unit/
 
 $RM_CMD $G0/unit/ctest_array.c
 $RM_CMD $G0/unit/ctest_array_reduce.c
@@ -422,7 +420,6 @@ $RM_CMD $G0/unit/ctest_rect_grid.c
 $RM_CMD $G0/unit/lctest_lua_utils.c
 $RM_CMD $G0/unit/mctest_mpi_comm.c
 $RM_CMD $G0/unit/mctest_mpi_comm_read.c
-$RM_CMD $G0/unit/mctest_multib_sync.c
 $RM_CMD $G0/unit/ctest_alloc_cu.cu
 $RM_CMD $G0/unit/ctest_alloc.c
 $RM_CMD $G0/unit/ctest_array_average.c
@@ -449,7 +446,6 @@ $RM_CMD $G0/unit/ctest_struct_of_arrays_cu.cu
 $RM_CMD $G0/unit/ctest_struct_of_arrays.c
 $RM_CMD $G0/unit/mctest_nccl_comm.c
 $RM_CMD $G0/unit/ctest_skin_surf_from_ghost.c
-$RM_CMD $G0/unit/mctest_multib_allgather.c
 
 # C regression tests
 mkdir -p creg

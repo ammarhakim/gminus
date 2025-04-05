@@ -118,10 +118,10 @@ core-install: ## Install core infrastructure code
 core-clean: ## Clean core infrastructure code
 	cd core && $(MAKE) -f Makefile-core clean
 
-core-check: ## Run unit tests in core
+core-check: core ## Run unit tests in core
 	cd core && $(MAKE) -f Makefile-core check
 
-core-valcheck: ## Run valgrind on unit tests in core
+core-valcheck: core ## Run valgrind on unit tests in core
 	cd core && $(MAKE) -f Makefile-core valcheck
 
 ## Moments infrastructure targets
@@ -144,10 +144,10 @@ moments-install: core-install ## Install moments infrastructure code
 moments-clean: ## Clean moments infrastructure code
 	cd moments && $(MAKE) -f Makefile-moments clean
 
-moments-check: ## Run unit tests in moments
+moments-check: moments ## Run unit tests in moments
 	cd moments && $(MAKE) -f Makefile-moments check
 
-moments-valcheck: ## Run valgrind on unit tests in moments
+moments-valcheck: moments ## Run valgrind on unit tests in moments
 	cd moments && $(MAKE) -f Makefile-moments valcheck
 
 ## Vlasov infrastructure targets
@@ -167,10 +167,10 @@ vlasov-install: moments-install ## Install Vlasov infrastructure code
 vlasov-clean: ## Clean Vlasov infrastructure code
 	cd vlasov && $(MAKE) -f Makefile-vlasov clean
 
-vlasov-check: ## Run unit tests in Vlasov
+vlasov-check: vlasov ## Run unit tests in Vlasov
 	cd vlasov && $(MAKE) -f Makefile-vlasov check
 
-vlasov-valcheck: ## Run valgrind on unit tests in Vlasov
+vlasov-valcheck: vlasov ## Run valgrind on unit tests in Vlasov
 	cd vlasov && $(MAKE) -f Makefile-vlasov valcheck
 
 ## Gyrokinetic infrastructure targets
@@ -190,10 +190,10 @@ gyrokinetic-install: vlasov-install ## Install Gyrokinetic infrastructure code
 gyrokinetic-clean: ## Clean Gyrokinetic infrastructure code
 	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic clean
 
-gyrokinetic-check: ## Run unit tests in Gyrokinetics
+gyrokinetic-check: gyrokinetic ## Run unit tests in Gyrokinetics
 	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic check
 
-gyrokinetic-valcheck: ## Run valgrind on unit tests in Gyrokinetics
+gyrokinetic-valcheck: gyrokinetic ## Run valgrind on unit tests in Gyrokinetics
 	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic valcheck
 
 ## PKPM infrastructure targets
@@ -213,10 +213,10 @@ pkpm-install: gyrokinetic-install ## Install PKPM infrastructure code
 pkpm-clean: ## Clean PKPM infrastructure code
 	cd pkpm && $(MAKE) -f Makefile-pkpm clean
 
-pkpm-check: ## Run unit tests in PKPM
+pkpm-check: pkpm ## Run unit tests in PKPM
 	cd pkpm && $(MAKE) -f Makefile-pkpm check
 
-pkpm-valcheck: ## Run valgrind on unit tests in PKPM
+pkpm-valcheck: pkpm ## Run valgrind on unit tests in PKPM
 	cd pkpm && $(MAKE) -f Makefile-pkpm valcheck
 
 ## Targets to build things all parts of the code

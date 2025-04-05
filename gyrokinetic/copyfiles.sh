@@ -647,6 +647,8 @@ $CP_CMD $G0/unit/ctest_step_compare.c unit/
 $CP_CMD $G0/unit/ctest_step_outboard.c unit/
 $CP_CMD $G0/unit/ctest_time_roots.c unit/
 $CP_CMD $G0/unit/ctest_translate_dim_gyrokinetic.c unit/
+$CP_CMD $G0/unit/mctest_multib_sync.c unit/
+$CP_CMD $G0/unit/mctest_multib_allgather.c unit/
 
 $RM_CMD $G0/unit/ctest_ambi_bolt_potential.c
 $RM_CMD $G0/unit/ctest_asdex.c
@@ -687,6 +689,8 @@ $RM_CMD $G0/unit/ctest_step_compare.c
 $RM_CMD $G0/unit/ctest_step_outboard.c
 $RM_CMD $G0/unit/ctest_time_roots.c
 $RM_CMD $G0/unit/ctest_translate_dim_gyrokinetic.c
+$RM_CMD $G0/unit/mctest_multib_sync.c
+$RM_CMD $G0/unit/mctest_multib_allgather.c
 
 # C regression tests
 mkdir -p creg

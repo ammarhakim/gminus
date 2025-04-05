@@ -54,6 +54,12 @@ LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/vlasov
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/gyrokinetic
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/pkpm
 
+LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/core
+LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/moments
+LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/vlasov
+LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/gyrokinetic
+LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/pkpm
+
 unit: ${LLIB} $(UNITS) ${MPI_UNITS} ## Build unit tests
 regression: ${LLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
 
@@ -92,10 +98,10 @@ endif
 
 .PHONY: check valcheck
 # Run all unit tests
-check: ${UNITS} ## Build (if needed) and run all unit tests
+check: unit ## Build (if needed) and run all unit tests
 	$(foreach unit,${UNITS},echo $(unit); $(unit) -E;)
 
-valcheck: ${UNITS}   ## Run valgrind on unit test
+valcheck: unit ## Run valgrind on unit test
 	$(foreach unit,$(UNITS),valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-error-list=yes $(unit) --exec=never 2>$(unit)_val_err 1>/dev/null;)
 	$(foreach unit,$(UNITS),../core/minus/checkval.sh $(unit);)
 
