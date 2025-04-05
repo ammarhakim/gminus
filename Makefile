@@ -222,7 +222,7 @@ pkpm-valcheck: ## Run valgrind on unit tests in PKPM
 ## Targets to build things all parts of the code
 
 # build all unit tests 
-.PHONY: unit
+.PHONY: unit 
 unit: core-unit moments-unit vlasov-unit gyrokinetic-unit pkpm-unit ## Build all unit tests
 
 # build all regression tests 
