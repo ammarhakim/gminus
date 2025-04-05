@@ -12,16 +12,16 @@ else
 	SUPERLU_LIB = $(PREFIX)/superlu/lib/libsuperlu.a
 endif
 
-LLIB := $(BUILD_DIR)/vlasov/libg0vlasov.a
+LLIB := ../$(BUILD_DIR)/vlasov/libg0vlasov.so
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
-OBJS := $(SRCS:%=$(BUILD_DIR)/vlasov/%.o)
+OBJS := $(SRCS:%=../$(BUILD_DIR)/vlasov/%.o)
 DEPS := $(OBJS:.o=.d)
 
-UNITS := $(patsubst %.c,${BUILD_DIR}/vlasov/%,$(wildcard unit/ctest_*.c))
-MPI_UNITS := $(patsubst %.c,${BUILD_DIR}/vlasov/%,$(wildcard unit/mctest_*.c))
-LUA_UNITS := $(patsubst %.c,${BUILD_DIR}/vlasov/%,$(wildcard unit/lctest_*.c))
+UNITS := $(patsubst %.c,../${BUILD_DIR}/vlasov/%,$(wildcard unit/ctest_*.c))
+MPI_UNITS := $(patsubst %.c,../${BUILD_DIR}/vlasov/%,$(wildcard unit/mctest_*.c))
+LUA_UNITS := $(patsubst %.c,../${BUILD_DIR}/vlasov/%,$(wildcard unit/lctest_*.c))
 
-REGS := $(patsubst %.c,${BUILD_DIR}/vlasov/%,$(wildcard creg/rt_*.c))
+REGS := $(patsubst %.c,../${BUILD_DIR}/vlasov/%,$(wildcard creg/rt_*.c))
 
 KERN_INC_DIRS = $(shell find kernels -type d)
 KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
@@ -30,15 +30,19 @@ CORE_INCS := -I../core/kernels/array_average -I../core/kernels/array_integrate -
 MOMENTS_INCS := -I../moments/kernels/fem_poisson -I../moments/apps -I../moments/zero
 INCS := ${EXT_INCS} ${CORE_INCS} ${MOMENTS_INCS} -Ikernels -Izero -Iapps -Icreg  $(KERN_INCLUDES)
 
-CORE_LIB_DIR := -L${BUILD_DIR}/core
+CORE_LIB_DIR := -L../${BUILD_DIR}/core
 CORE_LIB := -lg0core
 
-MOMENTS_LIB_DIR := -L${BUILD_DIR}/moments
+MOMENTS_LIB_DIR := -L../${BUILD_DIR}/moments
 MOMENTS_LIB := -lg0moments
 
 EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
 EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
-EXEC_LIBS = -L${BUILD_DIR}/vlasov ${LLIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} ${EXEC_EXT_LIBS}
+EXEC_LIBS = -L../${BUILD_DIR}/vlasov ${LLIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} ${EXEC_EXT_LIBS}
+
+LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/core
+LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/moments
+LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/vlasov
 
 unit: ${LLIB} $(UNITS) ${MPI_UNITS} ## Build unit tests
 regression: ${LLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
@@ -48,29 +52,29 @@ all: $(LLIB) ## Build all targets
 .DEFAULT_GOAL := all
 
 # c -> o files
-$(BUILD_DIR)/vlasov/%.c.o: %.c
+../$(BUILD_DIR)/vlasov/%.c.o: %.c
 	$(MKDIR_P) $(dir $@)
 	$(CC) -c $(CFLAGS) $(INCS) $< -o $@
 
 # Unit tests
-$(UNITS): ${BUILD_DIR}/vlasov/unit/%: unit/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/vlasov/unit
+$(UNITS): ../${BUILD_DIR}/vlasov/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ../${BUILD_DIR}/vlasov/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # MPI unit tests
-$(MPI_UNITS): ${BUILD_DIR}/vlasov/unit/%: unit/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/vlasov/unit
+$(MPI_UNITS): ../${BUILD_DIR}/vlasov/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ../${BUILD_DIR}/vlasov/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # Regression tests
-$(REGS): ${BUILD_DIR}/vlasov/creg/%: creg/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/vlasov/creg
+$(REGS): ../${BUILD_DIR}/vlasov/creg/%: creg/%.c $(LLIB)
+	$(MKDIR_P) ../${BUILD_DIR}/vlasov/creg
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # build lib
 $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
-	ar -crs $@ $(OBJS)
+	$(CC) -shared -o $@ $(OBJS) -Wl,-install_name,@rpath/libg0vlasov.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 
 .PHONY: check valcheck
 # Run all unit tests
@@ -96,8 +100,8 @@ install: all
 # Headers
 	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/${PROJ_NAME}/include
 # libraries
-	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0vlasov.a
+	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0vlasov.so
 
 .PHONY: clean
 clean: ## Clean build output
-	rm -rf ${BUILD_DIR}/vlasov
+	rm -rf ../${BUILD_DIR}/vlasov

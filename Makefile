@@ -7,7 +7,7 @@ BUILD_DATE = $(shell date)
 GIT_TIP = $(shell git describe --abbrev=12 --always --dirty=+)
 
 # Build directory
-BUILD_DIR ?= ../build
+BUILD_DIR ?= build
 
 ARCH_FLAGS ?= -march=native
 CFLAGS ?= -O3 -g -ffast-math -fPIC -MMD -MP -DGIT_COMMIT_ID=\"$(GIT_TIP)\" -DGKYL_BUILD_DATE="${BUILD_DATE}" -DGKYL_GIT_CHANGESET="${GIT_TIP}"

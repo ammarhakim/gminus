@@ -15,15 +15,15 @@ else
 	SUPERLU_LIB = $(PREFIX)/superlu/lib/libsuperlu.a
 endif
 
-LLIB := $(BUILD_DIR)/core/libg0core.a
+LLIB := ../$(BUILD_DIR)/core/libg0core.so
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
-OBJS := $(SRCS:%=$(BUILD_DIR)/core/%.o)
+OBJS := $(SRCS:%=../$(BUILD_DIR)/core/%.o)
 DEPS := $(OBJS:.o=.d)
-UNITS := $(patsubst %.c,${BUILD_DIR}/core/%,$(wildcard unit/ctest_*.c))
-MPI_UNITS := $(patsubst %.c,${BUILD_DIR}/core/%,$(wildcard unit/mctest_*.c))
-LUA_UNITS := $(patsubst %.c,${BUILD_DIR}/core/%,$(wildcard unit/lctest_*.c))
+UNITS := $(patsubst %.c,../${BUILD_DIR}/core/%,$(wildcard unit/ctest_*.c))
+MPI_UNITS := $(patsubst %.c,../${BUILD_DIR}/core/%,$(wildcard unit/mctest_*.c))
+LUA_UNITS := $(patsubst %.c,../${BUILD_DIR}/core/%,$(wildcard unit/lctest_*.c))
 
-REGS := $(patsubst %.c,${BUILD_DIR}/core/%,$(wildcard creg/rt_*.c))
+REGS := $(patsubst %.c,../${BUILD_DIR}/core/%,$(wildcard creg/rt_*.c))
 
 KERN_INC_DIRS = $(shell find kernels -type d)
 KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
@@ -32,7 +32,9 @@ INCS := ${EXT_INCS} -Iminus -Iminus/STC/include -Izero -Iapps -I${SUPERLU_INC} $
 
 EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR}
 EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
-EXEC_LIBS = -L${BUILD_DIR}/core ${LLIB} ${EXEC_EXT_LIBS}
+EXEC_LIBS = -L../${BUILD_DIR}/core ${LLIB} ${EXEC_EXT_LIBS}
+
+LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/core
 
 unit: $(LLIB) $(UNITS) ${MPI_UNITS} ${LUA_UNITS} ## Build unit tests
 regression: ${LLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
@@ -42,39 +44,39 @@ all: $(LLIB) ## Build all targets
 .DEFAULT_GOAL := all
 
 # SQLITE needs special flags
-$(BUILD_DIR)/core/minus/sqlite3.c.o: minus/sqlite3.c
+../$(BUILD_DIR)/core/minus/sqlite3.c.o: minus/sqlite3.c
 	$(MKDIR_P) $(dir $@)
 	$(CC) $(SQL_CFLAGS) -c $< -o $@
 
 # c -> o files
-$(BUILD_DIR)/core/%.c.o: %.c
+../$(BUILD_DIR)/core/%.c.o: %.c
 	$(MKDIR_P) $(dir $@)
 	$(CC) -c $(CFLAGS) $(INCS) $< -o $@
 
 # Unit tests
-$(UNITS): ${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/core/unit
+$(UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ../${BUILD_DIR}/core/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # MPI unit tests
-$(MPI_UNITS): ${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/core/unit
+$(MPI_UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ../${BUILD_DIR}/core/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # Regression tests
-$(REGS): ${BUILD_DIR}/core/creg/%: creg/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/core/creg
+$(REGS): ../${BUILD_DIR}/core/creg/%: creg/%.c $(LLIB)
+	$(MKDIR_P) ../${BUILD_DIR}/core/creg
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # Lua unit tests
-$(LUA_UNITS): ${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
-	$(MKDIR_P) ${BUILD_DIR}/core/unit
+$(LUA_UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
+	$(MKDIR_P) ../${BUILD_DIR}/core/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # build lib
 $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
-	ar -crs $@ $(OBJS)
+	$(CC) -shared -o $@ $(OBJS) -Wl,-install_name,@rpath/libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 
 .PHONY: check valcheck
 # Run all unit tests
@@ -101,8 +103,8 @@ install: all
 # Headers
 	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/${PROJ_NAME}/include
 # libraries
-	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0core.a
+	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0core.so
 
 .PHONY: clean
 clean: ## Clean build output
-	rm -rf ${BUILD_DIR}/core
+	rm -rf ../${BUILD_DIR}/core
