@@ -17,21 +17,36 @@ endif
 
 LLIB := ../$(BUILD_DIR)/core/libg0core.so
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
+ifdef USING_NVCC
+	SRCS += $(shell find $(SRC_DIRS) -name *.cu)
+endif
 OBJS := $(SRCS:%=../$(BUILD_DIR)/core/%.o)
 DEPS := $(OBJS:.o=.d)
+
 UNITS := $(patsubst %.c,../${BUILD_DIR}/core/%,$(wildcard unit/ctest_*.c))
 MPI_UNITS := $(patsubst %.c,../${BUILD_DIR}/core/%,$(wildcard unit/mctest_*.c))
 LUA_UNITS := $(patsubst %.c,../${BUILD_DIR}/core/%,$(wildcard unit/lctest_*.c))
+
+# We need to build CUDA unit-test objects                                                                                                                                            
+UNIT_CU_SRCS =
+UNIT_CU_OBJS =
+ifdef USING_NVCC
+        UNIT_CU_SRCS = unit/ctest_cusolver.cu unit/ctest_alloc_cu.cu unit/ctest_basis_cu.cu unit/ctest_array_cu.cu unit/ctest_range_cu.cu unit/ctest_rect_grid_cu.cu unit/ctest_struct_of_arrays_cu.cu
+ifdef USING_CUDSS
+        UNIT_CU_SRCS += unit/ctest_cudss.cu
+endif
+        UNIT_CU_OBJS = $(UNIT_CU_SRCS:%=../$(BUILD_DIR)/core/%.o)
+endif
 
 REGS := $(patsubst %.c,../${BUILD_DIR}/core/%,$(wildcard creg/rt_*.c))
 
 KERN_INC_DIRS = $(shell find kernels -type d)
 KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
-EXT_INCS := -I${MPI_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC}
+EXT_INCS := -I${MPI_INC_DIR} -I${NCCL_INC_DIR} -I${CUDSS_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC}
 INCS := ${EXT_INCS} -Iminus -Iminus/STC/include -Izero -Iapps -I${SUPERLU_INC} $(KERN_INCLUDES)
 
-EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR}
-EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR}
+EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 EXEC_LIBS = -L../${BUILD_DIR}/core ${LLIB} ${EXEC_EXT_LIBS}
 
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/core
@@ -54,10 +69,15 @@ all: $(LLIB) ## Build all targets
 	$(MKDIR_P) $(dir $@)
 	$(CC) -c $(CFLAGS) $(INCS) $< -o $@
 
-# Unit tests
-$(UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
+# Build commands for CUDA source                                                                                                                                                     
+../$(BUILD_DIR)/core/%.cu.o: %.cu
+	$(MKDIR_P) $(dir $@)
+	$(CC) -c $(CFLAGS) $(NVCC_FLAGS) $(INCS) $< -o $@
+
+# Unit tests                                                                                                                                                                         
+$(UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB) ${UNIT_CU_OBJS}
 	$(MKDIR_P) ../${BUILD_DIR}/core/unit
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${UNIT_CU_OBJS} ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # MPI unit tests
 $(MPI_UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
@@ -74,13 +94,43 @@ $(LUA_UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
 	$(MKDIR_P) ../${BUILD_DIR}/core/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
-# build lib
+ifdef USING_NVCC
+../$(BUILD_DIR)/core/kernels/array_average/%.c.o : kernels/array_average/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/core/kernels/bin_op/%.c.o : kernels/bin_op/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/core/kernels/array_integrate/%.c.o : kernels/array_integrate/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/core/kernels/basis/%.c.o : kernels/basis/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/core/kernels/dg_interpolate/%.c.o : kernels/dg_interpolate/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/core/kernels/skin_surf_from_ghost/%.c.o : kernels/skin_surf_from_ghost/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+endif
+
+# build lib                                                                                                                                                                          
 $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
 ifeq ($(UNAME),Linux)
-	$(CC) -shared -o $@ $(OBJS) -Wl,-soname,libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+ifdef USING_NVCC
+	$(CC) -shared -o $@ $(OBJS) -Xlinker=-soname -Xlinker=libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH}
 else
-	$(CC) -shared -o $@ $(OBJS) -Wl,-install_name,@rpath/libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+	$(CC) -shared -o $@ $(OBJS) -Wl,-soname,libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${CUDA_LIBS} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+endif
+else
+	$(CC) -shared -o $@ $(OBJS) -Wl,-install_name,@rpath/libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
 
 .PHONY: check valcheck

@@ -10,6 +10,7 @@ GIT_TIP = $(shell git describe --abbrev=12 --always --dirty=+)
 BUILD_DIR ?= build
 
 ARCH_FLAGS ?= -march=native
+CUDA_ARCH ?= 70
 CFLAGS ?= -O3 -g -ffast-math -fPIC -MMD -MP -DGIT_COMMIT_ID=\"$(GIT_TIP)\" -DGKYL_BUILD_DATE="${BUILD_DATE}" -DGKYL_GIT_CHANGESET="${GIT_TIP}"
 LDFLAGS = 
 PREFIX ?= ${HOME}/gkylsoft
@@ -48,6 +49,24 @@ endif
 # Include config.mak file (if it exists) to overide defaults above
 -include config.mak
 
+# CUDA flags
+USING_NVCC =
+NVCC_FLAGS = 
+CUDA_LIBS =
+ifeq ($(CC), nvcc)
+       USING_NVCC = yes
+       CFLAGS = -O3 -g --forward-unknown-to-host-compiler --use_fast_math -ffast-math -MMD -MP -fPIC -DGIT_COMMIT_ID=\"$(GIT_TIP)\" -DGKYL_BUILD_DATE="${BUILD_DATE}" -DGKYL_GIT_CHANGESET="${GIT_TIP}"
+       NVCC_FLAGS = -x cu -dc -arch=sm_${CUDA_ARCH} --compiler-options="-fPIC"
+       LDFLAGS += -arch=sm_${CUDA_ARCH}
+       ifdef CUDAMATH_LIBDIR
+              CUDA_LIBS = -L${CUDAMATH_LIBDIR}
+       else
+              CUDA_LIBS =
+       endif
+       CUDA_LIBS += -lcublas -lcusparse -lcusolver
+       SQL_CFLAGS = --forward-unknown-to-host-compiler -fPIC
+endif
+
 # MPI paths and flags
 USING_MPI =
 MPI_RPATH = 
@@ -68,6 +87,38 @@ endif
 	CFLAGS += -DGKYL_HAVE_MPI
 endif
 
+# Read NCCL paths and flags if needed (needs MPI and NVCC)
+USING_NCCL =
+NCCL_INC_DIR = zero # dummy
+NCCL_LIB_DIR = .
+ifeq (${USE_NCCL}, 1)
+ifdef USING_MPI
+ifdef USING_NVCC
+	USING_NCCL = yes
+	NCCL_INC_DIR = ${CONF_NCCL_INC_DIR}
+	NCCL_LIB_DIR = ${CONF_NCCL_LIB_DIR}
+	NCCL_LIBS = -lnccl
+	CFLAGS += -DGKYL_HAVE_NCCL
+endif
+endif
+endif
+
+# Read CUDSS paths and flags if needed (needs MPI and NVCC)
+USING_CUDSS =
+CUDSS_INC_DIR = zero # dummy
+CUDSS_LIB_DIR = .
+CUDSS_RPATH =
+ifeq (${USE_CUDSS}, 1)
+ifdef USING_NVCC
+	USING_CUDSS = yes
+	CUDSS_INC_DIR = ${CONF_CUDSS_INC_DIR}
+	CUDSS_LIB_DIR = ${CONF_CUDSS_LIB_DIR}
+	CUDSS_RPATH = -Xlinker "-rpath,${CONF_CUDSS_LIB_DIR}"
+	CUDSS_LIBS = -lcudss
+	CFLAGS += -DGKYL_HAVE_CUDSS
+endif
+endif
+
 # LUA paths and flags
 USING_LUA =
 LUA_RPATH = 
@@ -86,6 +137,11 @@ endif
 
 	LUA_LIBS = -l${CONF_LUA_LIB}
 	CFLAGS += -DGKYL_HAVE_LUA
+endif
+
+# Build directory
+ifdef USING_NVCC
+	BUILD_DIR = cuda-build
 endif
 
 # Command to make dir

@@ -14,6 +14,9 @@ endif
 
 LLIB := ../$(BUILD_DIR)/vlasov/libg0vlasov.so
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
+ifdef USING_NVCC
+	SRCS += $(shell find $(SRC_DIRS) -name *.cu)
+endif
 OBJS := $(SRCS:%=../$(BUILD_DIR)/vlasov/%.o)
 DEPS := $(OBJS:.o=.d)
 
@@ -21,11 +24,19 @@ UNITS := $(patsubst %.c,../${BUILD_DIR}/vlasov/%,$(wildcard unit/ctest_*.c))
 MPI_UNITS := $(patsubst %.c,../${BUILD_DIR}/vlasov/%,$(wildcard unit/mctest_*.c))
 LUA_UNITS := $(patsubst %.c,../${BUILD_DIR}/vlasov/%,$(wildcard unit/lctest_*.c))
 
+# We need to build CUDA unit-test objects                                                                                                                                            
+UNIT_CU_SRCS =
+UNIT_CU_OBJS =
+ifdef USING_NVCC
+        UNIT_CU_SRCS = unit/ctest_mom_vlasov_cu.cu
+        UNIT_CU_OBJS = $(UNIT_CU_SRCS:%=../$(BUILD_DIR)/core/%.o)
+endif
+
 REGS := $(patsubst %.c,../${BUILD_DIR}/vlasov/%,$(wildcard creg/rt_*.c))
 
 KERN_INC_DIRS = $(shell find kernels -type d)
 KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
-EXT_INCS := -I${MPI_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC}
+EXT_INCS := -I${MPI_INC_DIR} -I${NCCL_INC_DIR} -I${CUDSS_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC}
 CORE_INCS := -I../core/kernels/array_average -I../core/kernels/array_integrate -I../core/kernels/basis -I../core/kernels/bin_op -I../core/kernels/dg_interpolate -I../core/kernels/skin_surf_from_ghost -I../core/apps -I../core/zero -I../core/minus -I../core/minus/STC/include -I../zero
 MOMENTS_INCS := -I../moments/kernels/fem_poisson -I../moments/apps -I../moments/zero
 INCS := ${EXT_INCS} ${CORE_INCS} ${MOMENTS_INCS} -Ikernels -Izero -Iapps -Icreg  $(KERN_INCLUDES)
@@ -36,8 +47,8 @@ CORE_LIB := -lg0core
 MOMENTS_LIB_DIR := -L../${BUILD_DIR}/moments
 MOMENTS_LIB := -lg0moments
 
-EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
-EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR}
+EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 EXEC_LIBS = -L../${BUILD_DIR}/vlasov ${LLIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} ${EXEC_EXT_LIBS}
 
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/core
@@ -60,10 +71,15 @@ all: $(LLIB) ## Build all targets
 	$(MKDIR_P) $(dir $@)
 	$(CC) -c $(CFLAGS) $(INCS) $< -o $@
 
+# Build commands for CUDA source                                                                                                                                                     
+../$(BUILD_DIR)/vlasov/%.cu.o: %.cu
+	$(MKDIR_P) $(dir $@)
+	$(CC) -c $(CFLAGS) $(NVCC_FLAGS) $(INCS) $< -o $@
+
 # Unit tests
-$(UNITS): ../${BUILD_DIR}/vlasov/unit/%: unit/%.c $(LLIB)
+$(UNITS): ../${BUILD_DIR}/vlasov/unit/%: unit/%.c $(LLIB) ${UNIT_CU_OBJS}
 	$(MKDIR_P) ../${BUILD_DIR}/vlasov/unit
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${UNIT_CU_OBJS} ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # MPI unit tests
 $(MPI_UNITS): ../${BUILD_DIR}/vlasov/unit/%: unit/%.c $(LLIB)
@@ -75,13 +91,67 @@ $(REGS): ../${BUILD_DIR}/vlasov/creg/%: creg/%.c $(LLIB)
 	$(MKDIR_P) ../${BUILD_DIR}/vlasov/creg
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
+ifdef USING_NVCC
+../$(BUILD_DIR)/vlasov/kernels/advection/%.c.o : kernels/advection/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/vlasov/kernels/canonical_pb/%.c.o : kernels/canonical_pb/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/vlasov/kernels/dg_diffusion_fluid/%.c.o : kernels/dg_diffusion_fluid/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/vlasov/kernels/dg_diffusion_gen/%.c.o : kernels/dg_diffusion_gen/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/vlasov/kernels/dg_diffusion_vlasov/%.c.o : kernels/dg_diffusion_vlasov/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/vlasov/kernels/euler/%.c.o : kernels/euler/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/vlasov/kernels/fpo/%.c.o : kernels/fpo/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/vlasov/kernels/lbo/%.c.o : kernels/lbo/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/vlasov/kernels/maxwell/%.c.o : kernels/maxwell/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/vlasov/kernels/sr_vlasov/%.c.o : kernels/sr_vlasov/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/vlasov/kernels/vlasov/%.c.o : kernels/vlasov/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/vlasov/kernels/vlasov_poisson/%.c.o : kernels/vlasov_poisson/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+endif
+
 # build lib
 $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
 ifeq ($(UNAME),Linux)
-	$(CC) -shared -o $@ $(OBJS) -Wl,-soname,libg0vlasov.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+ifdef USING_NVCC
+	$(CC) -shared -o $@ $(OBJS) -Xlinker=-soname -Xlinker=libg0vlasov.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH}
 else
-	$(CC) -shared -o $@ $(OBJS) -Wl,-install_name,@rpath/libg0vlasov.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+	$(CC) -shared -o $@ $(OBJS) -Wl,-soname,libg0vlasov.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+endif
+else
+	$(CC) -shared -o $@ $(OBJS) -Wl,-install_name,@rpath/libg0vlasov.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
 
 .PHONY: check valcheck
