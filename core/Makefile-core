@@ -16,6 +16,7 @@ else
 endif
 
 LLIB := ../$(BUILD_DIR)/core/libg0core.so
+SLLIB := ../$(BUILD_DIR)/core/libg0core.a
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
 ifdef USING_NVCC
 	SRCS += $(shell find $(SRC_DIRS) -name *.cu)
@@ -47,16 +48,16 @@ INCS := ${EXT_INCS} -Iminus -Iminus/STC/include -Izero -Iapps -I${SUPERLU_INC} $
 
 EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR}
 EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
-EXEC_LIBS = -L../${BUILD_DIR}/core ${LLIB} ${EXEC_EXT_LIBS}
+EXEC_LIBS = -L../${BUILD_DIR}/core ${LLIB} ${SLLIB} ${EXEC_EXT_LIBS}
 
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/core
 LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/core
 
-unit: $(LLIB) $(UNITS) ${MPI_UNITS} ${LUA_UNITS} ## Build unit tests
-regression: ${LLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
+unit: $(LLIB) $(SLLIB) $(UNITS) ${MPI_UNITS} ${LUA_UNITS} ## Build unit tests
+regression: ${LLIB} ${SLLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
 
 .PHONY: all
-all: $(LLIB) ## Build all targets
+all: $(LLIB) $(SLLIB) ## Build all targets
 .DEFAULT_GOAL := all
 
 # SQLITE needs special flags
@@ -75,22 +76,22 @@ all: $(LLIB) ## Build all targets
 	$(CC) -c $(CFLAGS) $(NVCC_FLAGS) $(INCS) $< -o $@
 
 # Unit tests                                                                                                                                                                         
-$(UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB) ${UNIT_CU_OBJS}
+$(UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB) $(SLLIB) ${UNIT_CU_OBJS}
 	$(MKDIR_P) ../${BUILD_DIR}/core/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${UNIT_CU_OBJS} ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # MPI unit tests
-$(MPI_UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
+$(MPI_UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB) $(SLLIB)
 	$(MKDIR_P) ../${BUILD_DIR}/core/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # Regression tests
-$(REGS): ../${BUILD_DIR}/core/creg/%: creg/%.c $(LLIB)
+$(REGS): ../${BUILD_DIR}/core/creg/%: creg/%.c $(LLIB) $(SLLIB)
 	$(MKDIR_P) ../${BUILD_DIR}/core/creg
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # Lua unit tests
-$(LUA_UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB)
+$(LUA_UNITS): ../${BUILD_DIR}/core/unit/%: unit/%.c $(LLIB) $(SLLIB)
 	$(MKDIR_P) ../${BUILD_DIR}/core/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
@@ -125,13 +126,17 @@ $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
 ifeq ($(UNAME),Linux)
 ifdef USING_NVCC
-	$(CC) -shared -o $@ $(OBJS) -Xlinker=-soname -Xlinker=libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH} -rdc=true --compiler-options="-fPIC"
+	$(CC) -shared -o $@ ../build/core/*/*.o ../build/core/*/*/*.o -Xlinker=-soname -Xlinker=libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH} -rdc=true --compiler-options="-fPIC"
 else
-	$(CC) -shared -o $@ $(OBJS) -Wl,-soname,libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${CUDA_LIBS} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+	$(CC) -shared -o $@ ../build/core/*/*.o ../build/core/*/*/*.o -Wl,-soname,libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${CUDA_LIBS} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
 else
-	$(CC) -shared -o $@ $(OBJS) -Wl,-install_name,@rpath/libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+	$(CC) -shared -o $@ ../build/core/*/*.o ../build/core/*/*/*.o -Wl,-install_name,@rpath/libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
+
+$(SLLIB): $(OBJS)
+	$(MKDIR_P) $(dir $@)
+	ar -crs $@ ../build/core/*/*.o ../build/core/*/*/*.o
 
 .PHONY: check valcheck
 # Run all unit tests
@@ -159,6 +164,7 @@ install: all
 	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/${PROJ_NAME}/include
 # libraries
 	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0core.so
+	cp -f $(SLLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0core.a
 
 .PHONY: clean
 clean: ## Clean build output
