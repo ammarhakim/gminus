@@ -31,11 +31,11 @@ LUA_UNITS := $(patsubst %.c,../${BUILD_DIR}/core/%,$(wildcard unit/lctest_*.c))
 UNIT_CU_SRCS =
 UNIT_CU_OBJS =
 ifdef USING_NVCC
-        UNIT_CU_SRCS = unit/ctest_cusolver.cu unit/ctest_alloc_cu.cu unit/ctest_basis_cu.cu unit/ctest_array_cu.cu unit/ctest_range_cu.cu unit/ctest_rect_grid_cu.cu unit/ctest_struct_of_arrays_cu.cu
+    UNIT_CU_SRCS = unit/ctest_cusolver.cu unit/ctest_alloc_cu.cu unit/ctest_basis_cu.cu unit/ctest_array_cu.cu unit/ctest_range_cu.cu unit/ctest_rect_grid_cu.cu unit/ctest_struct_of_arrays_cu.cu
 ifdef USING_CUDSS
-        UNIT_CU_SRCS += unit/ctest_cudss.cu
+    UNIT_CU_SRCS += unit/ctest_cudss.cu
 endif
-        UNIT_CU_OBJS = $(UNIT_CU_SRCS:%=../$(BUILD_DIR)/core/%.o)
+    UNIT_CU_OBJS = $(UNIT_CU_SRCS:%=../$(BUILD_DIR)/core/%.o)
 endif
 
 REGS := $(patsubst %.c,../${BUILD_DIR}/core/%,$(wildcard creg/rt_*.c))
@@ -67,7 +67,7 @@ all: $(LLIB) ## Build all targets
 # c -> o files
 ../$(BUILD_DIR)/core/%.c.o: %.c
 	$(MKDIR_P) $(dir $@)
-	$(CC) -c $(CFLAGS) $(INCS) $< -o $@
+	$(CC) -c $(CFLAGS) $(ARCH_FLAGS) $(INCS) $< -o $@
 
 # Build commands for CUDA source                                                                                                                                                     
 ../$(BUILD_DIR)/core/%.cu.o: %.cu
@@ -125,7 +125,7 @@ $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
 ifeq ($(UNAME),Linux)
 ifdef USING_NVCC
-	$(CC) -shared -o $@ $(OBJS) -Xlinker=-soname -Xlinker=libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH}
+	$(CC) -shared -o $@ $(OBJS) -Xlinker=-soname -Xlinker=libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH} -rdc=true --compiler-options="-fPIC"
 else
 	$(CC) -shared -o $@ $(OBJS) -Wl,-soname,libg0core.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${CUDA_LIBS} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif

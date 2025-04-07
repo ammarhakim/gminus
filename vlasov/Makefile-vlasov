@@ -28,8 +28,8 @@ LUA_UNITS := $(patsubst %.c,../${BUILD_DIR}/vlasov/%,$(wildcard unit/lctest_*.c)
 UNIT_CU_SRCS =
 UNIT_CU_OBJS =
 ifdef USING_NVCC
-        UNIT_CU_SRCS = unit/ctest_mom_vlasov_cu.cu
-        UNIT_CU_OBJS = $(UNIT_CU_SRCS:%=../$(BUILD_DIR)/core/%.o)
+    UNIT_CU_SRCS = unit/ctest_mom_vlasov_cu.cu
+    UNIT_CU_OBJS = $(UNIT_CU_SRCS:%=../$(BUILD_DIR)/core/%.o)
 endif
 
 REGS := $(patsubst %.c,../${BUILD_DIR}/vlasov/%,$(wildcard creg/rt_*.c))
@@ -69,7 +69,7 @@ all: $(LLIB) ## Build all targets
 # c -> o files
 ../$(BUILD_DIR)/vlasov/%.c.o: %.c
 	$(MKDIR_P) $(dir $@)
-	$(CC) -c $(CFLAGS) $(INCS) $< -o $@
+	$(CC) -c $(CFLAGS) $(ARCH_FLAGS) $(INCS) $< -o $@
 
 # Build commands for CUDA source                                                                                                                                                     
 ../$(BUILD_DIR)/vlasov/%.cu.o: %.cu
@@ -146,7 +146,7 @@ $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
 ifeq ($(UNAME),Linux)
 ifdef USING_NVCC
-	$(CC) -shared -o $@ $(OBJS) -Xlinker=-soname -Xlinker=libg0vlasov.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH}
+	$(CC) -shared -o $@ $(OBJS) -Xlinker=-soname -Xlinker=libg0vlasov.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH} -rdc=true --compiler-options="-fPIC"
 else
 	$(CC) -shared -o $@ $(OBJS) -Wl,-soname,libg0vlasov.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
