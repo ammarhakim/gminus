@@ -67,9 +67,9 @@ $RM_CMD $G0/data/eqdsk/README
 mkdir -p kernels/ambi_bolt_potential
 $CP_CMD $G0/kernels/ambi_bolt_potential/*.h kernels/ambi_bolt_potential/
 $CP_CMD $G0/kernels/ambi_bolt_potential/*.c kernels/ambi_bolt_potential/
-mkdir -p kernels/bgk
-$CP_CMD $G0/kernels/bgk/*.h kernels/bgk/
-$CP_CMD $G0/kernels/bgk/*.c kernels/bgk/
+mkdir -p kernels/bgk_gyrokinetic
+$CP_CMD $G0/kernels/bgk_gyrokinetic/*.h kernels/bgk_gyrokinetic/
+$CP_CMD $G0/kernels/bgk_gyrokinetic/*.c kernels/bgk_gyrokinetic/
 mkdir -p kernels/deflate_geo
 $CP_CMD $G0/kernels/deflate_geo/*.h kernels/deflate_geo/
 $CP_CMD $G0/kernels/deflate_geo/*.c kernels/deflate_geo/
@@ -97,6 +97,9 @@ $CP_CMD $G0/kernels/gyrokinetic_pol_density/*.c kernels/gyrokinetic_pol_density/
 mkdir -p kernels/inflate_surf
 $CP_CMD $G0/kernels/inflate_surf/*.h kernels/inflate_surf/
 $CP_CMD $G0/kernels/inflate_surf/*.c kernels/inflate_surf/
+mkdir -p kernels/lbo_gyrokinetic
+$CP_CMD $G0/kernels/lbo_gyrokinetic/*.h kernels/lbo_gyrokinetic/
+$CP_CMD $G0/kernels/lbo_gyrokinetic/*.c kernels/lbo_gyrokinetic/
 mkdir -p kernels/neutral
 $CP_CMD $G0/kernels/neutral/*.h kernels/neutral/
 $CP_CMD $G0/kernels/neutral/*.c kernels/neutral/
@@ -115,8 +118,8 @@ $CP_CMD $G0/kernels/twistshift/*.c kernels/twistshift/
 
 $RM_CMD $G0/kernels/ambi_bolt_potential/*.h
 $RM_CMD $G0/kernels/ambi_bolt_potential/*.c
-$RM_CMD $G0/kernels/bgk/*.h
-$RM_CMD $G0/kernels/bgk/*.c
+$RM_CMD $G0/kernels/bgk_gyrokinetic/*.h
+$RM_CMD $G0/kernels/bgk_gyrokinetic/*.c
 $RM_CMD $G0/kernels/deflate_geo/*.h
 $RM_CMD $G0/kernels/deflate_geo/*.c
 $RM_CMD $G0/kernels/deflate_surf/*.h
@@ -135,6 +138,8 @@ $RM_CMD $G0/kernels/gyrokinetic_pol_density/*.h
 $RM_CMD $G0/kernels/gyrokinetic_pol_density/*.c
 $RM_CMD $G0/kernels/inflate_surf/*.h
 $RM_CMD $G0/kernels/inflate_surf/*.c
+$RM_CMD $G0/kernels/lbo_gyrokinetic/*.h
+$RM_CMD $G0/kernels/lbo_gyrokinetic/*.c
 $RM_CMD $G0/kernels/neutral/*.h
 $RM_CMD $G0/kernels/neutral/*.c
 $RM_CMD $G0/kernels/positivity_shift/*.h
