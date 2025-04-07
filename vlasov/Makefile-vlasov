@@ -120,7 +120,7 @@ ifdef USING_NVCC
 	$(MKDIR_P) $(dir $@)
 	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
 
-../$(BUILD_DIR)/vlasov/kernels/lbo/%.c.o : kernels/lbo/%.c
+../$(BUILD_DIR)/vlasov/kernels/lbo_vlasov/%.c.o : kernels/lbo_vlasov/%.c
 	$(MKDIR_P) $(dir $@)
 	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
 

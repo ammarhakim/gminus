@@ -26,9 +26,9 @@ $CP_CMD $G0/kernels/euler/*.c kernels/euler/
 mkdir -p kernels/fpo
 $CP_CMD $G0/kernels/fpo/*.h kernels/fpo/
 $CP_CMD $G0/kernels/fpo/*.c kernels/fpo/
-mkdir -p kernels/lbo
-$CP_CMD $G0/kernels/lbo/*.h kernels/lbo/
-$CP_CMD $G0/kernels/lbo/*.c kernels/lbo/
+mkdir -p kernels/lbo_vlasov
+$CP_CMD $G0/kernels/lbo_vlasov/*.h kernels/lbo_vlasov/
+$CP_CMD $G0/kernels/lbo_vlasov/*.c kernels/lbo_vlasov/
 mkdir -p kernels/maxwell
 $CP_CMD $G0/kernels/maxwell/*.h kernels/maxwell/
 $CP_CMD $G0/kernels/maxwell/*.c kernels/maxwell/
@@ -56,8 +56,8 @@ $RM_CMD $G0/kernels/euler/*.h
 $RM_CMD $G0/kernels/euler/*.c
 $RM_CMD $G0/kernels/fpo/*.h
 $RM_CMD $G0/kernels/fpo/*.c
-$RM_CMD $G0/kernels/lbo/*.h
-$RM_CMD $G0/kernels/lbo/*.c
+$RM_CMD $G0/kernels/lbo_vlasov/*.h
+$RM_CMD $G0/kernels/lbo_vlasov/*.c
 $RM_CMD $G0/kernels/maxwell/*.h
 $RM_CMD $G0/kernels/maxwell/*.c
 $RM_CMD $G0/kernels/sr_vlasov/*.h
