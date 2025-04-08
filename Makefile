@@ -141,7 +141,7 @@ endif
 
 # Build directory
 ifdef USING_NVCC
-	BUILD_DIR = cuda-build
+	BUILD_DIR = cubld
 endif
 
 # Command to make dir

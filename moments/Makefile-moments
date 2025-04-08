@@ -30,7 +30,7 @@ UNIT_CU_SRCS =
 UNIT_CU_OBJS =
 ifdef USING_NVCC
     UNIT_CU_SRCS = unit/ctest_wave_geom_cu.cu unit/ctest_wv_euler_cu.cu unit/ctest_wv_maxwell_cu.cu unit/ctest_wv_ten_moment_cu.cu
-    UNIT_CU_OBJS = $(UNIT_CU_SRCS:%=../$(BUILD_DIR)/core/%.o)
+    UNIT_CU_OBJS = $(UNIT_CU_SRCS:%=../$(BUILD_DIR)/moments/%.o)
 endif
 
 REGS := $(patsubst %.c,../${BUILD_DIR}/moments/%,$(wildcard creg/rt_*.c))
