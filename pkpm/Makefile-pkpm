@@ -13,7 +13,11 @@ else
 endif
 
 LLIB := ../$(BUILD_DIR)/pkpm/libg0pkpm.so
+SLLIB := ../$(BUILD_DIR)/pkpm/libg0pkpm.a
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
+ifdef USING_NVCC
+	SRCS += $(shell find $(SRC_DIRS) -name *.cu)
+endif
 OBJS := $(SRCS:%=../$(BUILD_DIR)/pkpm/%.o)
 DEPS := $(OBJS:.o=.d)
 
@@ -46,7 +50,7 @@ GYROKINETIC_LIB := -lg0gyrokinetic
 
 EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
 EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
-EXEC_LIBS = -L../${BUILD_DIR}/pkpm ${LLIB} ${GYROKINETIC_LIB_DIR} ${GYROKINETIC_LIB} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} ${EXEC_EXT_LIBS}
+EXEC_LIBS = -L../${BUILD_DIR}/pkpm ${LLIB} ${SLLIB} ${GYROKINETIC_LIB_DIR} ${GYROKINETIC_LIB} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} ${EXEC_EXT_LIBS}
 
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/core
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/moments
@@ -60,41 +64,60 @@ LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/vlasov
 LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/gyrokinetic
 LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/pkpm
 
-unit: ${LLIB} $(UNITS) ${MPI_UNITS} ## Build unit tests
-regression: ${LLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
+unit: ${LLIB} ${SLLIB} $(UNITS) ${MPI_UNITS} ## Build unit tests
+regression: ${LLIB} ${SLLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
 
 .PHONY: all
-all: $(LLIB) ## Build all targets
+all: $(LLIB) $(SLLIB) ## Build all targets
 .DEFAULT_GOAL := all
 
 # c -> o files
 ../$(BUILD_DIR)/pkpm/%.c.o: %.c
 	$(MKDIR_P) $(dir $@)
-	$(CC) -c $(CFLAGS) $(INCS) $< -o $@
+	$(CC) -c $(CFLAGS) $(ARCH_FLAGS) $(INCS) $< -o $@
+
+# Build commands for CUDA source                                                                                                                                                     
+../$(BUILD_DIR)/pkpm/%.cu.o: %.cu
+	$(MKDIR_P) $(dir $@)
+	$(CC) -c $(CFLAGS) $(NVCC_FLAGS) $(INCS) $< -o $@
 
 # Unit tests
-$(UNITS): ../${BUILD_DIR}/pkpm/unit/%: unit/%.c $(LLIB)
+$(UNITS): ../${BUILD_DIR}/pkpm/unit/%: unit/%.c $(LLIB) $(SLLIB)
 	$(MKDIR_P) ../${BUILD_DIR}/pkpm/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # MPI unit tests
-$(MPI_UNITS): ../${BUILD_DIR}/pkpm/unit/%: unit/%.c $(LLIB)
+$(MPI_UNITS): ../${BUILD_DIR}/pkpm/unit/%: unit/%.c $(LLIB) $(SLLIB)
 	$(MKDIR_P) ../${BUILD_DIR}/pkpm/unit
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 # Regression tests
-$(REGS): ../${BUILD_DIR}/pkpm/creg/%: creg/%.c $(LLIB)
+$(REGS): ../${BUILD_DIR}/pkpm/creg/%: creg/%.c $(LLIB) $(SLLIB)
 	$(MKDIR_P) ../${BUILD_DIR}/pkpm/creg
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
+
+ifdef USING_NVCC
+../$(BUILD_DIR)/pkpm/kernels/pkpm/%.c.o : kernels/pkpm/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+endif
 
 # build lib
 $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
 ifeq ($(UNAME),Linux)
-	$(CC) -shared -o $@ $(OBJS) -Wl,-soname,libg0pkpm.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${GYROKINETIC_LIB_DIR} ${GYROKINETIC_LIB} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+ifdef USING_NVCC
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o ../$(BUILD_DIR)/pkpm/*/*.o ../$(BUILD_DIR)/pkpm/*/*/*.o -Xlinker=-soname -Xlinker=libg0pkpm.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${GYROKINETIC_LIB_DIR} ${GYROKINETIC_LIB} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH} -rdc=true --compiler-options="-fPIC"
 else
-	$(CC) -shared -o $@ $(OBJS) -Wl,-install_name,@rpath/libg0pkpm.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${GYROKINETIC_LIB_DIR} ${GYROKINETIC_LIB} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o ../$(BUILD_DIR)/pkpm/*/*.o ../$(BUILD_DIR)/pkpm/*/*/*.o -Wl,-soname,libg0pkpm.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${GYROKINETIC_LIB_DIR} ${GYROKINETIC_LIB} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
+else
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o ../$(BUILD_DIR)/pkpm/*/*.o ../$(BUILD_DIR)/pkpm/*/*/*.o -Wl,-install_name,@rpath/libg0pkpm.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${GYROKINETIC_LIB_DIR} ${GYROKINETIC_LIB} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+endif
+
+$(SLLIB): $(OBJS)
+	$(MKDIR_P) $(dir $@)
+	ar -crs $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o ../$(BUILD_DIR)/pkpm/*/*.o ../$(BUILD_DIR)/pkpm/*/*/*.o
 
 .PHONY: check valcheck
 # Run all unit tests
@@ -121,6 +144,7 @@ install: all
 	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/${PROJ_NAME}/include
 # libraries
 	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0pkpm.so
+	cp -f $(SLLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0pkpm.a
 
 .PHONY: clean
 clean: ## Clean build output
