@@ -46,15 +46,9 @@ INCS := ${EXT_INCS} ${CORE_INCS} ${MOMENTS_INCS} ${VLASOV_INCS} -Ikernels -Izero
 CORE_LIB_DIR := -L../${BUILD_DIR}/core
 CORE_LIB := -lg0core
 
-MOMENTS_LIB_DIR := -L../${BUILD_DIR}/moments
-MOMENTS_LIB := -lg0moments
-
-VLASOV_LIB_DIR := -L../${BUILD_DIR}/vlasov
-VLASOV_LIB := -lg0vlasov
-
 EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
 EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
-EXEC_LIBS = -L../${BUILD_DIR}/gyrokinetic ${LLIB} ${SLLIB} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} ${EXEC_EXT_LIBS}
+EXEC_LIBS = -L../${BUILD_DIR}/gyrokinetic ${LLIB} ${SLLIB} ${CORE_LIB_DIR} ${CORE_LIB} ${EXEC_EXT_LIBS}
 
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/core
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/moments
@@ -171,12 +165,12 @@ $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
 ifeq ($(UNAME),Linux)
 ifdef USING_NVCC
-	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o -Xlinker=-soname -Xlinker=libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH} -rdc=true --compiler-options="-fPIC"
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o -Xlinker=-soname -Xlinker=libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH} -rdc=true --compiler-options="-fPIC"
 else
-	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o -Wl,-soname,libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o -Wl,-soname,libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
 else
-	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o -Wl,-install_name,@rpath/libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${VLASOV_LIB_DIR} ${VLASOV_LIB} ${MOMENTS_LIB_DIR} ${MOMENTS_LIB} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o -Wl,-install_name,@rpath/libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
 
 $(SLLIB): $(OBJS)
