@@ -152,6 +152,38 @@ MKDIR_P ?= mkdir -p
 
 .EXPORT_ALL_VARIABLES:
 
+# Regression tests
+${BUILD_DIR}/core/creg/%:
+	cd core && $(MAKE) -f Makefile-core ../$@
+
+${BUILD_DIR}/moments/creg/%:
+	cd moments && $(MAKE) -f Makefile-moments ../$@
+
+${BUILD_DIR}/vlasov/creg/%:
+	cd vlasov && $(MAKE) -f Makefile-vlasov ../$@
+
+${BUILD_DIR}/gyrokinetic/creg/%:
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic ../$@
+
+${BUILD_DIR}/pkpm/creg/%:
+	cd pkpm && $(MAKE) -f Makefile-pkpm ../$@
+
+# Unit tests
+${BUILD_DIR}/core/unit/%:
+	cd core && $(MAKE) -f Makefile-core ../$@
+
+${BUILD_DIR}/moments/unit/%:
+	cd moments && $(MAKE) -f Makefile-moments ../$@
+
+${BUILD_DIR}/vlasov/unit/%:
+	cd vlasov && $(MAKE) -f Makefile-vlasov ../$@
+
+${BUILD_DIR}/gyrokinetic/unit/%:
+	cd gyrokinetic && $(MAKE) -f Makefile-gyrokinetic ../$@
+
+${BUILD_DIR}/pkpm/unit/%:
+	cd pkpm && $(MAKE) -f Makefile-pkpm ../$@
+
 all: core moments vlasov gyrokinetic pkpm
 	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 	cp ./data/adas/radiation_fit_parameters.txt ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
