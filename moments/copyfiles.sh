@@ -25,7 +25,6 @@ $CP_CMD $G0/zero/gkyl_moment_braginskii.h zero/
 $CP_CMD $G0/zero/gkyl_moment_em_coupling.h zero/
 $CP_CMD $G0/zero/gkyl_moment_em_coupling_priv.h zero/
 $CP_CMD $G0/zero/gkyl_moment_non_ideal_priv.h zero/
-$CP_CMD $G0/zero/gkyl_moment_prim_iso_euler.h zero/
 $CP_CMD $G0/zero/gkyl_moment_prim_mhd.h zero/
 $CP_CMD $G0/zero/gkyl_moment_prim_sr_euler.h zero/
 $CP_CMD $G0/zero/gkyl_mp_scheme.h zero/
@@ -80,7 +79,6 @@ $CP_CMD $G0/zero/kep_scheme.c zero/
 $CP_CMD $G0/zero/mhd_src.c zero/
 $CP_CMD $G0/zero/moment_braginskii.c zero/
 $CP_CMD $G0/zero/moment_em_coupling.c zero/
-$CP_CMD $G0/zero/moment_prim_iso_euler.c zero/
 $CP_CMD $G0/zero/moment_prim_mhd.c zero/
 $CP_CMD $G0/zero/moment_prim_sr_euler.c zero/
 $CP_CMD $G0/zero/mp_scheme.c zero/
@@ -120,6 +118,9 @@ $CP_CMD $G0/zero/gkyl_fem_poisson_priv.h zero/
 $CP_CMD $G0/zero/gkyl_fem_poisson.h zero/
 $CP_CMD $G0/zero/fem_poisson_cu.cu zero/
 $CP_CMD $G0/zero/fem_poisson.c zero/
+$CP_CMD $G0/zero/gkyl_wv_advect_priv.h zero/
+$CP_CMD $G0/zero/gkyl_wv_burgers_priv.h zero/
+$CP_CMD $G0/zero/gkyl_wv_iso_euler_priv.h zero/
 
 $RM_CMD $G0/zero/gkyl_gr_blackhole.h
 $RM_CMD $G0/zero/gkyl_gr_minkowski.h
@@ -132,7 +133,6 @@ $RM_CMD $G0/zero/gkyl_moment_braginskii.h
 $RM_CMD $G0/zero/gkyl_moment_em_coupling.h
 $RM_CMD $G0/zero/gkyl_moment_em_coupling_priv.h
 $RM_CMD $G0/zero/gkyl_moment_non_ideal_priv.h
-$RM_CMD $G0/zero/gkyl_moment_prim_iso_euler.h
 $RM_CMD $G0/zero/gkyl_moment_prim_mhd.h
 $RM_CMD $G0/zero/gkyl_moment_prim_sr_euler.h
 $RM_CMD $G0/zero/gkyl_mp_scheme.h
@@ -187,7 +187,6 @@ $RM_CMD $G0/zero/kep_scheme.c
 $RM_CMD $G0/zero/mhd_src.c
 $RM_CMD $G0/zero/moment_braginskii.c
 $RM_CMD $G0/zero/moment_em_coupling.c
-$RM_CMD $G0/zero/moment_prim_iso_euler.c
 $RM_CMD $G0/zero/moment_prim_mhd.c
 $RM_CMD $G0/zero/moment_prim_sr_euler.c
 $RM_CMD $G0/zero/mp_scheme.c
@@ -227,6 +226,9 @@ $RM_CMD $G0/zero/gkyl_fem_poisson_priv.h
 $RM_CMD $G0/zero/gkyl_fem_poisson.h
 $RM_CMD $G0/zero/fem_poisson_cu.cu
 $RM_CMD $G0/zero/fem_poisson.c
+$RM_CMD $G0/zero/gkyl_wv_advect_priv.h
+$RM_CMD $G0/zero/gkyl_wv_burgers_priv.h
+$RM_CMD $G0/zero/gkyl_wv_iso_euler_priv.h
 
 # app
 mkdir -p apps

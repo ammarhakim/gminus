@@ -310,8 +310,6 @@ $CP_CMD $G0/zero/gkyl_tok_calc_derived_geo_priv.h zero/
 $CP_CMD $G0/zero/gkyl_tok_calc_derived_geo.h zero/
 $CP_CMD $G0/zero/gkyl_tok_geo_priv.h zero/
 $CP_CMD $G0/zero/gkyl_tok_geo.h zero/
-$CP_CMD $G0/zero/gkyl_translate_dim_gyrokinetic_priv.h zero/
-$CP_CMD $G0/zero/gkyl_translate_dim_gyrokinetic.h zero/
 $CP_CMD $G0/zero/gyrokinetic_cross_prim_moms_bgk_cu.cu zero/
 $CP_CMD $G0/zero/gyrokinetic_cross_prim_moms_bgk.c zero/
 $CP_CMD $G0/zero/gyrokinetic_pol_density_cu.cu zero/
@@ -331,8 +329,6 @@ $CP_CMD $G0/zero/rescale_ghost_jacf.c zero/
 $CP_CMD $G0/zero/tok_calc_derived_geo.c zero/
 $CP_CMD $G0/zero/tok_geo_utils.c zero/
 $CP_CMD $G0/zero/tok_geo.c zero/
-$CP_CMD $G0/zero/translate_dim_gyrokinetic_cu.cu zero/
-$CP_CMD $G0/zero/translate_dim_gyrokinetic.c zero/
 $CP_CMD $G0/zero/gkyl_prim_lbo_gyrokinetic_priv.h zero/
 $CP_CMD $G0/zero/gkyl_prim_lbo_gyrokinetic.h zero/
 $CP_CMD $G0/zero/mom_bcorr_lbo_gyrokinetic_cu.cu zero/
@@ -342,6 +338,10 @@ $CP_CMD $G0/zero/prim_lbo_gyrokinetic.c zero/
 $CP_CMD $G0/zero/mom_calc_bcorr_gyrokinetic.c zero/
 $CP_CMD $G0/zero/prim_lbo_calc_gyrokinetic.c zero/
 $CP_CMD $G0/zero/prim_lbo_cross_calc_gyrokinetic.c zero/
+$CP_CMD $G0/zero/gkyl_translate_dim_priv.h zero/
+$CP_CMD $G0/zero/gkyl_translate_dim.h zero/
+$CP_CMD $G0/zero/translate_dim_cu.cu zero/
+$CP_CMD $G0/zero/translate_dim.c zero/
 
 $RM_CMD $G0/zero/ambi_bolt_potential_cu.cu
 $RM_CMD $G0/zero/ambi_bolt_potential.c
@@ -500,8 +500,6 @@ $RM_CMD $G0/zero/gkyl_tok_calc_derived_geo_priv.h
 $RM_CMD $G0/zero/gkyl_tok_calc_derived_geo.h
 $RM_CMD $G0/zero/gkyl_tok_geo_priv.h
 $RM_CMD $G0/zero/gkyl_tok_geo.h
-$RM_CMD $G0/zero/gkyl_translate_dim_gyrokinetic_priv.h
-$RM_CMD $G0/zero/gkyl_translate_dim_gyrokinetic.h
 $RM_CMD $G0/zero/gyrokinetic_cross_prim_moms_bgk_cu.cu
 $RM_CMD $G0/zero/gyrokinetic_cross_prim_moms_bgk.c
 $RM_CMD $G0/zero/gyrokinetic_pol_density_cu.cu
@@ -521,8 +519,6 @@ $RM_CMD $G0/zero/rescale_ghost_jacf.c
 $RM_CMD $G0/zero/tok_calc_derived_geo.c
 $RM_CMD $G0/zero/tok_geo_utils.c
 $RM_CMD $G0/zero/tok_geo.c
-$RM_CMD $G0/zero/translate_dim_gyrokinetic_cu.cu
-$RM_CMD $G0/zero/translate_dim_gyrokinetic.c
 $RM_CMD $G0/zero/gkyl_prim_lbo_gyrokinetic_priv.h
 $RM_CMD $G0/zero/gkyl_prim_lbo_gyrokinetic.h
 $RM_CMD $G0/zero/mom_bcorr_lbo_gyrokinetic_cu.cu
@@ -532,6 +528,10 @@ $RM_CMD $G0/zero/prim_lbo_gyrokinetic.c
 $RM_CMD $G0/zero/mom_calc_bcorr_gyrokinetic.c
 $RM_CMD $G0/zero/prim_lbo_calc_gyrokinetic.c
 $RM_CMD $G0/zero/prim_lbo_cross_calc_gyrokinetic.c
+$RM_CMD $G0/zero/gkyl_translate_dim_priv.h
+$RM_CMD $G0/zero/gkyl_translate_dim.h
+$RM_CMD $G0/zero/translate_dim_cu.cu
+$RM_CMD $G0/zero/translate_dim.c
 
 # app
 mkdir -p apps
@@ -651,9 +651,10 @@ $CP_CMD $G0/unit/ctest_rescale_ghost_jacf.c unit/
 $CP_CMD $G0/unit/ctest_step_compare.c unit/
 $CP_CMD $G0/unit/ctest_step_outboard.c unit/
 $CP_CMD $G0/unit/ctest_time_roots.c unit/
-$CP_CMD $G0/unit/ctest_translate_dim_gyrokinetic.c unit/
 $CP_CMD $G0/unit/mctest_multib_sync.c unit/
 $CP_CMD $G0/unit/mctest_multib_allgather.c unit/
+$CP_CMD $G0/unit/ctest_translate_dim.c unit/
+$CP_CMD $G0/unit/ctest_ltx_miller.c unit/
 
 $RM_CMD $G0/unit/ctest_ambi_bolt_potential.c
 $RM_CMD $G0/unit/ctest_asdex.c
@@ -693,9 +694,10 @@ $RM_CMD $G0/unit/ctest_rescale_ghost_jacf.c
 $RM_CMD $G0/unit/ctest_step_compare.c
 $RM_CMD $G0/unit/ctest_step_outboard.c
 $RM_CMD $G0/unit/ctest_time_roots.c
-$RM_CMD $G0/unit/ctest_translate_dim_gyrokinetic.c
 $RM_CMD $G0/unit/mctest_multib_sync.c
 $RM_CMD $G0/unit/mctest_multib_allgather.c
+$RM_CMD $G0/unit/ctest_translate_dim.c
+$RM_CMD $G0/unit/ctest_ltx_miller.c
 
 # C regression tests
 mkdir -p creg
@@ -778,6 +780,7 @@ $CP_CMD $G0/regression/rt_gk_wham_nonuniformx_2x2v_p1_polynomial.c creg/
 $CP_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_numeric.c creg/
 $CP_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_polynomial.c creg/
 $CP_CMD $G0/regression/rt_gkgeom.c creg/
+$CP_CMD $G0/regression/rt_gk_ltx_iwl_2x2v_p1.c creg/
 $CP_CMD $G0/regression/rt_arg_parse.h creg/
 
 $RM_CMD $G0/regression/rt_gk_ar_react_nonuniformv_1x2v_p1.c
@@ -859,3 +862,4 @@ $RM_CMD $G0/regression/rt_gk_wham_nonuniformx_2x2v_p1_polynomial.c
 $RM_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_numeric.c
 $RM_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_polynomial.c
 $RM_CMD $G0/regression/rt_gkgeom.c
+$RM_CMD $G0/regression/rt_gk_ltx_iwl_2x2v_p1.c
