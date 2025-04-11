@@ -852,3 +852,216 @@ $RM_CMD $G0/regression/rt_vlasov_moments.c
 
 # Lua regression tests
 mkdir -p luareg
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_annulus_sodshock_im_2x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_annulus_sodshock_im_2x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_cylindrical_sodshock_im_1x3v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_cylindrical_sodshock_im_1x3v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_cylindrical_sodshock_im_2x3v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_cylindrical_sodshock_im_2x3v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_cylindrical_sodshock_im_3x3v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere_sodshock_im_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere_sodshock_im_1x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere_sodshock_im_2x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere_sodshock_im_2x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_toroidal_sodshock_im_2x3v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_toroidal_sodshock_im_2x3v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_toroidal_sodshock_im_3x3v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_ex_bgk_surf_flat_sq_ic.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_ex_bgk_surf_flat.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_free_streaming_surf_sphere.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_im_bgk_surf_flat_sq_ic.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_im_bgk_surf_flat.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_neut_bgk_sodshock_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_neut_bgk_sodshock_im_1x1v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_neut_bgk_sodshock_im_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_neut_bgk_sodshock_im_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_neut_bgk_sodshock_im_1x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_5m_mom_beach_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_5m_mom_beach_p3.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_advect_1x_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_advect_1x_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_advect_2x_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_advect_2x_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_euler_p_perturbation_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_euler_p_perturbation_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_euler_sodshock_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_euler_sodshock_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_hasegawa_mima_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_hasegawa_mima_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_hasegawa_wakatani_low_adiabat_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_hasegawa_wakatani_moderate_adiabat_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_incompress_euler_double_shear_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_incompress_euler_double_shear_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_incompress_euler_vortex_waltz_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_incompress_euler_vortex_waltz_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_maxwell_plane_wave_2d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_maxwell_wg_2d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_modified_hasegawa_wakatani_low_adiabat_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_dg_modified_hasegawa_wakatani_moderate_adiabat_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x1v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x3v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x3v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_buneman_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_em_advect_1x3v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_em_advect_resonant_1x3v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_es_pot_well.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_es_shock_lbo_1x1v.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_es_shock_lbo_1x3v.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_es_shock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_freestream_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_freestream_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_landau_damping_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_landau_damping_1x3v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_lbo_cross_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_lbo_cross_1x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x1v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x3v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x3v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x1v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x3v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x3v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_neut_lbo_sodshock_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_neut_lbo_sodshock_1x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_neut_lbo_sodshock_1x3v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_neut_lbo_wall.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_sheath_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_sheath_bgk_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_sr_bgk_relax_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_sr_freestream.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_sr_neut_bgk_sodshock_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_sr_twostream_1x1v.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_sr_twostream_1x3v.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_sr_weibel_1x3v.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_twostream_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_twostream_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_weibel_1x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_weibel_2x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_weibel_2x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vlasov_weibel_lbo_2x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vp_buneman_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vp_landau_damping_1x1v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vp_landau_damping_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vp_sheath_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vp_sheath_Aext_1x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vp_sheath_Bext_1x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vp_sheath_feedback_sources_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_vp_sheath_feedback_sources_bgk_1x1v_p2.lua luareg/
+
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_annulus_sodshock_im_2x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_annulus_sodshock_im_2x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_cylindrical_sodshock_im_1x3v_p1.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_cylindrical_sodshock_im_1x3v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_cylindrical_sodshock_im_2x3v_p1.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_cylindrical_sodshock_im_2x3v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_cylindrical_sodshock_im_3x3v_p1.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere_sodshock_im_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere_sodshock_im_1x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere_sodshock_im_2x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere_sodshock_im_2x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_toroidal_sodshock_im_2x3v_p1.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_toroidal_sodshock_im_2x3v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_toroidal_sodshock_im_3x3v_p1.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_ex_bgk_surf_flat_sq_ic.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_ex_bgk_surf_flat.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_free_streaming_surf_sphere.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_im_bgk_surf_flat_sq_ic.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_im_bgk_surf_flat.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_neut_bgk_sodshock_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_neut_bgk_sodshock_im_1x1v_p1.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_neut_bgk_sodshock_im_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_neut_bgk_sodshock_im_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_neut_bgk_sodshock_im_1x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_5m_mom_beach_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_5m_mom_beach_p3.lua
+$RM_CMD $G0/regression/lua/rt_dg_advect_1x_p1.lua
+$RM_CMD $G0/regression/lua/rt_dg_advect_1x_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_advect_2x_p1.lua
+$RM_CMD $G0/regression/lua/rt_dg_advect_2x_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_euler_p_perturbation_p1.lua
+$RM_CMD $G0/regression/lua/rt_dg_euler_p_perturbation_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_euler_sodshock_p1.lua
+$RM_CMD $G0/regression/lua/rt_dg_euler_sodshock_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_hasegawa_mima_p1.lua
+$RM_CMD $G0/regression/lua/rt_dg_hasegawa_mima_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_hasegawa_wakatani_low_adiabat_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_hasegawa_wakatani_moderate_adiabat_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_incompress_euler_double_shear_p1.lua
+$RM_CMD $G0/regression/lua/rt_dg_incompress_euler_double_shear_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_incompress_euler_vortex_waltz_p1.lua
+$RM_CMD $G0/regression/lua/rt_dg_incompress_euler_vortex_waltz_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_maxwell_plane_wave_2d.lua
+$RM_CMD $G0/regression/lua/rt_dg_maxwell_wg_2d.lua
+$RM_CMD $G0/regression/lua/rt_dg_modified_hasegawa_wakatani_low_adiabat_p2.lua
+$RM_CMD $G0/regression/lua/rt_dg_modified_hasegawa_wakatani_moderate_adiabat_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x1v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x3v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_bgk_relax_1x3v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_buneman_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_em_advect_1x3v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_em_advect_resonant_1x3v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_es_pot_well.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_es_shock_lbo_1x1v.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_es_shock_lbo_1x3v.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_es_shock.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_freestream_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_freestream_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_landau_damping_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_landau_damping_1x3v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_lbo_cross_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_lbo_cross_1x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x1v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x3v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_lbo_relax_1x3v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x1v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x3v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_neut_bgk_sodshock_1x3v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_neut_lbo_sodshock_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_neut_lbo_sodshock_1x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_neut_lbo_sodshock_1x3v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_neut_lbo_wall.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_sheath_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_sheath_bgk_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_sr_bgk_relax_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_sr_freestream.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_sr_neut_bgk_sodshock_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_sr_twostream_1x1v.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_sr_twostream_1x3v.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_sr_weibel_1x3v.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_twostream_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_twostream_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_weibel_1x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_weibel_2x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_weibel_2x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vlasov_weibel_lbo_2x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vp_buneman_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vp_landau_damping_1x1v_p1.lua
+$RM_CMD $G0/regression/lua/rt_vp_landau_damping_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vp_sheath_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vp_sheath_Aext_1x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vp_sheath_Bext_1x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vp_sheath_feedback_sources_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_vp_sheath_feedback_sources_bgk_1x1v_p2.lua
