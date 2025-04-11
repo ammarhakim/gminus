@@ -42,6 +42,8 @@ $CP_CMD $G0/data/eqdsk/write_efit_elliptical.py data/eqdsk/
 $CP_CMD $G0/data/eqdsk/write_efit_single_coil.py data/eqdsk/
 $CP_CMD $G0/data/eqdsk/write_efit_solovev.py data/eqdsk/
 $CP_CMD $G0/data/eqdsk/write_efit_straight_cylinder.py data/eqdsk/
+$CP_CMD $G0/data/eqdsk/ltx_miller.geqdsk data/eqdsk/
+$CP_CMD $G0/data/eqdsk/write_efit_ltx_miller.py data/eqdsk/
 $CP_CMD $G0/data/eqdsk/README data/eqdsk/
 
 $RM_CMD $G0/data/eqdsk/asdex.geqdsk
@@ -61,6 +63,8 @@ $RM_CMD $G0/data/eqdsk/write_efit_elliptical.py
 $RM_CMD $G0/data/eqdsk/write_efit_single_coil.py
 $RM_CMD $G0/data/eqdsk/write_efit_solovev.py
 $RM_CMD $G0/data/eqdsk/write_efit_straight_cylinder.py
+$RM_CMD $G0/data/eqdsk/ltx_miller.geqdsk
+$RM_CMD $G0/data/eqdsk/write_efit_ltx_miller.py
 $RM_CMD $G0/data/eqdsk/README
 
 # kernels

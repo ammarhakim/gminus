@@ -4,6 +4,124 @@ CP_CMD=cp
 RM_CMD=rm
 G0=../../gkylzero
 
+# data
+mkdir -p data/regression
+$CP_CMD $G0/data/regression/euler_riem_2d_hllc-euler_0.gkyl data/unit/
+
+$RM_CMD $G0/data/regression/euler_riem_2d_hllc-euler_0.gkyl
+
+# proofs
+mkdir -p proofs/finite_volume
+$CP_CMD $G0/proofs/finite_volume/proof_inviscid_burgers_lax_cfl_stability.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_inviscid_burgers_lax_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_inviscid_burgers_lax_local_lipschitz.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_inviscid_burgers_roe_flux_conservation.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_inviscid_burgers_roe_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_x_lax_cfl_stability.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_x_lax_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_x_lax_strict_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_lax_cfl_stability.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_lax_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_lax_local_lipschitz.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_lax_strict_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_roe_flux_conservation.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_roe_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_limiter_minmod_symmetry.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_limiter_minmod_tvd.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_limiter_monotonized_centered_symmetry.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_limiter_monotonized_centered_tvd.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_limiter_superbee_tvd.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_limiter_van_leer_symmetry.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_linear_advection_lax_cfl_stability.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_linear_advection_lax_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_linear_advection_lax_local_lipschitz.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_linear_advection_roe_flux_conservation.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_linear_advection_roe_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_lax_cfl_stability.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_lax_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_lax_local_lipschitz.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_lax_strict_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_roe_flux_conservation.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_roe_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_roe_strict_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_lax_cfl_stability.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_lax_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_lax_local_lipschitz.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_lax_strict_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_roe_flux_conservation.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_roe_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_roe_strict_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_lax_cfl_stability.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_lax_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_lax_local_lipschitz.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_lax_strict_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_roe_flux_conservation.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_roe_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_roe_strict_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_lax_cfl_stability.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_lax_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_lax_local_lipschitz.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_lax_strict_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_roe_flux_conservation.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_roe_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_roe_strict_hyperbolicity.rkt proofs/finite_volume/
+$CP_CMD $G0/proofs/prover_core.rkt proofs/
+
+$RM_CMD $G0/proofs/finite_volume/proof_inviscid_burgers_lax_cfl_stability.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_inviscid_burgers_lax_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_inviscid_burgers_lax_local_lipschitz.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_inviscid_burgers_roe_flux_conservation.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_inviscid_burgers_roe_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_x_lax_cfl_stability.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_x_lax_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_x_lax_strict_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_lax_cfl_stability.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_lax_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_lax_local_lipschitz.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_lax_strict_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_roe_flux_conservation.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_isothermal_euler_mom_yz_roe_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_limiter_minmod_symmetry.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_limiter_minmod_tvd.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_limiter_monotonized_centered_symmetry.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_limiter_monotonized_centered_tvd.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_limiter_superbee_tvd.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_limiter_van_leer_symmetry.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_linear_advection_lax_cfl_stability.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_linear_advection_lax_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_linear_advection_lax_local_lipschitz.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_linear_advection_roe_flux_conservation.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_linear_advection_roe_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_lax_cfl_stability.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_lax_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_lax_local_lipschitz.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_lax_strict_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_roe_flux_conservation.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_roe_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Bx_psi_roe_strict_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_lax_cfl_stability.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_lax_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_lax_local_lipschitz.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_lax_strict_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_roe_flux_conservation.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_roe_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ex_phi_roe_strict_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_lax_cfl_stability.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_lax_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_lax_local_lipschitz.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_lax_strict_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_roe_flux_conservation.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_roe_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ey_Bz_roe_strict_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_lax_cfl_stability.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_lax_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_lax_local_lipschitz.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_lax_strict_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_roe_flux_conservation.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_roe_hyperbolicity.rkt
+$RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_roe_strict_hyperbolicity.rkt
+$RM_CMD $G0/proofs/prover_core.rkt
+
 # kernels
 mkdir -p kernels/fem_poisson
 $CP_CMD $G0/kernels/fem_poisson/*.h kernels/fem_poisson/
