@@ -735,6 +735,10 @@ $CP_CMD $G0/regression/rt_hyper_vlasov_tm.c creg/
 $CP_CMD $G0/regression/rt_vlasov_kerntm.c creg/
 $CP_CMD $G0/regression/rt_vlasov_moments.c creg/
 $CP_CMD $G0/regression/rt_arg_parse.h creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_hyperbolic_khi_im_2x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_can_pb_bgk_surf_sphere_khi_im_2x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_can_pb_newtonian_orbits_2x2v_p2.c creg/
+$CP_CMD $G0/regression/rt_gr_can_pb_schwarzschild_bh_geodesics.c creg/
 
 $RM_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p1.c
 $RM_CMD $G0/regression/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p2.c
@@ -849,6 +853,10 @@ $RM_CMD $G0/regression/rt_vp_sheath_feedback_sources_bgk_1x1v_p2.c
 $RM_CMD $G0/regression/rt_hyper_vlasov_tm.c
 $RM_CMD $G0/regression/rt_vlasov_kerntm.c
 $RM_CMD $G0/regression/rt_vlasov_moments.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_hyperbolic_khi_im_2x2v_p2.c
+$RM_CMD $G0/regression/rt_can_pb_bgk_surf_sphere_khi_im_2x2v_p2.c
+$RM_CMD $G0/regression/rt_can_pb_newtonian_orbits_2x2v_p2.c
+$RM_CMD $G0/regression/rt_gr_can_pb_schwarzschild_bh_geodesics.c
 
 # Lua regression tests
 mkdir -p luareg
@@ -958,6 +966,11 @@ $CP_CMD $G0/regression/lua/rt_vp_sheath_Aext_1x2v_p2.lua luareg/
 $CP_CMD $G0/regression/lua/rt_vp_sheath_Bext_1x2v_p2.lua luareg/
 $CP_CMD $G0/regression/lua/rt_vp_sheath_feedback_sources_1x1v_p2.lua luareg/
 $CP_CMD $G0/regression/lua/rt_vp_sheath_feedback_sources_bgk_1x1v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_hyperbolic_khi_im_2x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere_khi_im_2x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_distorted_mesh_ic_2x2v_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_newtonian_orbits.lua luareg/
+$CP_CMD $G0/regression/lua/rt_can_pb_trapped_well_diffusion_1x1v_p2.lua luareg/
 
 $RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p1.lua
 $RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_annulus_sodshock_im_1x2v_p2.lua
@@ -1065,3 +1078,8 @@ $RM_CMD $G0/regression/lua/rt_vp_sheath_Aext_1x2v_p2.lua
 $RM_CMD $G0/regression/lua/rt_vp_sheath_Bext_1x2v_p2.lua
 $RM_CMD $G0/regression/lua/rt_vp_sheath_feedback_sources_1x1v_p2.lua
 $RM_CMD $G0/regression/lua/rt_vp_sheath_feedback_sources_bgk_1x1v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_hyperbolic_khi_im_2x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_bgk_surf_sphere_khi_im_2x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_distorted_mesh_ic_2x2v_p2.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_newtonian_orbits.lua
+$RM_CMD $G0/regression/lua/rt_can_pb_trapped_well_diffusion_1x1v_p2.lua

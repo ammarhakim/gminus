@@ -875,6 +875,7 @@ $CP_CMD $G0/regression/lua/rt_gk_bgk_cross_relax_1x2v_p1.lua luareg/
 $CP_CMD $G0/regression/lua/rt_gk_bgk_periodic_sodshock_1x2v_p1.lua luareg/
 $CP_CMD $G0/regression/lua/rt_gk_bgk_relax_1x2v_p1.lua luareg/
 $CP_CMD $G0/regression/lua/rt_gk_bgk_relax_bimaxwellian_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_bgk_relax_bimaxwellian_nonuniformv_1x2v_p1.lua luareg/
 $CP_CMD $G0/regression/lua/rt_gk_ion_sound_1x2v_p1.lua luareg/
 $CP_CMD $G0/regression/lua/rt_gk_ion_sound_adiabatic_elc_1x2v_p1.lua luareg/
 $CP_CMD $G0/regression/lua/rt_gk_ion_sound_nonuniformv_1x2v_p1.lua luareg/
@@ -905,6 +906,7 @@ $RM_CMD $G0/regression/lua/rt_gk_bgk_cross_relax_1x2v_p1.lua
 $RM_CMD $G0/regression/lua/rt_gk_bgk_periodic_sodshock_1x2v_p1.lua
 $RM_CMD $G0/regression/lua/rt_gk_bgk_relax_1x2v_p1.lua
 $RM_CMD $G0/regression/lua/rt_gk_bgk_relax_bimaxwellian_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_bgk_relax_bimaxwellian_nonuniformv_1x2v_p1.lua
 $RM_CMD $G0/regression/lua/rt_gk_ion_sound_1x2v_p1.lua
 $RM_CMD $G0/regression/lua/rt_gk_ion_sound_adiabatic_elc_1x2v_p1.lua
 $RM_CMD $G0/regression/lua/rt_gk_ion_sound_nonuniformv_1x2v_p1.lua
