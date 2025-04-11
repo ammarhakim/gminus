@@ -867,3 +867,65 @@ $RM_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_numeric.c
 $RM_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_polynomial.c
 $RM_CMD $G0/regression/rt_gkgeom.c
 $RM_CMD $G0/regression/rt_gk_ltx_iwl_2x2v_p1.c
+
+# Lua regression tests
+mkdir -p luareg
+$CP_CMD $G0/regression/lua/rt_gk_ar_react_nonuniformv_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_bgk_cross_relax_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_bgk_periodic_sodshock_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_bgk_relax_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_bgk_relax_bimaxwellian_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_ion_sound_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_ion_sound_adiabatic_elc_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_ion_sound_nonuniformv_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_lbo_cross_relax_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_lbo_relax_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_lbo_relax_bimaxwellian_nonuniformv_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_lbo_relax_bimaxwellian_nonuniformv_3x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_lbo_relax_nonuniformv_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_lbo_relax_varnu_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_li_react_3x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_li_react_nonuniformv_3x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_rad_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_rad_nonuniformv_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_sheath_1x2v_p1_cons.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_sheath_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_sheath_2x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_sheath_3x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_sheath_bgk_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_sheath_nonuniformv_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_sheath_nonuniformv_2x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_sheath_nonuniformv_3x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_sheath_nonuniformx_1x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_sheath_nonuniformx_2x2v_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gk_sheath_nonuniformx_3x2v_p1.lua luareg/
+
+$RM_CMD $G0/regression/lua/rt_gk_ar_react_nonuniformv_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_bgk_cross_relax_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_bgk_periodic_sodshock_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_bgk_relax_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_bgk_relax_bimaxwellian_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_ion_sound_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_ion_sound_adiabatic_elc_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_ion_sound_nonuniformv_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_lbo_cross_relax_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_lbo_relax_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_lbo_relax_bimaxwellian_nonuniformv_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_lbo_relax_bimaxwellian_nonuniformv_3x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_lbo_relax_nonuniformv_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_lbo_relax_varnu_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_li_react_3x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_li_react_nonuniformv_3x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_rad_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_rad_nonuniformv_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_sheath_1x2v_p1_cons.lua
+$RM_CMD $G0/regression/lua/rt_gk_sheath_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_sheath_2x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_sheath_3x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_sheath_bgk_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_sheath_nonuniformv_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_sheath_nonuniformv_2x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_sheath_nonuniformv_3x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_sheath_nonuniformx_1x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_sheath_nonuniformx_2x2v_p1.lua
+$RM_CMD $G0/regression/lua/rt_gk_sheath_nonuniformx_3x2v_p1.lua
