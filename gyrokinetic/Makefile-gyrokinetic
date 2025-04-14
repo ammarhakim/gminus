@@ -143,7 +143,11 @@ ifdef USING_NVCC
 	$(MKDIR_P) $(dir $@)
 	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
 
-../$(BUILD_DIR)/gyrokinetic/kernels/positivity_shift/%.c.o : kernels/positivity_shift/%.c
+../$(BUILD_DIR)/gyrokinetic/kernels/neutral/%.c.o : kernels/neutral/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/gyrokinetic/kernels/positivity_shift_gyrokinetic/%.c.o : kernels/positivity_shift_gyrokinetic/%.c
 	$(MKDIR_P) $(dir $@)
 	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
 

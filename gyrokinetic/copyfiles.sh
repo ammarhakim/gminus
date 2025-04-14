@@ -44,6 +44,7 @@ $CP_CMD $G0/data/eqdsk/write_efit_solovev.py data/eqdsk/
 $CP_CMD $G0/data/eqdsk/write_efit_straight_cylinder.py data/eqdsk/
 $CP_CMD $G0/data/eqdsk/ltx_miller.geqdsk data/eqdsk/
 $CP_CMD $G0/data/eqdsk/write_efit_ltx_miller.py data/eqdsk/
+$CP_CMD $G0/data/eqdsk/LTX_103955_03.eqdsk data/eqdsk/
 $CP_CMD $G0/data/eqdsk/README data/eqdsk/
 
 $RM_CMD $G0/data/eqdsk/asdex.geqdsk
@@ -65,6 +66,7 @@ $RM_CMD $G0/data/eqdsk/write_efit_solovev.py
 $RM_CMD $G0/data/eqdsk/write_efit_straight_cylinder.py
 $RM_CMD $G0/data/eqdsk/ltx_miller.geqdsk
 $RM_CMD $G0/data/eqdsk/write_efit_ltx_miller.py
+$RM_CMD $G0/data/eqdsk/LTX_103955_03.eqdsk
 $RM_CMD $G0/data/eqdsk/README
 
 # kernels
@@ -107,9 +109,9 @@ $CP_CMD $G0/kernels/lbo_gyrokinetic/*.c kernels/lbo_gyrokinetic/
 mkdir -p kernels/neutral
 $CP_CMD $G0/kernels/neutral/*.h kernels/neutral/
 $CP_CMD $G0/kernels/neutral/*.c kernels/neutral/
-mkdir -p kernels/positivity_shift
-$CP_CMD $G0/kernels/positivity_shift/*.h kernels/positivity_shift/
-$CP_CMD $G0/kernels/positivity_shift/*.c kernels/positivity_shift/
+mkdir -p kernels/positivity_shift_gyrokinetic
+$CP_CMD $G0/kernels/positivity_shift_gyrokinetic/*.h kernels/positivity_shift_gyrokinetic/
+$CP_CMD $G0/kernels/positivity_shift_gyrokinetic/*.c kernels/positivity_shift_gyrokinetic/
 mkdir -p kernels/rad
 $CP_CMD $G0/kernels/rad/*.h kernels/rad/
 $CP_CMD $G0/kernels/rad/*.c kernels/rad/
@@ -146,8 +148,8 @@ $RM_CMD $G0/kernels/lbo_gyrokinetic/*.h
 $RM_CMD $G0/kernels/lbo_gyrokinetic/*.c
 $RM_CMD $G0/kernels/neutral/*.h
 $RM_CMD $G0/kernels/neutral/*.c
-$RM_CMD $G0/kernels/positivity_shift/*.h
-$RM_CMD $G0/kernels/positivity_shift/*.c
+$RM_CMD $G0/kernels/positivity_shift_gyrokinetic/*.h
+$RM_CMD $G0/kernels/positivity_shift_gyrokinetic/*.c
 $RM_CMD $G0/kernels/rad/*.h
 $RM_CMD $G0/kernels/rad/*.c
 $RM_CMD $G0/kernels/translate_dim/*.h
@@ -178,8 +180,6 @@ $CP_CMD $G0/zero/dg_calc_gk_rad_vars_cu.cu zero/
 $CP_CMD $G0/zero/dg_calc_gk_rad_vars.c zero/
 $CP_CMD $G0/zero/dg_calc_gyrokinetic_vars_cu.cu zero/
 $CP_CMD $G0/zero/dg_calc_gyrokinetic_vars.c zero/
-$CP_CMD $G0/zero/dg_calc_vlasov_gen_geo_vars_cu.cu zero/
-$CP_CMD $G0/zero/dg_calc_vlasov_gen_geo_vars.c zero/
 $CP_CMD $G0/zero/dg_cx_cu.cu zero/
 $CP_CMD $G0/zero/dg_cx.c zero/
 $CP_CMD $G0/zero/dg_diffusion_gyrokinetic_cu.cu zero/
@@ -247,8 +247,6 @@ $CP_CMD $G0/zero/gkyl_dg_calc_gk_rad_vars_priv.h zero/
 $CP_CMD $G0/zero/gkyl_dg_calc_gk_rad_vars.h zero/
 $CP_CMD $G0/zero/gkyl_dg_calc_gyrokinetic_vars_priv.h zero/
 $CP_CMD $G0/zero/gkyl_dg_calc_gyrokinetic_vars.h zero/
-$CP_CMD $G0/zero/gkyl_dg_calc_vlasov_gen_geo_vars_priv.h zero/
-$CP_CMD $G0/zero/gkyl_dg_calc_vlasov_gen_geo_vars.h zero/
 $CP_CMD $G0/zero/gkyl_dg_cx_priv.h zero/
 $CP_CMD $G0/zero/gkyl_dg_cx.h zero/
 $CP_CMD $G0/zero/gkyl_dg_diffusion_gyrokinetic_priv.h zero/
@@ -346,6 +344,10 @@ $CP_CMD $G0/zero/gkyl_translate_dim_priv.h zero/
 $CP_CMD $G0/zero/gkyl_translate_dim.h zero/
 $CP_CMD $G0/zero/translate_dim_cu.cu zero/
 $CP_CMD $G0/zero/translate_dim.c zero/
+$CP_CMD $G0/zero/dg_calc_gk_neut_hamil.c zero/
+$CP_CMD $G0/zero/dg_calc_gk_neut_hamil_cu.cu zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_gk_neut_hamil.h zero/
+$CP_CMD $G0/zero/gkyl_dg_calc_gk_neut_hamil_priv.h zero/
 
 $RM_CMD $G0/zero/ambi_bolt_potential_cu.cu
 $RM_CMD $G0/zero/ambi_bolt_potential.c
@@ -368,8 +370,6 @@ $RM_CMD $G0/zero/dg_calc_gk_rad_vars_cu.cu
 $RM_CMD $G0/zero/dg_calc_gk_rad_vars.c
 $RM_CMD $G0/zero/dg_calc_gyrokinetic_vars_cu.cu
 $RM_CMD $G0/zero/dg_calc_gyrokinetic_vars.c
-$RM_CMD $G0/zero/dg_calc_vlasov_gen_geo_vars_cu.cu
-$RM_CMD $G0/zero/dg_calc_vlasov_gen_geo_vars.c
 $RM_CMD $G0/zero/dg_cx_cu.cu
 $RM_CMD $G0/zero/dg_cx.c
 $RM_CMD $G0/zero/dg_diffusion_gyrokinetic_cu.cu
@@ -437,8 +437,6 @@ $RM_CMD $G0/zero/gkyl_dg_calc_gk_rad_vars_priv.h
 $RM_CMD $G0/zero/gkyl_dg_calc_gk_rad_vars.h
 $RM_CMD $G0/zero/gkyl_dg_calc_gyrokinetic_vars_priv.h
 $RM_CMD $G0/zero/gkyl_dg_calc_gyrokinetic_vars.h
-$RM_CMD $G0/zero/gkyl_dg_calc_vlasov_gen_geo_vars_priv.h
-$RM_CMD $G0/zero/gkyl_dg_calc_vlasov_gen_geo_vars.h
 $RM_CMD $G0/zero/gkyl_dg_cx_priv.h
 $RM_CMD $G0/zero/gkyl_dg_cx.h
 $RM_CMD $G0/zero/gkyl_dg_diffusion_gyrokinetic_priv.h
@@ -536,6 +534,10 @@ $RM_CMD $G0/zero/gkyl_translate_dim_priv.h
 $RM_CMD $G0/zero/gkyl_translate_dim.h
 $RM_CMD $G0/zero/translate_dim_cu.cu
 $RM_CMD $G0/zero/translate_dim.c
+$RM_CMD $G0/zero/dg_calc_gk_neut_hamil.c
+$RM_CMD $G0/zero/dg_calc_gk_neut_hamil_cu.cu
+$RM_CMD $G0/zero/gkyl_dg_calc_gk_neut_hamil.h
+$RM_CMD $G0/zero/gkyl_dg_calc_gk_neut_hamil_priv.h
 
 # app
 mkdir -p apps
@@ -549,6 +551,8 @@ $CP_CMD $G0/apps/gk_neut_species_projection.c apps/
 $CP_CMD $G0/apps/gk_neut_species_react.c apps/
 $CP_CMD $G0/apps/gk_neut_species_source.c apps/
 $CP_CMD $G0/apps/gk_neut_species.c apps/
+$CP_CMD $G0/apps/gk_neut_species_bflux.c apps/
+$CP_CMD $G0/apps/gk_neut_species_recycle.c apps/
 $CP_CMD $G0/apps/gk_species_bflux.c apps/
 $CP_CMD $G0/apps/gk_species_bgk.c apps/
 $CP_CMD $G0/apps/gk_species_lbo.c apps/
@@ -587,6 +591,8 @@ $RM_CMD $G0/apps/gk_neut_species_projection.c
 $RM_CMD $G0/apps/gk_neut_species_react.c
 $RM_CMD $G0/apps/gk_neut_species_source.c
 $RM_CMD $G0/apps/gk_neut_species.c
+$RM_CMD $G0/apps/gk_neut_species_bflux.c
+$RM_CMD $G0/apps/gk_neut_species_recycle.c
 $RM_CMD $G0/apps/gk_species_bflux.c
 $RM_CMD $G0/apps/gk_species_bgk.c
 $RM_CMD $G0/apps/gk_species_lbo.c
@@ -635,6 +641,7 @@ $CP_CMD $G0/unit/ctest_dg_gyrokinetic.c unit/
 $CP_CMD $G0/unit/ctest_dg_interpolate.c unit/
 $CP_CMD $G0/unit/ctest_dg_rad_gyrokinetic.c unit/
 $CP_CMD $G0/unit/ctest_efit.c unit/
+$CP_CMD $G0/unit/ctest_gkneut_hamil.c unit/
 $CP_CMD $G0/unit/ctest_fem_parproj.c unit/
 $CP_CMD $G0/unit/ctest_fem_poisson_perp.c unit/
 $CP_CMD $G0/unit/ctest_gk_geometry_mapc2p.c unit/
@@ -678,6 +685,7 @@ $RM_CMD $G0/unit/ctest_dg_gyrokinetic.c
 $RM_CMD $G0/unit/ctest_dg_interpolate.c
 $RM_CMD $G0/unit/ctest_dg_rad_gyrokinetic.c
 $RM_CMD $G0/unit/ctest_efit.c
+$RM_CMD $G0/unit/ctest_gkneut_hamil.c
 $RM_CMD $G0/unit/ctest_fem_parproj.c
 $RM_CMD $G0/unit/ctest_fem_poisson_perp.c
 $RM_CMD $G0/unit/ctest_gk_geometry_mapc2p.c
@@ -754,7 +762,7 @@ $CP_CMD $G0/regression/rt_gk_sheath_3x2v_p1.c creg/
 $CP_CMD $G0/regression/rt_gk_sheath_bgk_1x2v_p1.c creg/
 $CP_CMD $G0/regression/rt_gk_sheath_cx_2x2v_p1.c creg/
 $CP_CMD $G0/regression/rt_gk_sheath_flr_2x2v_p1.c creg/
-$CP_CMD $G0/regression/rt_gk_sheath_neut_3x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_neut_sheath_3x2v_p1.c creg/
 $CP_CMD $G0/regression/rt_gk_sheath_nonuniformv_1x2v_p1.c creg/
 $CP_CMD $G0/regression/rt_gk_sheath_nonuniformv_2x2v_p1.c creg/
 $CP_CMD $G0/regression/rt_gk_sheath_nonuniformv_3x2v_p1.c creg/
@@ -785,6 +793,9 @@ $CP_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_numeric.c creg/
 $CP_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_polynomial.c creg/
 $CP_CMD $G0/regression/rt_gkgeom.c creg/
 $CP_CMD $G0/regression/rt_gk_ltx_iwl_2x2v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_neut_recycle_1x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_neut_step_2x3v_p1.c creg/
+$CP_CMD $G0/regression/rt_gk_step_2x2v_p1_cons.c creg/
 $CP_CMD $G0/regression/rt_arg_parse.h creg/
 
 $RM_CMD $G0/regression/rt_gk_ar_react_nonuniformv_1x2v_p1.c
@@ -836,7 +847,7 @@ $RM_CMD $G0/regression/rt_gk_sheath_3x2v_p1.c
 $RM_CMD $G0/regression/rt_gk_sheath_bgk_1x2v_p1.c
 $RM_CMD $G0/regression/rt_gk_sheath_cx_2x2v_p1.c
 $RM_CMD $G0/regression/rt_gk_sheath_flr_2x2v_p1.c
-$RM_CMD $G0/regression/rt_gk_sheath_neut_3x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_neut_sheath_3x2v_p1.c
 $RM_CMD $G0/regression/rt_gk_sheath_nonuniformv_1x2v_p1.c
 $RM_CMD $G0/regression/rt_gk_sheath_nonuniformv_2x2v_p1.c
 $RM_CMD $G0/regression/rt_gk_sheath_nonuniformv_3x2v_p1.c
@@ -867,6 +878,9 @@ $RM_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_numeric.c
 $RM_CMD $G0/regression/rt_gk_wham_nonuniformx_3x2v_p1_polynomial.c
 $RM_CMD $G0/regression/rt_gkgeom.c
 $RM_CMD $G0/regression/rt_gk_ltx_iwl_2x2v_p1.c
+$RM_CMD $G0/regression/rt_gk_neut_recycle_1x3v_p1.c
+$RM_CMD $G0/regression/rt_gk_neut_step_2x3v_p1.c
+$RM_CMD $G0/regression/rt_gk_step_2x2v_p1_cons.c
 
 # Lua regression tests
 mkdir -p luareg

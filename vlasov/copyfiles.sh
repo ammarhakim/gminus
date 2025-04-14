@@ -41,6 +41,9 @@ $CP_CMD $G0/kernels/vlasov/*.c kernels/vlasov/
 mkdir -p kernels/vlasov_poisson
 $CP_CMD $G0/kernels/vlasov_poisson/*.h kernels/vlasov_poisson/
 $CP_CMD $G0/kernels/vlasov_poisson/*.c kernels/vlasov_poisson/
+mkdir -p kernels/positivity_shift_vlasov
+$CP_CMD $G0/kernels/positivity_shift_vlasov/*.h kernels/positivity_shift_vlasov/
+$CP_CMD $G0/kernels/positivity_shift_vlasov/*.c kernels/positivity_shift_vlasov/
 
 $RM_CMD $G0/kernels/advection/*.h
 $RM_CMD $G0/kernels/advection/*.c
@@ -66,6 +69,8 @@ $RM_CMD $G0/kernels/vlasov/*.h
 $RM_CMD $G0/kernels/vlasov/*.c
 $RM_CMD $G0/kernels/vlasov_poisson/*.h
 $RM_CMD $G0/kernels/vlasov_poisson/*.c
+$RM_CMD $G0/kernels/positivity_shift_vlasov/*.h
+$RM_CMD $G0/kernels/positivity_shift_vlasov/*.c
 
 # zero
 mkdir -p zero
@@ -292,6 +297,10 @@ $CP_CMD $G0/zero/spitzer_coll_freq_cu.cu zero/
 $CP_CMD $G0/zero/spitzer_coll_freq.c zero/
 $CP_CMD $G0/zero/velocity_map_cu.cu zero/
 $CP_CMD $G0/zero/velocity_map.c zero/
+$CP_CMD $G0/zero/gkyl_positivity_shift_vlasov.h zero/
+$CP_CMD $G0/zero/gkyl_positivity_shift_vlasov_priv.h zero/
+$CP_CMD $G0/zero/positivity_shift_vlasov.c zero/
+$CP_CMD $G0/zero/positivity_shift_vlasov_cu.cu zero/
 
 $RM_CMD $G0/zero/dg_diffusion_vlasov_cu.cu
 $RM_CMD $G0/zero/dg_diffusion_vlasov.c
@@ -516,6 +525,10 @@ $RM_CMD $G0/zero/spitzer_coll_freq_cu.cu
 $RM_CMD $G0/zero/spitzer_coll_freq.c
 $RM_CMD $G0/zero/velocity_map_cu.cu
 $RM_CMD $G0/zero/velocity_map.c
+$RM_CMD $G0/zero/gkyl_positivity_shift_vlasov.h
+$RM_CMD $G0/zero/gkyl_positivity_shift_vlasov_priv.h
+$RM_CMD $G0/zero/positivity_shift_vlasov.c
+$RM_CMD $G0/zero/positivity_shift_vlasov_cu.cu
 
 # app
 mkdir -p apps
@@ -597,6 +610,7 @@ $CP_CMD $G0/unit/ctest_proj_mj_on_basis.c unit/
 $CP_CMD $G0/unit/ctest_spitzer_coll_freq.c unit/
 $CP_CMD $G0/unit/ctest_dg_em_vars.c unit/
 $CP_CMD $G0/unit/ctest_velocity_map.c unit/
+$CP_CMD $G0/unit/ctest_positivity_shift_vlasov.c unit/
 
 $RM_CMD $G0/unit/ctest_bc_basic.c
 $RM_CMD $G0/unit/ctest_canonical_pb_continuity.c
@@ -618,6 +632,7 @@ $RM_CMD $G0/unit/ctest_proj_mj_on_basis.c
 $RM_CMD $G0/unit/ctest_spitzer_coll_freq.c
 $RM_CMD $G0/unit/ctest_dg_em_vars.c
 $RM_CMD $G0/unit/ctest_velocity_map.c
+$RM_CMD $G0/unit/ctest_positivity_shift_vlasov.c
 
 # C regression tests
 mkdir -p creg
