@@ -58,17 +58,18 @@ v_num_mom(int vdim, int mom_id)
 // and so its members cannot be modified without a full __global__ kernel on device.
 __global__ static void
 gkyl_mom_canonical_pb_set_auxfields_cu_kernel(const struct gkyl_mom_type *momt, 
-  const struct gkyl_array *hamil)
+  const struct gkyl_array *hamil, const struct gkyl_array *energy)
 {
   struct mom_type_canonical_pb *mom_can_pb = container_of(momt, struct mom_type_canonical_pb, momt);
   mom_can_pb->auxfields.hamil = hamil;
+  mom_can_pb->auxfields.energy = energy;
 }
 
 // Host-side wrapper for set_auxfields_cu_kernel
 void
 gkyl_mom_canonical_pb_set_auxfields_cu(const struct gkyl_mom_type *momt, struct gkyl_mom_canonical_pb_auxfields auxin)
 {
-  gkyl_mom_canonical_pb_set_auxfields_cu_kernel<<<1,1>>>(momt, auxin.hamil->on_dev);
+  gkyl_mom_canonical_pb_set_auxfields_cu_kernel<<<1,1>>>(momt, auxin.hamil->on_dev, auxin.energy->on_dev);
 }
 
 
