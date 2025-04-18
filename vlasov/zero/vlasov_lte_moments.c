@@ -256,11 +256,11 @@ gkyl_vlasov_lte_moments_advance(struct gkyl_vlasov_lte_moments *lte_moms,
     // Compute needed quantities for pressure velocity moment including 
     // bulk four-velocity Lorentz boost factor GammaV = sqrt(1 + |u_i|^2)
     // Expects downstairs (covaraint) momentum components for u_i
-    // V_drift_sq = h^ij u_i u_j  --> u_i = v_i*Gamma
+    // V_drift_sq = h_ij u^i u^j  --> u^i = v^i*Gamma
     // GammaV = sqrt( 1 + V_drift_sq)
     // GammaV_sq = ( 1 + V_drift_sq)
-    gkyl_dg_calc_gr_vars_GammaV(lte_moms->gr_vars, conf_local, lte_moms->h_ij_inv,
-      lte_moms->V_drift_cov, lte_moms->V_drift_sq, 
+    gkyl_dg_calc_gr_vars_GammaV(lte_moms->gr_vars, conf_local, lte_moms->h_ij,
+      lte_moms->V_drift, lte_moms->V_drift_sq, 
       lte_moms->GammaV, lte_moms->GammaV_sq);     
 
     // Compute the pressure moment.

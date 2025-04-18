@@ -74,7 +74,7 @@ static const gkyl_dg_gr_vars_n_set_kern_list ser_gr_vars_n_set_kernels[] = {
   { NULL, gr_vars_n_set_2x2v_ser_p1, gr_vars_n_set_2x2v_ser_p2 }, // 3
   { NULL, gr_vars_n_set_2x3v_ser_p1, gr_vars_n_set_2x3v_ser_p2 }, // 4
   // 3x kernels
-  { NULL, NULL, NULL }, // 5
+  { NULL, gr_vars_n_set_3x3v_ser_p1, NULL }, // 5
 };
 
 // Copy solution for computing rest-frame density kernel list (Serendipity kernels).
@@ -88,7 +88,7 @@ static const gkyl_dg_gr_vars_n_copy_kern_list ser_gr_vars_n_copy_kernels[] = {
   { NULL, gr_vars_n_copy_2x2v_ser_p1, gr_vars_n_copy_2x2v_ser_p2 }, // 3
   { NULL, gr_vars_n_copy_2x3v_ser_p1, gr_vars_n_copy_2x3v_ser_p2 }, // 4
   // 3x kernels
-  { NULL, NULL, NULL }, // 5
+  { NULL, gr_vars_n_copy_3x3v_ser_p1, NULL }, // 5
 };
 
 // Compute bulk four-velocity derived quantities kernel list (Serendipity kernels).
@@ -102,7 +102,7 @@ static const gkyl_dg_gr_vars_GammaV_kern_list ser_gr_vars_GammaV_kernels[] = {
   { NULL, gr_vars_GammaV_2x2v_ser_p1, gr_vars_GammaV_2x2v_ser_p2 }, // 3
   { NULL, gr_vars_GammaV_2x3v_ser_p1, gr_vars_GammaV_2x3v_ser_p2 }, // 4
   // 3x kernels
-  { NULL, NULL, NULL }, // 5
+  { NULL, gr_vars_GammaV_3x3v_ser_p1, NULL }, // 5
 };
 
 // Compute rest-frame pressure kernel list (Serendipity kernels).
@@ -113,8 +113,8 @@ static const gkyl_dg_gr_vars_pressure_kern_list ser_gr_vars_pressure_kernels[] =
   { NULL, gr_vars_pressure_1x2v_ser_p1, gr_vars_pressure_1x2v_ser_p2 }, // 1
   { NULL, gr_vars_pressure_1x3v_ser_p1, gr_vars_pressure_1x3v_ser_p2 }, // 2
   // 2x kernels
-  { NULL, NULL, NULL }, // 3
-  { NULL, NULL, NULL }, // 4
+  { NULL, gr_vars_pressure_2x2v_ser_p1, gr_vars_pressure_2x2v_ser_p2 }, // 3
+  { NULL, gr_vars_pressure_2x3v_ser_p1, gr_vars_pressure_2x3v_ser_p2 }, // 4
   // 3x kernels
   { NULL, NULL, NULL }, // 5
 };
@@ -123,43 +123,15 @@ static const gkyl_dg_gr_vars_pressure_kern_list ser_gr_vars_pressure_kernels[] =
 GKYL_CU_D
 static const gkyl_dg_gr_vars_pressure_kern_list tensor_gr_vars_pressure_kernels[] = {
   // 1x kernels
-  { NULL, NULL, NULL }, // 0
-  { NULL, NULL, NULL }, // 1
-  { NULL, NULL, NULL }, // 2
+  { NULL, gr_vars_pressure_1x1v_tensor_p1, gr_vars_pressure_1x1v_tensor_p2 }, // 0
+  { NULL, gr_vars_pressure_1x2v_tensor_p1, gr_vars_pressure_1x2v_tensor_p2 }, // 1
+  { NULL, gr_vars_pressure_1x3v_tensor_p1, gr_vars_pressure_1x3v_tensor_p2 }, // 2
   // 2x kernels
-  { NULL, NULL, NULL }, // 3
-  { NULL, NULL, NULL }, // 4
+  { NULL, gr_vars_pressure_2x2v_tensor_p1, gr_vars_pressure_2x2v_tensor_p2 }, // 3
+  { NULL, gr_vars_pressure_2x3v_tensor_p1, NULL }, // 4
   // 3x kernels
-  { NULL, NULL, NULL }, // 5
+  { NULL, gr_vars_pressure_3x3v_tensor_p1, NULL }, // 5
 };
-
-// // Compute rest-frame pressure kernel list (Serendipity kernels).
-// GKYL_CU_D
-// static const gkyl_dg_gr_vars_pressure_kern_list ser_gr_vars_pressure_kernels[] = {
-//   // 1x kernels
-//   { NULL, gr_vars_pressure_1x1v_ser_p1, gr_vars_pressure_1x1v_ser_p2 }, // 0
-//   { NULL, gr_vars_pressure_1x2v_ser_p1, gr_vars_pressure_1x2v_ser_p2 }, // 1
-//   { NULL, gr_vars_pressure_1x3v_ser_p1, gr_vars_pressure_1x3v_ser_p2 }, // 2
-//   // 2x kernels
-//   { NULL, gr_vars_pressure_2x2v_ser_p1, gr_vars_pressure_2x2v_ser_p2 }, // 3
-//   { NULL, gr_vars_pressure_2x3v_ser_p1, gr_vars_pressure_2x3v_ser_p2 }, // 4
-//   // 3x kernels
-//   { NULL, NULL, NULL }, // 5
-// };
-
-// // Compute rest-frame pressure kernel list (Tensor kernels).
-// GKYL_CU_D
-// static const gkyl_dg_gr_vars_pressure_kern_list tensor_gr_vars_pressure_kernels[] = {
-//   // 1x kernels
-//   { NULL, gr_vars_pressure_1x1v_tensor_p1, gr_vars_pressure_1x1v_tensor_p2 }, // 0
-//   { NULL, gr_vars_pressure_1x2v_tensor_p1, gr_vars_pressure_1x2v_tensor_p2 }, // 1
-//   { NULL, gr_vars_pressure_1x3v_tensor_p1, gr_vars_pressure_1x3v_tensor_p2 }, // 2
-//   // 2x kernels
-//   { NULL, gr_vars_pressure_2x2v_tensor_p1, gr_vars_pressure_2x2v_tensor_p2 }, // 3
-//   { NULL, gr_vars_pressure_2x3v_tensor_p1, NULL }, // 4
-//   // 3x kernels
-//   { NULL, gr_vars_pressure_3x3v_tensor_p1, NULL }, // 5
-// };
 
 GKYL_CU_D
 static gr_n_set_t

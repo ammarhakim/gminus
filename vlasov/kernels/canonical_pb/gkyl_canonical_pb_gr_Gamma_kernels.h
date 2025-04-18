@@ -54,4 +54,28 @@ GKYL_CU_DH void gr_vars_n_copy_2x3v_ser_p2(int count, const double *h_ij_inv, st
 GKYL_CU_DH void gr_vars_GammaV_2x3v_ser_p2(const double *h_ij_inv, const double *u_i, double* GKYL_RESTRICT u_i_sq, double* GKYL_RESTRICT GammaV, double* GKYL_RESTRICT GammaV_sq); 
 GKYL_CU_DH void gr_vars_pressure_2x3v_ser_p2(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure); 
 
+GKYL_CU_DH void gr_vars_n_set_3x3v_ser_p1(int count, struct gkyl_nmat *A, struct gkyl_nmat *rhs, const double *M0, const double *M1i); 
+GKYL_CU_DH void gr_vars_n_copy_3x3v_ser_p1(int count, const double *h_ij_inv, struct gkyl_nmat *x, const double *M0, double* GKYL_RESTRICT n); 
+GKYL_CU_DH void gr_vars_GammaV_3x3v_ser_p1(const double *h_ij_inv, const double *u_i, double* GKYL_RESTRICT u_i_sq, double* GKYL_RESTRICT GammaV, double* GKYL_RESTRICT GammaV_sq); 
+
+GKYL_CU_DH void gr_vars_pressure_1x1v_tensor_p1(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure); 
+
+GKYL_CU_DH void gr_vars_pressure_1x1v_tensor_p2(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure); 
+
+GKYL_CU_DH void gr_vars_pressure_1x2v_tensor_p1(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure); 
+
+GKYL_CU_DH void gr_vars_pressure_1x2v_tensor_p2(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure); 
+
+GKYL_CU_DH void gr_vars_pressure_1x3v_tensor_p1(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure); 
+
+GKYL_CU_DH void gr_vars_pressure_1x3v_tensor_p2(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure); 
+
+GKYL_CU_DH void gr_vars_pressure_2x2v_tensor_p1(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure); 
+
+GKYL_CU_DH void gr_vars_pressure_2x2v_tensor_p2(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure); 
+
+GKYL_CU_DH void gr_vars_pressure_2x3v_tensor_p1(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure); 
+
+GKYL_CU_DH void gr_vars_pressure_3x3v_tensor_p1(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure); 
+
 EXTERN_C_END 
