@@ -63,7 +63,7 @@ void gkyl_dg_calc_gr_vars_n(struct gkyl_dg_calc_gr_vars *up, const struct gkyl_a
 {
 #ifdef GKYL_HAVE_CUDA
   if (gkyl_array_is_cu_dev(n)) {
-    return gkyl_dg_calc_gr_vars_n_cu(up, conf_range, h_ij_inv, M0, M1i, n);
+    return gkyl_dg_calc_gr_vars_n_cu(up, h_ij_inv, M0, M1i, n);
   }
 #endif
 

@@ -46,7 +46,7 @@ gkyl_dg_calc_gr_vars_new(const struct gkyl_rect_grid *phase_grid, const struct g
  */
 struct gkyl_dg_calc_gr_vars* 
 gkyl_dg_calc_gr_vars_cu_dev_new(const struct gkyl_rect_grid *phase_grid, const struct gkyl_rect_grid *vel_grid, 
-  const struct gkyl_basis *conf_basis, const struct gkyl_basis *vel_basis, 
+  const struct gkyl_basis *conf_basis, const struct gkyl_basis *vel_basis, const struct gkyl_basis *phase_basis, 
   const struct gkyl_range *mem_range, const struct gkyl_range *vel_range);
 
 /**
