@@ -545,6 +545,9 @@ GKYL_CU_DH double canonical_pb_boundary_surfvz_2x3v_ser_p2(const double *w, cons
               const int *const_sgn_alpha_edge, const int *const_sgn_alpha_skin, 
               const int edge, const double *fedge, const double *fskin, double* GKYL_RESTRICT out); 
 
+GKYL_CU_DH void canonical_pb_vars_util_3x3v_ser_p1(const double *h_ij_inv, const double *v_i, const double *u_j,
+             double* GKYL_RESTRICT u_dot_v);
+
 GKYL_CU_DH double canonical_pb_vol_1x1v_tensor_p1(const double *w, const double *dxv, const double *hamil,  
               const double *fin, double* GKYL_RESTRICT out); 
 GKYL_CU_DH void canonical_pb_vars_m1i_contra_to_cov_1x1v_tensor_p1(const double *h_ij, const double *v_j, const double *nv_i, double* GKYL_RESTRICT v_j_cov, double* GKYL_RESTRICT nv_i_cov);

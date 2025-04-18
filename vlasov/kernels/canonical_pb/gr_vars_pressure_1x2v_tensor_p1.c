@@ -1,6 +1,6 @@
 #include <gkyl_canonical_pb_gr_Gamma_kernels.h> 
 #include <gkyl_binop_mul_ser.h> 
-GKYL_CU_DH void gr_vars_pressure_1x2v_ser_p1(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure) 
+GKYL_CU_DH void gr_vars_pressure_1x2v_tensor_p1(const double *w, const double *dxv, const double *h_ij_inv, const double *u_i, const double *u_i_sq, const double *GammaV, const double *GammaV_sq, const double *f, double* GKYL_RESTRICT gr_pressure) 
 { 
   // w:   Cell-center coordinates.
   // dxv: Cell spacing.
