@@ -58,20 +58,51 @@ GKYL_CU_DH void gr_vars_pressure_1x1v_ser_p1(const double *w, const double *dxv,
   double p_fac[4] = {0.0}; 
   double Hxx_sq[2] = {0.0}; 
   binop_mul_1d_ser_p1(Hxx, Hxx, Hxx_sq); 
-  temp[0] = Hxx[1]*V_0[1]*wx1+Hxx[0]*V_0[0]*wx1; 
-  temp[1] = Hxx[0]*V_0[1]*wx1+V_0[0]*Hxx[1]*wx1; 
-  temp[2] = 0.2886751345948129*Hxx[1]*V_0[1]*dv1+0.2886751345948129*Hxx[0]*V_0[0]*dv1; 
-  temp[3] = 0.2886751345948129*Hxx[0]*V_0[1]*dv1+0.2886751345948129*V_0[0]*Hxx[1]*dv1; 
+  double p_fac1[4] = {0.0};
+  double p_fac2[4] = {0.0};
+  double p_fac3[4] = {0.0};
+  double temp1[4] = {0.0};
+  double temp_sq1[4] = {0.0};
 
-  temp_sq[0] = Hxx_sq[1]*V_0_sq[1]*wx1_sq+Hxx_sq[0]*V_0_sq[0]*wx1_sq+0.08333333333333333*Hxx_sq[1]*V_0_sq[1]*dv1_sq+0.08333333333333333*Hxx_sq[0]*V_0_sq[0]*dv1_sq; 
-  temp_sq[1] = Hxx_sq[0]*V_0_sq[1]*wx1_sq+V_0_sq[0]*Hxx_sq[1]*wx1_sq+0.08333333333333333*Hxx_sq[0]*V_0_sq[1]*dv1_sq+0.08333333333333333*V_0_sq[0]*Hxx_sq[1]*dv1_sq; 
-  temp_sq[2] = 0.5773502691896258*Hxx_sq[1]*V_0_sq[1]*dv1*wx1+0.5773502691896258*Hxx_sq[0]*V_0_sq[0]*dv1*wx1; 
-  temp_sq[3] = 0.5773502691896258*Hxx_sq[0]*V_0_sq[1]*dv1*wx1+0.5773502691896258*V_0_sq[0]*Hxx_sq[1]*dv1*wx1; 
+  temp1[0] = Hxx[1]*V_0[1]*wx1+Hxx[0]*V_0[0]*wx1; 
+  temp1[1] = Hxx[0]*V_0[1]*wx1+V_0[0]*Hxx[1]*wx1; 
+  temp1[2] = 0.2886751345948129*Hxx[1]*V_0[1]*dv1+0.2886751345948129*Hxx[0]*V_0[0]*dv1; 
+  temp1[3] = 0.2886751345948129*Hxx[0]*V_0[1]*dv1+0.2886751345948129*V_0[0]*Hxx[1]*dv1; 
 
-  p_fac[0] = 0.5*gamma_inv[3]*temp_sq[3]+0.5*gamma_inv[2]*temp_sq[2]+0.7071067811865475*GammaV_sq[1]*gamma[1]+0.5*gamma_inv[1]*temp_sq[1]-1.414213562373095*GammaV[1]*temp[1]+0.7071067811865475*GammaV_sq[0]*gamma[0]+0.5*gamma_inv[0]*temp_sq[0]-1.414213562373095*GammaV[0]*temp[0]-1.0*gamma_inv[0]; 
-  p_fac[1] = 0.5*gamma_inv[2]*temp_sq[3]+0.5*temp_sq[2]*gamma_inv[3]+0.7071067811865475*GammaV_sq[0]*gamma[1]+0.5*gamma_inv[0]*temp_sq[1]-1.414213562373095*GammaV[0]*temp[1]+0.5*temp_sq[0]*gamma_inv[1]-1.0*gamma_inv[1]+0.7071067811865475*gamma[0]*GammaV_sq[1]-1.414213562373095*temp[0]*GammaV[1]; 
-  p_fac[2] = 0.7071067811865475*GammaV_sq[1]*gamma[3]+0.5*gamma_inv[1]*temp_sq[3]-1.414213562373095*GammaV[1]*temp[3]+0.5*temp_sq[1]*gamma_inv[3]+0.7071067811865475*GammaV_sq[0]*gamma[2]+0.5*gamma_inv[0]*temp_sq[2]-1.414213562373095*GammaV[0]*temp[2]+0.5*temp_sq[0]*gamma_inv[2]-1.0*gamma_inv[2]; 
-  p_fac[3] = 0.7071067811865475*GammaV_sq[0]*gamma[3]+0.5*gamma_inv[0]*temp_sq[3]-1.414213562373095*GammaV[0]*temp[3]+0.5*temp_sq[0]*gamma_inv[3]-1.0*gamma_inv[3]+0.7071067811865475*GammaV_sq[1]*gamma[2]+0.5*gamma_inv[1]*temp_sq[2]-1.414213562373095*GammaV[1]*temp[2]+0.5*temp_sq[1]*gamma_inv[2]; 
+  temp_sq1[0] = Hxx_sq[1]*V_0_sq[1]*wx1_sq+Hxx_sq[0]*V_0_sq[0]*wx1_sq+0.08333333333333333*Hxx_sq[1]*V_0_sq[1]*dv1_sq+0.08333333333333333*Hxx_sq[0]*V_0_sq[0]*dv1_sq; 
+  temp_sq1[1] = Hxx_sq[0]*V_0_sq[1]*wx1_sq+V_0_sq[0]*Hxx_sq[1]*wx1_sq+0.08333333333333333*Hxx_sq[0]*V_0_sq[1]*dv1_sq+0.08333333333333333*V_0_sq[0]*Hxx_sq[1]*dv1_sq; 
+  temp_sq1[2] = 0.5773502691896258*Hxx_sq[1]*V_0_sq[1]*dv1*wx1+0.5773502691896258*Hxx_sq[0]*V_0_sq[0]*dv1*wx1; 
+  temp_sq1[3] = 0.5773502691896258*Hxx_sq[0]*V_0_sq[1]*dv1*wx1+0.5773502691896258*V_0_sq[0]*Hxx_sq[1]*dv1*wx1; 
+
+  temp[0] = temp1[0]; 
+  temp[1] = temp1[1]; 
+  temp[2] = temp1[2]; 
+  temp[3] = temp1[3]; 
+
+  temp_sq[0] = temp_sq1[0];
+  temp_sq[1] = temp_sq1[1];
+  temp_sq[2] = temp_sq1[2];
+  temp_sq[3] = temp_sq1[3];
+
+  p_fac1[0] = 0.7071067811865475*GammaV_sq[1]*gamma[1]+0.7071067811865475*GammaV_sq[0]*gamma[0]; 
+  p_fac1[1] = 0.7071067811865475*GammaV_sq[0]*gamma[1]+0.7071067811865475*gamma[0]*GammaV_sq[1]; 
+  p_fac1[2] = 0.7071067811865475*GammaV_sq[1]*gamma[3]+0.7071067811865475*GammaV_sq[0]*gamma[2]; 
+  p_fac1[3] = 0.7071067811865475*GammaV_sq[0]*gamma[3]+0.7071067811865475*GammaV_sq[1]*gamma[2]; 
+
+  p_fac2[0] = (-1.414213562373095*GammaV[1]*temp[1])-1.414213562373095*GammaV[0]*temp[0]; 
+  p_fac2[1] = (-1.414213562373095*GammaV[0]*temp[1])-1.414213562373095*temp[0]*GammaV[1]; 
+  p_fac2[2] = (-1.414213562373095*GammaV[1]*temp[3])-1.414213562373095*GammaV[0]*temp[2]; 
+  p_fac2[3] = (-1.414213562373095*GammaV[0]*temp[3])-1.414213562373095*GammaV[1]*temp[2]; 
+
+  p_fac3[0] = 0.5*gamma_inv[3]*temp_sq[3]+0.5*gamma_inv[2]*temp_sq[2]+0.5*gamma_inv[1]*temp_sq[1]+0.5*gamma_inv[0]*temp_sq[0]-1.0*gamma_inv[0]; 
+  p_fac3[1] = 0.5*gamma_inv[2]*temp_sq[3]+0.5*temp_sq[2]*gamma_inv[3]+0.5*gamma_inv[0]*temp_sq[1]+0.5*temp_sq[0]*gamma_inv[1]-1.0*gamma_inv[1]; 
+  p_fac3[2] = 0.5*gamma_inv[1]*temp_sq[3]+0.5*temp_sq[1]*gamma_inv[3]+0.5*gamma_inv[0]*temp_sq[2]+0.5*temp_sq[0]*gamma_inv[2]-1.0*gamma_inv[2]; 
+  p_fac3[3] = 0.5*gamma_inv[0]*temp_sq[3]+0.5*temp_sq[0]*gamma_inv[3]-1.0*gamma_inv[3]+0.5*gamma_inv[1]*temp_sq[2]+0.5*temp_sq[1]*gamma_inv[2]; 
+
+  p_fac[0] = p_fac1[0] + p_fac2[0] + p_fac3[0];
+  p_fac[1] = p_fac1[1] + p_fac2[1] + p_fac3[1];
+  p_fac[2] = p_fac1[2] + p_fac2[2] + p_fac3[2];
+  p_fac[3] = p_fac1[3] + p_fac2[3] + p_fac3[3];
 
   gr_pressure[0] += (0.7071067811865475*f[3]*p_fac[3]+0.7071067811865475*f[2]*p_fac[2]+0.7071067811865475*f[1]*p_fac[1]+0.7071067811865475*f[0]*p_fac[0])*volFact; 
   gr_pressure[1] += (0.7071067811865475*f[2]*p_fac[3]+0.7071067811865475*p_fac[2]*f[3]+0.7071067811865475*f[0]*p_fac[1]+0.7071067811865475*p_fac[0]*f[1])*volFact; 
