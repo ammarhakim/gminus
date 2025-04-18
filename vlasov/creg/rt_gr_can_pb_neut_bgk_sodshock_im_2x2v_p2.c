@@ -1,6 +1,3 @@
-// 2D ring-accretion problem onto a static (Schwarzschild) black hole, for the general relativistic can-pb.
-// Input parameters describe an asymmetrical ring of cold relativistic gas accreting onto a non-rotating black hole.
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +6,7 @@
 #include <gkyl_alloc.h>
 #include <gkyl_vlasov.h>
 #include <gkyl_util.h>
+#include <gkyl_wv_euler.h>
 
 #include <gkyl_null_comm.h>
 
@@ -22,48 +20,31 @@
 
 #include <rt_arg_parse.h>
 
-struct blackhole_static_ctx
+struct sodshock_ctx
 {
-  // Mathematical constants (dimensionless).
-  double pi;
-
-  // Spacetime parameters (using geometric units).
-  double bh_mass; // Mass of the black hole.
-  double bh_spin; // Spin of the black hole.
-
-  double bh_pos_x; // Position of the black hole (x-direction).
-  double bh_pos_y; // Position of the black hole (y-direction).
-  double bh_pos_z; // Position of the black hole (z-direction).
-
-  double rhob; // Background fluid mass density.
-  double ub; // Background fluid velocity.
-  double pb; // Background fluid pressure.
-
-  double rhol; // Left ring fluid mass density.
-  double ul; // Left ring fluid velocity.
-  double pl; // Left ring fluid pressure.
-
-  double rhor; // Right ring fluid mass density.
-  double ur; // Right ring fluid velocity.
-  double pr; // Right ring fluid pressure.
-
-  // Physical constants (using normalized code units) For particles.
+  // Physical constants (using normalized code units).
   double mass; // Neutral mass.
   double charge; // Neutral charge.
+
+  double nl; // Left number density.
+  double Tl; // Left temperature.
+  double Vx_drift_l; // Left drift velocity (x-direction).
+
+  double nr; // Right number density.
+  double Tr; // Right temperature.
+  double Vx_drift_r; // Right drift velocity (x-direction).
+
   double vt; // Thermal velocity.
   double nu; // Collision frequency.
 
   // Simulation parameters.
-  int Nr; // Cell count (configuration space: radial direction).
-  int Ntheta; // Cell count (configuration space: azimuthal angular direction).
-  int Nvr; // Cell count (velocity space: radial direction).
-  int Nvtheta; // Cell count (velocity space: azimuthal angular direction).
-  double Lr_min; // Domain size maximum radius (configuration space: radial direction).
-  double Lr_max; // Domain size maximum radius (configuration space: radial direction).
-  double Ltheta_min; // Domain size min (configuration space: azimuthal angular direction).
-  double Ltheta_max; // Domain size max (configuration space: azimuthal angular direction).
-  double v_r_max; // Domain boundary (velocity space: radial direction).
-  double v_theta_max; // Domain boundary (velocity space: azimuthal angular direction).
+  int Nx; // Cell count (configuration space: x-direction).
+  int Nvx; // Cell count (velocity space: vx-direction).
+  double Lx; // Domain size (configuration space: x-direction).
+  int Ny; // Cell count (configuration space: x-direction).
+  int Nvy; // Cell count (velocity space: vx-direction).
+  double Ly; // Domain size (configuration space: x-direction).
+  double vx_max; // Domain boundary (velocity space: vx-direction).
   int poly_order; // Polynomial order.
   double cfl_frac; // CFL coefficient.
 
@@ -74,100 +55,63 @@ struct blackhole_static_ctx
   int integrated_L2_f_calcs; // Number of times to calculate integrated L2 norm of distribution function.
   double dt_failure_tol; // Minimum allowable fraction of initial time-step.
   int num_failures_max; // Maximum allowable number of consecutive small time-steps.
-
-  double r_inner; // Ring inner radius.
-  double r_outer; // Ring outer radius.
 };
 
-struct blackhole_static_ctx
+struct sodshock_ctx
 create_ctx(void)
 {
-  // Mathematical constants (dimensionless).
-  double pi = M_PI;
-
   // Physical constants (using normalized code units).
   double mass = 1.0; // Neutral mass.
   double charge = 0.0; // Neutral charge.
-    
-  // Spacetime parameters (using geometric units).
-  double bh_mass = 0.3; // Mass of the black hole.
-  double bh_spin = 0.0; // Spin of the black hole.
 
-  double bh_pos_x = 0.0; // Position of the black hole (x-direction).
-  double bh_pos_y = 0.0; // Position of the black hole (y-direction).
-  double bh_pos_z = 0.0; // Position of the black hole (z-direction).
+  double nl = 1.0; // Left number density.
+  double Tl = 1.0; // Left temperature.
+  double Vx_drift_l = 0.0; // Left drift velocity (x-direction).
+
+  double nr = 0.125; // Right number density.
+  double Tr = sqrt(0.1 / 0.125); // Right temperature.
+  double Vx_drift_r = 0.0; // Right drift velocity (x-direction).
 
   double vt = 1.0; // Thermal velocity.
   double nu = 15000.0; // Collision frequency.
 
-  double rhob = 0.01; // Background fluid mass density.
-  double ub = 0.0; // Background fluid velocity.
-  double pb = 0.01; // Background fluid pressure.
-
-  double rhol = 1.0; // Left ring fluid mass density.
-  double ul = 0.0; // Left ring fluid velocity.
-  double pl = 0.1; // Left ring fluid pressure.
-
-  double rhor = 2.0; // Right ring fluid mass density.
-  double ur = 0.0; // Right ring fluid velocity.
-  double pr = 0.1; // Right ring fluid pressure.
-
   // Simulation parameters.
-  int Nr = 16; // Cell count (configuration space: radial direction).
-  int Ntheta = 16; // Cell count (configuration space: azimuthal angular direction).
-  int Nvr = 64; // Cell count (velocity space: radial direction).
-  int Nvtheta = 64; // Cell count (velocity space: azimuthal angular direction).
-  double Lr_min = 1.0; // Domain size radius min (configuration space: radial direction).
-  double Lr_max = 2.5; // Domain size radius max (configuration space: radial direction).
-  double Ltheta_min = 0.0; // Domain size minimum (configuration space: azimuthal angular direction).
-  double Ltheta_max = 2.0 * pi; // Domain size maximum (configuration space: azimuthal angular direction).
-  double v_r_max = 16.0 * vt; // Domain boundary (velocity space: radial direction).
-  double v_theta_max = 16.0 * vt; // Domain boundary (velocity space: azimuthal angular direction).
+  int Nx = 16; // Cell count (configuration space: x-direction).
+  int Ny = 3; // Cell count (configuration space: y-direction).
+  int Nvx = 16; // Cell count (velocity space: vx-direction).
+  int Nvy = 16; // Cell count (velocity space: vy-direction).
+  double Lx = 1.0; // Domain size (configuration space: x-direction).
+  double Ly = 1.0; // Domain size (configuration space: y-direction)
+  double vx_max = 20.0 * vt; // Domain boundary (velocity space: vx-direction).
   int poly_order = 2; // Polynomial order.
   double cfl_frac = 1.0; // CFL coefficient.
 
-  double t_end = 5.0; // Final simulation time.
+  double t_end = 0.1; // Final simulation time.
   int num_frames = 1; // Number of output frames.
   int field_energy_calcs = INT_MAX; // Number of times to calculate field energy.
   int integrated_mom_calcs = INT_MAX; // Number of times to calculate integrated moments.
   int integrated_L2_f_calcs = INT_MAX; // Number of times to calculate integrated L2 norm of distribution function.
   double dt_failure_tol = 1.0e-4; // Minimum allowable fraction of initial time-step.
-  int num_failures_max = 20; // Maximum allowable number of consecutive small time-steps.
+  int num_failures_max = 20; // Maximum allowable number of consecutive small time-steps. 
 
-  // Ring parameters
-  double r_inner = 1.2; // Ring inner radius.
-  double r_outer = 2.4; // Ring outer radius.
-
-  struct blackhole_static_ctx ctx = {
-    .pi = pi,
-    .rhob = rhob,
-    .ub = ub,
-    .pb = pb,
-    .rhol = rhol,
-    .ul = ul,
-    .pl = pl,
-    .rhor = rhor,
-    .ur = ur,
-    .pr = pr,
+  struct sodshock_ctx ctx = {
     .mass = mass,
     .charge = charge,
-    .bh_mass = bh_mass,
-    .bh_spin = bh_spin,
-    .bh_pos_x = bh_pos_x,
-    .bh_pos_y = bh_pos_y,
-    .bh_pos_z = bh_pos_z,
+    .nl = nl,
+    .Tl = Tl,
+    .Vx_drift_l = Vx_drift_l,
+    .nr = nr,
+    .Tr = Tr,
+    .Vx_drift_r = Vx_drift_r,
     .vt = vt,
     .nu = nu,
-    .Nr = Nr,
-    .Ntheta = Ntheta,
-    .Nvr = Nvr,
-    .Nvtheta = Nvtheta,
-    .Lr_min = Lr_min,
-    .Lr_max = Lr_max,
-    .Ltheta_min = Ltheta_min,
-    .Ltheta_max = Ltheta_max,
-    .v_r_max = v_r_max,
-    .v_theta_max = v_theta_max,
+    .Nx = Nx,
+    .Nvx = Nvx,
+    .Ny = Ny,
+    .Nvy = Nvy,
+    .Lx = Lx,
+    .Ly = Ly,
+    .vx_max = vx_max,
     .poly_order = poly_order,
     .cfl_frac = cfl_frac,
     .t_end = t_end,
@@ -177,128 +121,83 @@ create_ctx(void)
     .integrated_L2_f_calcs = integrated_L2_f_calcs,
     .dt_failure_tol = dt_failure_tol,
     .num_failures_max = num_failures_max,
-    .r_inner = r_inner,
-    .r_outer = r_outer,
   };
 
   return ctx;
 }
 
-
 void
 evalDensityInit(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
 {
-  struct blackhole_static_ctx *app = ctx;
-  double q_r = xn[0];
-  double q_theta = xn[1];
+  struct sodshock_ctx *app = ctx;
+  double x = xn[0];
 
-  double rhob = app->rhob;
-  double rhol = app->rhol;
-  double rhor = app->rhor;
+  double nl = app->nl;
+  double nr = app->nr;
 
-  double r_inner = app->r_inner;
-  double r_outer = app->r_outer;
+  double n = 0.0;
 
-  double rho = 0.0;
-  double pi = app->pi;
-
-  if (q_r > r_inner && q_r < r_outer) {
-    if (q_theta > 0.0 && q_theta < pi) {
-      rho = rhol; // Fluid mass density (left ring).
-    }
-    else {
-      rho = rhor; // Fluid mass density (right ring).
-    }
+  if (x < 0.5) {
+    n = nl; // Total number density (left).
   }
   else {
-    rho = rhob; // Fluid mass density (background).
+    n = nr; // Total number density (right).
   }
 
-  double metric_det = q_r;
+  double metric_det = 1.0;
 
   // Set total number density.
-  fout[0] = metric_det * rho;
+  fout[0] = metric_det * n;
 }
 
 void
 evalTempInit(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
 {
-  struct blackhole_static_ctx *app = ctx;
-  double q_r = xn[0];
-  double q_theta = xn[1];
+  struct sodshock_ctx *app = ctx;
+  double x = xn[0];
 
-  double rhob = app->rhob;
-  double pb = app->pb;
+  double Tl = app->Tl;
+  double Tr = app->Tr;
 
-  double rhol = app->rhol;
-  double pl = app->pl;
+  double T = 0.0;
 
-  double rhor = app->rhor;
-  double pr = app->pr;
-
-  double r_inner = app->r_inner;
-  double r_outer = app->r_outer;
-
-  double rho = 0.0;
-  double p = 0.0;
-  double pi = app->pi;
-
-  if (q_r > r_inner && q_r < r_outer) {
-    if (q_theta > 0.0 && q_theta < pi) {
-      rho = rhol; // Fluid mass density (left ring).
-      p = pl; // Fluid pressure (left ring).
-    }
-    else {
-      rho = rhor; // Fluid mass density (right ring).
-      p = pr; // Fluid pressure (right ring).
-    }
+  if (x < 0.5) {
+    T = Tl; // Isotropic temperature (left).
   }
   else {
-    rho = rhob; // Fluid mass density (background).
-    p = pb; // Fluid pressure (background).
+    T = Tr; // Isotropic temperature (right).
   }
 
-  // Set the temperature 
-  fout[0] = p/rho;
+  // Set isotropic temperature.
+  fout[0] = T;
 }
 
 void
 evalVDriftInit(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
 {
-  struct blackhole_static_ctx *app = ctx;
-  double q_r = xn[0];
-  double q_theta = xn[1];
+  struct sodshock_ctx *app = ctx;
+  double x = xn[0];
 
-  double ub = app->ub;
-  double ul = app->ul;
-  double ur = app->ur;
+  double Vx_drift_l = app->Vx_drift_l;
+  double Vx_drift_r = app->Vx_drift_r;
 
-  double r_inner = app->r_inner;
-  double r_outer = app->r_outer;
+  double Vx_drift = 0.0;
 
-  double u = 0.0;
-  double pi = app->pi;
-
-  if (q_r > r_inner && q_r < r_outer) {
-    if (q_theta > 0.0 && q_theta < pi) {
-      u = ul; // Fluid velocity (left ring).
-    }
-    else {
-      u = ur; // Fluid velocity (right ring).
-    }
+  if (x < 0.5) {
+    Vx_drift = Vx_drift_l; // Total drift velocity (left).
   }
   else {
-    u = ub; // Fluid velocity (background).
+    Vx_drift = Vx_drift_r; // Total drift velocity (right).
   }
 
-  // Set total drift velocity. 
-  fout[0] = 0.0; fout[1] = u;
+  // Set total drift velocity.
+  fout[0] = Vx_drift; fout[1] = 0.0;
 }
 
 void
 evalNu(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
 {
-  struct blackhole_static_ctx *app = ctx;
+  struct sodshock_ctx *app = ctx;
 
   double nu = app->nu;
 
@@ -306,96 +205,66 @@ evalNu(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, voi
   fout[0] = nu;
 }
 
-void 
+void
 evalHamiltonian(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
 {
-  struct blackhole_static_ctx *app = ctx;
+  double p_x_dot = xn[2]; double p_y_dot = xn[3];
 
-  double q_r = xn[0], q_theta = xn[1], p_r_dot = xn[2], p_theta_dot = xn[3];
-  double x = q_r*cos(q_theta);
-  double y = q_r*sin(q_theta);
-
-  double inv_metric_r_r = (1.0 - 2.0*app->bh_mass/q_r);
-  double inv_metric_r_theta = 0.0;
-  double inv_metric_theta_theta = 1.0 / (q_r * q_r);
-
-  // Compute the terms for the general GR Hamiltonian
-  double gamma = sqrt( 1.0 +  inv_metric_r_r * p_r_dot * p_r_dot 
-    + 2.0 * inv_metric_r_theta * p_r_dot * p_theta_dot + inv_metric_theta_theta * p_theta_dot * p_theta_dot );
-
-
-  // Grab lapse, shift from spacetime
-  double lapse = sqrt(1.0 - 2.0*app->bh_mass/q_r);
-
-  // Lapse and shift for the Schwarzschild BH 
-  double shift[2] = {0.0};
-  shift[0] = 0.0;
-  shift[1] = 0.0;
-
-  // beta^k = beta_vec \cdot e^k
-  double beta_contra_r = shift[0]*cos(q_theta) + shift[1]*sin(q_theta);
-  double beta_contra_theta = -shift[0]*sin(q_theta)/q_r + shift[1]*cos(q_theta)/q_r;
-
-  // H = \alpha \gamma - \beta \cdot p
-  double hamiltonian = lapse*gamma - beta_contra_r*p_r_dot - beta_contra_theta*p_theta_dot; // Canonical Hamiltonian.
+  double inv_metric_x_x = 1.0;
+  double inv_metric_x_y = 0.0;
+  double inv_metric_y_y = 1.0;
+  double hamiltonian = sqrt(1.0 + inv_metric_x_x * p_x_dot * p_x_dot 
+    + 2.0*inv_metric_x_y * p_x_dot * p_y_dot + inv_metric_y_y * p_y_dot * p_y_dot); // Canonical Hamiltonian.
   
   // Set canonical Hamiltonian.
   fout[0] = hamiltonian;
 }
 
-void 
+void
 evalEnergy(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
 {
-  struct blackhole_static_ctx *app = ctx;
-  double q_r = xn[0], q_theta = xn[1], p_r_dot = xn[2], p_theta_dot = xn[3];
+  double p_x_dot = xn[2]; double p_y_dot = xn[3];
 
-  double inv_metric_r_r = (1.0 - 2.0*app->bh_mass/q_r);
-  double inv_metric_r_theta = 0.0;
-  double inv_metric_theta_theta = 1.0 / (q_r * q_r);
-
-  // Compute the terms for the general GR Hamiltonian
-  double gamma = sqrt( 1.0 +  inv_metric_r_r * p_r_dot * p_r_dot 
-    + 2.0 * inv_metric_r_theta * p_r_dot * p_theta_dot + inv_metric_theta_theta * p_theta_dot * p_theta_dot );
-
-  // Set canonical Hamiltonian.
-  fout[0] = gamma;
+  double inv_metric_x_x = 1.0;
+  double inv_metric_x_y = 0.0;
+  double inv_metric_y_y = 1.0;
+  double energy = sqrt(1.0 + inv_metric_x_x * p_x_dot * p_x_dot 
+    + 2.0*inv_metric_x_y * p_x_dot * p_y_dot + inv_metric_y_y * p_y_dot * p_y_dot); // energy.
+  
+  // Set energy.
+  fout[0] = energy;
 }
-
 
 void
 evalInvMetric(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
 {
-  struct blackhole_static_ctx *app = ctx;
-  double q_r = xn[0];
-
-  double inv_metric_r_r = (1.0 - 2.0*app->bh_mass/q_r); // Inverse metric tensor (radial-radial component).
-  double inv_metric_r_theta = 0.0; // Inverse metric tensor (radial-angular component).
-  double inv_metric_theta_theta = 1.0 / (q_r * q_r); // Inverse metric tensor (angular-angular component).
+  double inv_metric_x_x = 1.0;
+  double inv_metric_x_y = 0.0;
+  double inv_metric_y_y = 1.0;
   
   // Set inverse metric tensor.
-  fout[0] = inv_metric_r_r; fout[1] = inv_metric_r_theta; fout[2] = inv_metric_theta_theta;
+  fout[0] = inv_metric_x_x;
+  fout[1] = inv_metric_x_y;
+  fout[2] = inv_metric_y_y;
 }
 
 void
 evalMetric(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
 {
-  struct blackhole_static_ctx *app = ctx;
-  double q_r = xn[0];
-
-  double metric_r_r = 1.0/(1.0 - 2.0*app->bh_mass/q_r); // mMtric tensor (radial-radial component).
-  double metric_r_theta = 0.0; // Metric tensor (radial-angular component).
-  double metric_theta_theta = q_r * q_r; // Metric tensor (angular-angular component).
+  double metric_x_x = 1.0;
+  double metric_x_y = 0.0;
+  double metric_y_y = 1.0;
   
   // Set metric tensor.
-  fout[0] = metric_r_r; fout[1] = metric_r_theta; fout[2] = metric_theta_theta;
+  fout[0] = metric_x_x;
+  fout[1] = metric_x_y;
+  fout[2] = metric_y_y;
 }
 
 void
 evalMetricDet(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
 {
-  double q_r = xn[0];
-
-  double metric_det = q_r; // Metric tensor determinant.
+  double metric_det = 1.0; // Metric tensor determinant.
   
   // Set metric tensor determinant.
   fout[0] = metric_det;
@@ -460,12 +329,12 @@ main(int argc, char **argv)
     gkyl_mem_debug_set(true);
   }
 
-  struct blackhole_static_ctx ctx = create_ctx(); // Context for initialization functions.
+  struct sodshock_ctx ctx = create_ctx(); // Context for initialization functions.
 
-  int Nr = APP_ARGS_CHOOSE(app_args.xcells[0], ctx.Nr);
-  int Ntheta = APP_ARGS_CHOOSE(app_args.xcells[1], ctx.Ntheta);
-  int Nvr = APP_ARGS_CHOOSE(app_args.vcells[0], ctx.Nvr);
-  int Nvtheta = APP_ARGS_CHOOSE(app_args.vcells[1], ctx.Nvtheta);
+  int NX = APP_ARGS_CHOOSE(app_args.xcells[0], ctx.Nx);
+  int NY = APP_ARGS_CHOOSE(app_args.xcells[1], ctx.Ny);
+  int NVX = APP_ARGS_CHOOSE(app_args.vcells[0], ctx.Nvx);
+  int NVY = APP_ARGS_CHOOSE(app_args.vcells[1], ctx.Nvy);
 
   int nrank = 1; // Number of processors in simulation.
 #ifdef GKYL_HAVE_MPI
@@ -474,7 +343,7 @@ main(int argc, char **argv)
   }
 #endif  
 
-  int ccells[] = { Nr, Ntheta };
+  int ccells[] = { NX, NY };
   int cdim = sizeof(ccells) / sizeof(ccells[0]);
 
   int cuts[cdim];
@@ -548,9 +417,9 @@ main(int argc, char **argv)
     .name = "neut",
     .model_id = GKYL_MODEL_CANONICAL_PB_GR,
     .charge = ctx.charge, .mass = ctx.mass,
-    .lower = { -ctx.v_r_max, -ctx.v_theta_max },
-    .upper = { ctx.v_r_max, ctx.v_theta_max },
-    .cells = { Nvr, Nvtheta },
+    .lower = { -ctx.vx_max, -ctx.vx_max },
+    .upper = { ctx.vx_max, ctx.vx_max }, 
+    .cells = { NVX, NVY },
 
     .hamil = evalHamiltonian,
     .hamil_ctx = &ctx,
@@ -562,7 +431,7 @@ main(int argc, char **argv)
     .h_ij_inv_ctx = &ctx,
     .det_h = evalMetricDet,
     .det_h_ctx = &ctx,
-    .output_f_lte = false,
+    .output_f_lte = true,
 
     .num_init = 1, 
     .projection[0] = {
@@ -578,7 +447,6 @@ main(int argc, char **argv)
       .max_iter = 0,
       .use_last_converged = false,
     },
-
     .collisions =  {
       .collision_id = GKYL_BGK_COLLISIONS,
       .self_nu = evalNu,
@@ -589,38 +457,33 @@ main(int argc, char **argv)
       .max_iter = 0,
       .use_last_converged = false,
     },
-
-    .bcx = {
-      .lower = { .type = GKYL_SPECIES_ABSORB, },
-      .upper = { .type = GKYL_SPECIES_ABSORB, },
-    },
     
-    .num_diag_moments = 3,
-    .diag_moments = { "M0", "M1i_from_H", "LTEMoments"  },
+    .num_diag_moments = 4,
+    .diag_moments = { "M0", "M1i", "LTEMoments", "MEnergy" },
   };
 
   // Vlasov-Maxwell app.
   struct gkyl_vm app_inp = {
-   .name = "rt_gr_can_pb_bh_static_ring_2x2v_p2",
+    .name = "can_pb_gr_sodshock_2x2v_p2",
 
-   .cdim = 2, .vdim = 2, 
-   .lower = { ctx.Lr_min, ctx.Ltheta_min },
-   .upper = { ctx.Lr_max, ctx.Ltheta_max },
-   .cells = { Nr, Ntheta },
+    .cdim = 2, .vdim = 2, 
+    .lower = { 0.0 , 0.0 },
+    .upper = { ctx.Lx, ctx.Ly },
+    .cells = { NX, NY },
 
-   .poly_order = ctx.poly_order,
-   .basis_type = app_args.basis_type,
-   .cfl_frac = ctx.cfl_frac,
+    .poly_order = ctx.poly_order,
+    .basis_type = app_args.basis_type,
+    .cfl_frac = ctx.cfl_frac,
 
-   .num_periodic_dir = 1,
-   .periodic_dirs = { 1 },
+    .num_periodic_dir = 1,
+    .periodic_dirs = { 1 },
 
-   .num_species = 1,
-   .species = { neut },
+    .num_species = 1,
+    .species = { neut },
 
-   .skip_field = true,
+    .skip_field = true,
 
-   .parallelism = {
+    .parallelism = {
       .use_gpu = app_args.use_gpu,
       .cuts = { app_args.cuts[0], app_args.cuts[1] },
       .comm = comm,

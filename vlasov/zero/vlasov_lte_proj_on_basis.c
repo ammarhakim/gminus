@@ -565,9 +565,14 @@ gkyl_vlasov_lte_proj_on_basis_advance(gkyl_vlasov_lte_proj_on_basis *up,
                 double h_ij_inv_loc = h_ij_inv_quad[tot_conf_quad*sym_tensor_index + cqidx]; 
                 // For off-diagnol components, we need to count these twice, due to symmetry
                 int sym_fact = (d0 == d1) ? 1 : 2;
-                vv += sym_fact*h_ij_inv_loc*(xmu[cdim+d0])*(xmu[cdim+d1]);
-                vu += sym_fact*h_ij_inv_loc*(xmu[cdim+d0])*(V_drift_quad[cqidx][d1]);
-                uu += sym_fact*h_ij_inv_loc*(V_drift_quad[cqidx][d0])*(V_drift_quad[cqidx][d1]);
+                vv += sym_fact*h_ij_inv_loc*(V_drift_quad[cqidx][d0])*(V_drift_quad[cqidx][d1]);
+                if (sym_fact == 1) {
+                  vu += h_ij_inv_loc*(V_drift_quad[cqidx][d0])*(xmu[cdim+d1]);
+                } 
+                else {
+                  vu += h_ij_inv_loc*(V_drift_quad[cqidx][d0]*xmu[cdim+d1] + V_drift_quad[cqidx][d1]*xmu[cdim+d0]);
+                }
+                uu += sym_fact*h_ij_inv_loc*(xmu[cdim+d0])*(xmu[cdim+d1]);
               }
             }
             double GammaV_quad = sqrt(1.0 + vv);

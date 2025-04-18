@@ -233,10 +233,15 @@ gkyl_vlasov_lte_proj_on_basis_f_lte_quad_ker(struct gkyl_rect_grid phase_grid,
             double h_ij_inv_loc = h_ij_inv_quad_d[tot_conf_quad*sym_tensor_index + cqidx]; 
             // For off-diagonal components, we need to count these twice, due to symmetry
             int sym_fact = (d0 == d1) ? 1 : 2;
-            vv += sym_fact*h_ij_inv_loc*(xmu[cdim+d0])*(xmu[cdim+d1]);
-            vu += sym_fact*h_ij_inv_loc*(xmu[cdim+d0])*(V_drift_quad[tot_conf_quad*d1 + cqidx]);
-            uu += sym_fact*h_ij_inv_loc*(V_drift_quad[tot_conf_quad*d0 + cqidx])*(V_drift_quad[tot_conf_quad*d1 + cqidx]);
-	  }
+            vv += sym_fact*h_ij_inv_loc*(V_drift_quad[tot_conf_quad*d0 + cqidx])*(V_drift_quad[tot_conf_quad*d1 + cqidx]);
+            if (sym_fact == 1) {
+              vu += h_ij_inv_loc*(xmu[cdim+d0])*(V_drift_quad[tot_conf_quad*d1 + cqidx]);
+            } 
+            else {
+              vu += h_ij_inv_loc*(xmu[cdim+d0])*(V_drift_quad[tot_conf_quad*d1 + cqidx] + xmu[cdim+d1]*V_drift_quad[tot_conf_quad*d0 + cqidx]);
+            }
+            uu += sym_fact*h_ij_inv_loc*(xmu[cdim+d0])*(xmu[cdim+d1]);
+	        }
         }
         double GammaV_quad = sqrt(1.0 + vv);
         fq[linc2] += expamp_quad_d[cqidx]*exp((1.0/T_over_m_quad[cqidx]) 
