@@ -169,6 +169,10 @@ struct gkyl_vlasov_species {
   // pointer to hamilonian function
   void (*hamil)(double t, const double *xn, double *aout, void *ctx);
 
+  void *energy_ctx; // context for energy function
+  // pointer to energy function
+  void (*energy)(double t, const double *xn, double *aout, void *ctx);
+
   void *h_ij_ctx; // context for spatial metric function (covariant)
   // pointer to metric (covariant components) function
   void (*h_ij)(double t, const double *xn, double *aout, void *ctx);

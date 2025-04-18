@@ -387,6 +387,8 @@ struct vm_species {
     struct {
       struct gkyl_array *hamil; // Specified hamiltonian function for canonical poisson bracket
       struct gkyl_array *hamil_host; // Host side hamiltonian array for intial projection
+      struct gkyl_array *energy; // Specified energy function for canonical poisson bracket
+      struct gkyl_array *energy_host; // Host side energy array for intial projection
       struct gkyl_array *h_ij; // Specified metric inverse for canonical poisson bracket
       struct gkyl_array *h_ij_host; // Host side metric inverse array for intial projection
       struct gkyl_array *h_ij_inv; // Specified metric inverse for canonical poisson bracket

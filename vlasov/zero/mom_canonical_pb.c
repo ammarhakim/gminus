@@ -29,6 +29,7 @@ gkyl_mom_canonical_pb_set_auxfields(const struct gkyl_mom_type *momt, struct gky
 
   struct mom_type_canonical_pb *mom_can_pb = container_of(momt, struct mom_type_canonical_pb, momt);
   mom_can_pb->auxfields.hamil = auxin.hamil;
+  mom_can_pb->auxfields.energy = auxin.energy;
 }
 
 struct gkyl_mom_type*

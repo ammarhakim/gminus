@@ -141,11 +141,19 @@ vm_species_init(struct gkyl_vm *vm, struct gkyl_vlasov_app *app, struct vm_speci
       &app->local, &s->local_vel, &s->local, is_zero_flux, s->model_id, s->field_id, &aux_inp, app->use_gpu);
   }
   else if (s->model_id == GKYL_MODEL_CANONICAL_PB || s->model_id == GKYL_MODEL_CANONICAL_PB_GR) {
+
     // Allocate arrays for specified hamiltonian
     s->hamil = mkarr(app->use_gpu, app->basis.num_basis, s->local_ext.volume);
     s->hamil_host = s->hamil;
     if (app->use_gpu){
       s->hamil_host = mkarr(false, app->basis.num_basis, s->local_ext.volume);
+    }
+
+    // Allocate arrays for specified energytonian
+    s->energy = mkarr(app->use_gpu, app->basis.num_basis, s->local_ext.volume);
+    s->energy_host = s->energy;
+    if (app->use_gpu){
+      s->energy_host = mkarr(false, app->basis.num_basis, s->local_ext.volume);
     }
 
     // Allocate arrays for specified metric inverse
@@ -176,6 +184,14 @@ vm_species_init(struct gkyl_vm *vm, struct gkyl_vlasov_app *app, struct vm_speci
       gkyl_array_copy(s->hamil, s->hamil_host);
     }
     gkyl_eval_on_nodes_release(hamil_proj);
+
+    // Evaluate specified internal energy function at nodes to insure continuity of the energy
+    struct gkyl_eval_on_nodes* energy_proj = gkyl_eval_on_nodes_new(&s->grid, &app->basis, 1, s->info.energy, s->info.energy_ctx);
+    gkyl_eval_on_nodes_advance(energy_proj, 0.0, &s->local_ext, s->energy_host);
+    if (app->use_gpu){
+      gkyl_array_copy(s->energy, s->energy_host);
+    }
+    gkyl_eval_on_nodes_release(energy_proj);
 
     // Evaluate specified metric function at nodes to insure continuity
     struct gkyl_eval_on_nodes* h_ij_proj = gkyl_eval_on_nodes_new(&app->grid, &app->confBasis, vdim*(vdim+1)/2, s->info.h_ij, s->info.h_ij_ctx);
@@ -752,6 +768,7 @@ vm_species_release(const gkyl_vlasov_app* app, const struct vm_species *s)
   }
   else if (s->model_id == GKYL_MODEL_CANONICAL_PB || s->model_id == GKYL_MODEL_CANONICAL_PB_GR) {
     gkyl_array_release(s->hamil);
+    gkyl_array_release(s->energy);
     gkyl_array_release(s->h_ij);
     gkyl_array_release(s->h_ij_inv);
     gkyl_array_release(s->det_h);
@@ -759,7 +776,7 @@ vm_species_release(const gkyl_vlasov_app* app, const struct vm_species *s)
     gkyl_array_release(s->sgn_alpha_surf);
     gkyl_array_release(s->const_sgn_alpha);
     if (app->use_gpu){
-      gkyl_array_release(s->hamil_host);
+      gkyl_array_release(s->energy_host);
       gkyl_array_release(s->h_ij_host);
       gkyl_array_release(s->h_ij_inv_host);
       gkyl_array_release(s->det_h_host);

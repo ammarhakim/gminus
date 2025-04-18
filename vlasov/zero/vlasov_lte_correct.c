@@ -74,6 +74,7 @@ gkyl_vlasov_lte_correct_inew(const struct gkyl_vlasov_lte_correct_inp *inp)
     .h_ij_inv = inp->h_ij_inv,
     .det_h = inp->det_h,
     .hamil = inp->hamil,
+    .energy = inp->energy,
     .model_id = inp->model_id,
     .use_gpu = inp->use_gpu,
   };
@@ -97,6 +98,7 @@ gkyl_vlasov_lte_correct_inew(const struct gkyl_vlasov_lte_correct_inp *inp)
     .quad_type = inp->quad_type,
     .h_ij = inp->h_ij,
     .h_ij_inv = inp->h_ij_inv,  
+    .energy = inp->energy,
     .det_h = inp->det_h,
     .hamil = inp->hamil,
     .model_id = inp->model_id,

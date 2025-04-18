@@ -82,7 +82,7 @@ __global__ static void
 gkyl_vlasov_lte_proj_on_basis_moms_lte_quad_ker(struct gkyl_range conf_range, int vdim, 
   const struct gkyl_array* conf_basis_at_ords, 
   const struct gkyl_array* moms_lte, const struct gkyl_array* det_h_quad, 
-  bool is_relativistic, bool is_canonical_pb, 
+  bool is_relativistic, bool is_canonical_pb, bool is_canonical_pb_gr, 
   struct gkyl_array* moms_lte_quad, struct gkyl_array* expamp_quad)
 {
   int num_conf_basis = conf_basis_at_ords->ncomp;
@@ -122,6 +122,10 @@ gkyl_vlasov_lte_proj_on_basis_moms_lte_quad_ker(struct gkyl_range conf_range, in
       else if (is_canonical_pb) { 
         const double *det_h_quad_d = (const double*) gkyl_array_cfetch(det_h_quad, lincC);
         expamp_quad_d[linc2] = (1.0/det_h_quad_d[linc2])*n_quad[linc2]/sqrt(pow(2.0*GKYL_PI*T_over_m_quad[linc2], vdim));
+      }
+      else if (is_canonical_pb_gr) { 
+        const double *det_h_quad_d = (const double*) gkyl_array_cfetch(det_h_quad, lincC);
+        expamp_quad_d[linc2] = (1.0/det_h_quad_d[linc2])*n_quad[linc2]*(1.0/(4.0*GKYL_PI*T_over_m_quad[linc2]))*(sqrt(2.0*T_over_m_quad[linc2]/GKYL_PI));
       }
       else {
         expamp_quad_d[linc2] = n_quad[linc2]/sqrt(pow(2.0*GKYL_PI*T_over_m_quad[linc2], vdim));
@@ -214,6 +218,30 @@ gkyl_vlasov_lte_proj_on_basis_f_lte_quad_ker(struct gkyl_rect_grid phase_grid,
         }
         fq[linc2] += expamp_quad_d[cqidx]*exp(-efact/(2.0*T_over_m_quad[cqidx]));
       }
+      else if (is_canonical_pb_gr) {
+        // Assumes a (particle) hamiltonian in canocial form: g = 1/2 g^{ij} w_i_w_j
+        const double *h_ij_inv_quad_d = (const double*) gkyl_array_cfetch(h_ij_inv_quad, lincC);
+        double vv = 0.0;
+        double vu = 0.0;
+        double uu = 0.0;
+        for (int d0=0; d0<vdim; ++d0) {
+          for (int d1=d0; d1<vdim; ++d1) {
+            int sym_tensor_index = (d0*(2*vdim - d0 + 1))/2 + (d1-d0);
+            // Grab the spatial metric component, the ctx includes geometry that isn't 
+            // part of the canonical set of variables, like R on the surf of a sphere
+            // q_can includes the canonical variables list
+            double h_ij_inv_loc = h_ij_inv_quad_d[tot_conf_quad*sym_tensor_index + cqidx]; 
+            // For off-diagonal components, we need to count these twice, due to symmetry
+            int sym_fact = (d0 == d1) ? 1 : 2;
+            vv += sym_fact*h_ij_inv_loc*(xmu[cdim+d0])*(xmu[cdim+d1]);
+            vu += sym_fact*h_ij_inv_loc*(xmu[cdim+d0])*(V_drift_quad[cqidx][d1]);
+            uu += sym_fact*h_ij_inv_loc*(V_drift_quad[cqidx][d0])*(V_drift_quad[cqidx][d1]);
+          }
+        }
+        double GammaV_quad = sqrt(1.0 + vv);
+        fq[linc2] += expamp_quad[cqidx]*exp((1.0/T_over_m_quad[cqidx]) 
+          - (1.0/T_over_m_quad[cqidx])*(GammaV_quad*sqrt(1.0 + uu) - vu));
+      }
       else {
         double efact = 0.0;        
         for (int d=0; d<vdim; ++d) {
@@ -239,8 +267,8 @@ gkyl_vlasov_lte_proj_on_basis_advance_cu(gkyl_vlasov_lte_proj_on_basis *up,
   gkyl_vlasov_lte_proj_on_basis_moms_lte_quad_ker<<<dimGrid_conf, dimBlock_conf>>>(*conf_range, 
     vdim, up->conf_basis_at_ords->on_dev, 
     moms_lte->on_dev, 
-    up->is_canonical_pb ? up->det_h_quad->on_dev : 0, 
-    up->is_relativistic, up->is_canonical_pb, 
+    (up->is_canonical_pb || up->is_canonical_pb_gr) ? up->det_h_quad->on_dev : 0, 
+    up->is_relativistic, up->is_canonical_pb, up->is_canonical_pb_gr, 
     up->moms_lte_quad->on_dev, up->expamp_quad->on_dev);
 
   dim3 dimGrid, dimBlock;
@@ -250,8 +278,8 @@ gkyl_vlasov_lte_proj_on_basis_advance_cu(gkyl_vlasov_lte_proj_on_basis *up,
     *phase_range, *conf_range, 
     up->conf_basis_at_ords->on_dev, up->ordinates->on_dev,
     up->moms_lte_quad->on_dev, up->expamp_quad->on_dev, 
-    up->is_canonical_pb ? up->h_ij_inv_quad->on_dev : 0, 
-    up->p2c_qidx, up->is_relativistic, up->is_canonical_pb, 
+    (up->is_canonical_pb || up->is_canonical_pb_gr) ? up->det_h_quad->on_dev : 0, 
+    up->p2c_qidx, up->is_relativistic, up->is_canonical_pb, up->is_canonical_pb_gr, 
     up->f_lte_quad->on_dev);
 
   // Call cublas to do the matrix multiplication nodal to modal conversion

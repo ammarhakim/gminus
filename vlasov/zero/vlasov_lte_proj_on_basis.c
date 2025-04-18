@@ -332,8 +332,16 @@ gkyl_vlasov_lte_proj_on_basis_inew(const struct gkyl_vlasov_lte_proj_on_basis_in
   }
 
   up->is_canonical_pb = false;
+  up->is_canonical_pb_gr = false;
   if (inp->model_id == GKYL_MODEL_CANONICAL_PB || inp->model_id == GKYL_MODEL_CANONICAL_PB_GR) {
-    up->is_canonical_pb = true;
+    if (inp->model_id == GKYL_MODEL_CANONICAL_PB) {
+      up->is_canonical_pb = true;
+      up->is_canonical_pb_gr = false;
+    }
+    else if (inp->model_id == GKYL_MODEL_CANONICAL_PB_GR) {
+      up->is_canonical_pb = false;
+      up->is_canonical_pb_gr = true;
+    }
     // Allocate and obtain geometric variables at quadrature points for canonical-pb
     // since these quantities are time-independent.
     if (up->use_gpu) { 
@@ -375,6 +383,7 @@ gkyl_vlasov_lte_proj_on_basis_inew(const struct gkyl_vlasov_lte_proj_on_basis_in
     .h_ij_inv = inp->h_ij_inv,
     .det_h = inp->det_h,
     .hamil = inp->hamil,
+    .energy = inp->energy,
     .model_id = inp->model_id,
     .use_gpu = inp->use_gpu,
   };
@@ -472,6 +481,10 @@ gkyl_vlasov_lte_proj_on_basis_advance(gkyl_vlasov_lte_proj_on_basis *up,
           const double *det_h_quad = gkyl_array_cfetch(up->det_h_quad, midx);
           expamp_quad[n] = (1.0/det_h_quad[n])*n_quad[n]/sqrt(pow(2.0*GKYL_PI*T_over_m_quad[n], vdim));
         }
+        else if (up->is_canonical_pb_gr) { 
+          const double *det_h_quad = gkyl_array_cfetch(up->det_h_quad, midx);
+          expamp_quad[n] = (1.0/det_h_quad[n])*n_quad[n]*(1.0/(4.0*GKYL_PI*T_over_m_quad[n]))*(sqrt(2.0*T_over_m_quad[n]/GKYL_PI));
+        }
         else {
           expamp_quad[n] = n_quad[n]/sqrt(pow(2.0*GKYL_PI*T_over_m_quad[n], vdim));
         }
@@ -536,6 +549,31 @@ gkyl_vlasov_lte_proj_on_basis_advance(gkyl_vlasov_lte_proj_on_basis *up,
             }
             fq[0] += expamp_quad[cqidx]*exp(-efact/(2.0*T_over_m_quad[cqidx]));
           }
+          else if (up->is_canonical_pb_gr) {
+            // Assumes a (particle) hamiltonian in canocial form (GR): H = \alpha gamma + \beta \cdot p
+            const double *h_ij_inv_quad = gkyl_array_cfetch(up->h_ij_inv_quad, midx);
+            double vv = 0.0;
+            double vu = 0.0;
+            double uu = 0.0;
+            // V_drift_quad is the spatial component of the four-velocity u_i = GammaV*V_drift
+            for (int d0=0; d0<vdim; ++d0) {
+              for (int d1=d0; d1<vdim; ++d1) {
+                int sym_tensor_index = (d0*(2*vdim - d0 + 1))/2 + (d1-d0);
+                // Grab the spatial metric component, the ctx includes geometry that isn't 
+                // part of the canonical set of variables, like R on the surf of a sphere
+                // q_can includes the canonical variables list
+                double h_ij_inv_loc = h_ij_inv_quad[tot_conf_quad*sym_tensor_index + cqidx]; 
+                // For off-diagnol components, we need to count these twice, due to symmetry
+                int sym_fact = (d0 == d1) ? 1 : 2;
+                vv += sym_fact*h_ij_inv_loc*(xmu[cdim+d0])*(xmu[cdim+d1]);
+                vu += sym_fact*h_ij_inv_loc*(xmu[cdim+d0])*(V_drift_quad[cqidx][d1]);
+                uu += sym_fact*h_ij_inv_loc*(V_drift_quad[cqidx][d0])*(V_drift_quad[cqidx][d1]);
+              }
+            }
+            double GammaV_quad = sqrt(1.0 + vv);
+            fq[0] += expamp_quad[cqidx]*exp((1.0/T_over_m_quad[cqidx]) 
+              - (1.0/T_over_m_quad[cqidx])*(GammaV_quad*sqrt(1.0 + uu) - vu));
+          }
           else {
             double efact = 0.0;        
             for (int d=0; d<vdim; ++d) {
@@ -586,7 +624,7 @@ gkyl_vlasov_lte_proj_on_basis_release(gkyl_vlasov_lte_proj_on_basis* up)
   gkyl_array_release(up->num_ratio);
   gkyl_dg_bin_op_mem_release(up->mem);
 
-  if (up->is_canonical_pb) {
+  if (up->is_canonical_pb || up->is_canonical_pb_gr) {
     gkyl_array_release(up->h_ij_quad);
     gkyl_array_release(up->h_ij_inv_quad);
     gkyl_array_release(up->det_h_quad);

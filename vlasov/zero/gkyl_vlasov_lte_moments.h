@@ -25,6 +25,7 @@ struct gkyl_vlasov_lte_moments_inp {
   const struct gkyl_array *h_ij_inv; // Can-pb quantity: Inverse metric tensor (contravaraint components)
   const struct gkyl_array *det_h; // Can-pb quantity: determinant of the metric tensor
   const struct gkyl_array *hamil; // Can-pb quantity: hamiltonian
+  const struct gkyl_array *energy; // Can-pb quantity: internal energy
   enum gkyl_model_id model_id; // Enum identifier for model type (e.g., SR, see gkyl_eqn_type.h)
   double mass; // Mass factor 
   bool use_gpu; // bool for gpu useage

@@ -28,6 +28,7 @@ struct gkyl_vlasov_lte_correct_inp {
   const struct gkyl_array *h_ij_inv; // (Can-pb quantitiy) inverse metric tensor (contravariant components) 
   const struct gkyl_array *det_h; // (Can-pb quantitiy) determinant of the metric tensor 
   const struct gkyl_array *hamil; // (Can-pb quantitiy) Hamiltonian
+  const struct gkyl_array *energy; // (Can-pb quantitiy) Energy
   enum gkyl_model_id model_id; // Enum identifier for model type (e.g., SR, see gkyl_eqn_type.h)
   enum gkyl_quad_type quad_type; // type of quadrature to use: defaults to Gaussian
   bool use_last_converged; // Boolean for if we are using the results of the iterative scheme

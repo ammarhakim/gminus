@@ -39,7 +39,7 @@ kernel_canonical_pb_MEnergy_1x1v_ser_p1(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x1v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -51,7 +51,7 @@ kernel_canonical_pb_MEnergy_1x1v_ser_p2(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x1v_ser_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -63,7 +63,7 @@ kernel_canonical_pb_MEnergy_1x2v_ser_p1(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x2v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -75,7 +75,7 @@ kernel_canonical_pb_MEnergy_1x2v_ser_p2(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x2v_ser_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -87,7 +87,7 @@ kernel_canonical_pb_MEnergy_1x3v_ser_p1(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x3v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -99,7 +99,7 @@ kernel_canonical_pb_MEnergy_1x3v_ser_p2(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x3v_ser_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -111,7 +111,7 @@ kernel_canonical_pb_MEnergy_2x2v_ser_p1(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_2x2v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -123,7 +123,7 @@ kernel_canonical_pb_MEnergy_2x2v_ser_p2(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_2x2v_ser_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -135,7 +135,7 @@ kernel_canonical_pb_MEnergy_2x3v_ser_p1(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_2x3v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -147,7 +147,7 @@ kernel_canonical_pb_MEnergy_2x3v_ser_p2(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_2x3v_ser_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 
@@ -160,7 +160,7 @@ kernel_canonical_pb_int_mom_1x1v_ser_p1(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x1v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -172,7 +172,7 @@ kernel_canonical_pb_int_mom_1x1v_ser_p2(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x1v_ser_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out); 
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out); 
 }
 
 GKYL_CU_DH
@@ -184,7 +184,7 @@ kernel_canonical_pb_int_mom_1x2v_ser_p1(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x2v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -196,7 +196,7 @@ kernel_canonical_pb_int_mom_1x2v_ser_p2(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x2v_ser_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out); 
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out); 
 }
 
 GKYL_CU_DH
@@ -208,7 +208,7 @@ kernel_canonical_pb_int_mom_1x3v_ser_p1(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x3v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -220,7 +220,7 @@ kernel_canonical_pb_int_mom_1x3v_ser_p2(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x3v_ser_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out); 
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out); 
 }
 
 
@@ -233,7 +233,7 @@ kernel_canonical_pb_int_mom_2x2v_ser_p1(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_2x2v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);
 }
 
 GKYL_CU_DH
@@ -245,7 +245,7 @@ kernel_canonical_pb_int_mom_2x2v_ser_p2(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_2x2v_ser_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);
 }
 
 GKYL_CU_DH
@@ -257,7 +257,7 @@ kernel_canonical_pb_int_mom_2x3v_ser_p1(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_2x3v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);
 }
 
 GKYL_CU_DH
@@ -269,7 +269,7 @@ kernel_canonical_pb_int_mom_2x3v_ser_p2(const struct gkyl_mom_type *momt, const 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_2x3v_ser_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);
 }
 
 
@@ -315,7 +315,7 @@ kernel_canonical_pb_MEnergy_1x1v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x1v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -327,7 +327,7 @@ kernel_canonical_pb_MEnergy_1x1v_tensor_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x1v_tensor_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -339,7 +339,7 @@ kernel_canonical_pb_MEnergy_1x2v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x2v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -351,7 +351,7 @@ kernel_canonical_pb_MEnergy_1x2v_tensor_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x2v_tensor_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -363,7 +363,7 @@ kernel_canonical_pb_MEnergy_1x3v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x3v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -375,7 +375,7 @@ kernel_canonical_pb_MEnergy_1x3v_tensor_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_1x3v_tensor_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -387,7 +387,7 @@ kernel_canonical_pb_MEnergy_2x2v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_2x2v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -399,7 +399,7 @@ kernel_canonical_pb_MEnergy_2x2v_tensor_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_2x2v_tensor_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -411,7 +411,7 @@ kernel_canonical_pb_MEnergy_2x3v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_2x3v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -423,7 +423,7 @@ kernel_canonical_pb_MEnergy_3x3v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_MEnergy_3x3v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -435,7 +435,7 @@ kernel_canonical_pb_int_mom_1x1v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x1v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -447,7 +447,7 @@ kernel_canonical_pb_int_mom_1x1v_tensor_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x1v_tensor_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out); 
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out); 
 }
 
 GKYL_CU_DH
@@ -459,7 +459,7 @@ kernel_canonical_pb_int_mom_1x2v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x2v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -471,7 +471,7 @@ kernel_canonical_pb_int_mom_1x2v_tensor_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x2v_tensor_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out); 
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out); 
 }
 
 GKYL_CU_DH
@@ -483,7 +483,7 @@ kernel_canonical_pb_int_mom_1x3v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x3v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -495,7 +495,7 @@ kernel_canonical_pb_int_mom_1x3v_tensor_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_1x3v_tensor_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out); 
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out); 
 }
 
 GKYL_CU_DH
@@ -507,7 +507,7 @@ kernel_canonical_pb_int_mom_2x2v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_2x2v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);
 }
 
 GKYL_CU_DH
@@ -519,7 +519,7 @@ kernel_canonical_pb_int_mom_2x2v_tensor_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_2x2v_tensor_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);
 }
 
 GKYL_CU_DH
@@ -531,7 +531,7 @@ kernel_canonical_pb_int_mom_2x3v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_2x3v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);
 }
 
 GKYL_CU_DH
@@ -543,7 +543,7 @@ kernel_canonical_pb_int_mom_3x3v_tensor_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_int_mom_3x3v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);
 }
 
 //
@@ -588,7 +588,7 @@ kernel_canonical_pb_M1i_from_H_1x1v_ser_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x1v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -600,7 +600,7 @@ kernel_canonical_pb_M1i_from_H_1x1v_ser_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x1v_ser_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -612,7 +612,7 @@ kernel_canonical_pb_M1i_from_H_1x2v_ser_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x2v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -624,7 +624,7 @@ kernel_canonical_pb_M1i_from_H_1x2v_ser_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x2v_ser_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -636,7 +636,7 @@ kernel_canonical_pb_M1i_from_H_1x3v_ser_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x3v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -648,7 +648,7 @@ kernel_canonical_pb_M1i_from_H_1x3v_ser_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x3v_ser_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -660,7 +660,7 @@ kernel_canonical_pb_M1i_from_H_2x2v_ser_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_2x2v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -672,7 +672,7 @@ kernel_canonical_pb_M1i_from_H_2x2v_ser_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_2x2v_ser_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -684,7 +684,7 @@ kernel_canonical_pb_M1i_from_H_2x3v_ser_p1(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_2x3v_ser_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -696,7 +696,7 @@ kernel_canonical_pb_M1i_from_H_2x3v_ser_p2(const struct gkyl_mom_type *momt, con
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_2x3v_ser_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 
@@ -727,7 +727,7 @@ kernel_canonical_pb_M1i_from_H_1x1v_tensor_p1(const struct gkyl_mom_type *momt, 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x1v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -739,7 +739,7 @@ kernel_canonical_pb_M1i_from_H_1x1v_tensor_p2(const struct gkyl_mom_type *momt, 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x1v_tensor_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -751,7 +751,7 @@ kernel_canonical_pb_M1i_from_H_1x2v_tensor_p1(const struct gkyl_mom_type *momt, 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x2v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -763,7 +763,7 @@ kernel_canonical_pb_M1i_from_H_1x2v_tensor_p2(const struct gkyl_mom_type *momt, 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x2v_tensor_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -775,7 +775,7 @@ kernel_canonical_pb_M1i_from_H_1x3v_tensor_p1(const struct gkyl_mom_type *momt, 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x3v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -787,7 +787,7 @@ kernel_canonical_pb_M1i_from_H_1x3v_tensor_p2(const struct gkyl_mom_type *momt, 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_1x3v_tensor_p2(dx, 
-  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+  (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -799,7 +799,7 @@ kernel_canonical_pb_M1i_from_H_2x2v_tensor_p1(const struct gkyl_mom_type *momt, 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_2x2v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -811,7 +811,7 @@ kernel_canonical_pb_M1i_from_H_2x2v_tensor_p2(const struct gkyl_mom_type *momt, 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_2x2v_tensor_p2(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -823,7 +823,7 @@ kernel_canonical_pb_M1i_from_H_2x3v_tensor_p1(const struct gkyl_mom_type *momt, 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_2x3v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 GKYL_CU_DH
@@ -835,7 +835,7 @@ kernel_canonical_pb_M1i_from_H_3x3v_tensor_p1(const struct gkyl_mom_type *momt, 
   long pidx = gkyl_range_idx(&mom_can_pb->phase_range, idx);
 
   return canonical_pb_M1i_from_H_3x3v_tensor_p1(dx, 
-    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.hamil, pidx), f, out);  
+    (const double*) gkyl_array_cfetch(mom_can_pb->auxfields.energy, pidx), f, out);  
 }
 
 //

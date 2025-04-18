@@ -71,7 +71,7 @@ create_ctx(void)
 
   double vt = 1.0; // Thermal velocity.
   double Vx_drift = 0.0; // Drift velocity (x-direction).
-  double nu = 100.0; // Collision frequency.
+  double nu = 15000.0; // Collision frequency.
 
   // Derived physical quantities (using normalized code units).
   double gamma = 1.0 / sqrt(1.0 - (Vx_drift * Vx_drift)); // Gamma factor.
@@ -354,6 +354,7 @@ main(int argc, char **argv)
       .self_nu = evalNu,
       .ctx = &ctx,
       .correct_all_moms = true,
+      .has_implicit_coll_scheme = true,
     },
     
     .num_diag_moments = 3,

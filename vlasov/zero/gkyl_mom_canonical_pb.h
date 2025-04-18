@@ -7,6 +7,7 @@
 // Struct containing the pointers to auxiliary fields.
 struct gkyl_mom_canonical_pb_auxfields { 
   const struct gkyl_array *hamil; // hamiltonian function
+  const struct gkyl_array *energy; // internal energy function
 };
 
 /**
