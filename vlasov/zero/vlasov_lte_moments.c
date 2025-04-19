@@ -174,9 +174,11 @@ gkyl_vlasov_lte_density_moment_advance(struct gkyl_vlasov_lte_moments *lte_moms,
       lte_moms->M0, lte_moms->M1i, density_out);
   } 
   else if (lte_moms->model_id == GKYL_MODEL_CANONICAL_PB_GR) {
+    // Compute Jnu^i (u^i is the momentum = Gamma_b v^i)
     gkyl_dg_updater_moment_advance(lte_moms->M1i_calc, phase_local, conf_local, 
       fin, lte_moms->M1i);
-    gkyl_dg_calc_gr_vars_n(lte_moms->gr_vars, lte_moms->h_ij_inv,
+    // Compute n
+    gkyl_dg_calc_gr_vars_n(lte_moms->gr_vars, lte_moms->h_ij,
       lte_moms->M0, lte_moms->M1i, density_out);
   }
   else {
@@ -235,10 +237,11 @@ gkyl_vlasov_lte_moments_advance(struct gkyl_vlasov_lte_moments *lte_moms,
     // If we are relativistic, first compute rest-frame density n = Gamma_inv*M0,
     // Gamma_inv = sqrt(1 - |V_drift|^2), and V_drift = M1i/M0 (using weak division).
     // Done as a separate operator for robustness checks which insure V_drift < c.
-    gkyl_dg_calc_gr_vars_n(lte_moms->gr_vars, lte_moms->h_ij_inv,
+    // Using JnGamma, Jnv^iGamma = Jnu^i, and h_ij (for the dot product u^i and h_ij pair)
+    gkyl_dg_calc_gr_vars_n(lte_moms->gr_vars, lte_moms->h_ij,
       lte_moms->M0, lte_moms->M1i, moms_out); 
 
-    // Isolate spatial component of the bulk four-velocity u_i = M1i/n = GammaV*V_drift
+    // Isolate spatial component of the bulk four-velocity u^i = M1i/n = GammaV*V_drift
     // We store the output in the common V_drift array since we return the spatial
     // component of the bulk four-velocity in the LTE moms array in relativity. 
     for (int d = 0; d < vdim; ++d) {
