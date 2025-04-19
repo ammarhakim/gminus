@@ -133,7 +133,7 @@ gkyl_vlasov_lte_moments_inew(const struct gkyl_vlasov_lte_moments_inp *inp)
       up->V_drift_cov = gkyl_array_new(GKYL_DOUBLE, up->vdim*up->num_conf_basis, conf_local_ext_ncells);
     }
     up->can_pb_vars = gkyl_dg_calc_canonical_pb_vars_new(inp->phase_grid, inp->conf_basis, inp->phase_basis, inp->use_gpu);
-    struct gkyl_mom_canonical_pb_auxfields can_pb_inp = {.energy = inp->energy}; // Allows for correct M1i computation 
+    struct gkyl_mom_canonical_pb_auxfields can_pb_inp = {.hamil = inp->hamil, .energy = inp->energy}; // Allows for correct M1i computation 
 
     // Moment calculator for needed moments (M0, M1i, and M2)
     // Temperature moment is modified by can-pb, requires computing g^{ij}w_iw_j kernel
