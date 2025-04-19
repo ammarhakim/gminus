@@ -38,6 +38,11 @@ GKYL_CU_DH void canonical_pb_vars_util_3x3v_tensor_p1(const double *h_ij_inv, co
   binop_mul_3d_ser_p1(Hxy, Vx, Hxy_Vx); 
   binop_mul_3d_ser_p1(Hxy_Vx, Uy, Hxy_Vx_Uy); 
  
+  double Hxy_Ux[8] = {0.0}; 
+  double Hxy_Ux_Vy[8] = {0.0}; 
+  binop_mul_3d_ser_p1(Hxy, Ux, Hxy_Ux); 
+  binop_mul_3d_ser_p1(Hxy_Ux, Vy, Hxy_Ux_Vy); 
+ 
   double Hyy_Vy[8] = {0.0}; 
   double Hyy_Vy_Uy[8] = {0.0}; 
   binop_mul_3d_ser_p1(Hyy, Vy, Hyy_Vy); 
@@ -48,10 +53,20 @@ GKYL_CU_DH void canonical_pb_vars_util_3x3v_tensor_p1(const double *h_ij_inv, co
   binop_mul_3d_ser_p1(Hxz, Vx, Hxz_Vx); 
   binop_mul_3d_ser_p1(Hxz_Vx, Uz, Hxz_Vx_Uz); 
  
+  double Hxz_Ux[8] = {0.0}; 
+  double Hxz_Ux_Vz[8] = {0.0}; 
+  binop_mul_3d_ser_p1(Hxz, Ux, Hxz_Ux); 
+  binop_mul_3d_ser_p1(Hxz_Ux, Vz, Hxz_Ux_Vz); 
+ 
   double Hyz_Vy[8] = {0.0}; 
   double Hyz_Vy_Uz[8] = {0.0}; 
   binop_mul_3d_ser_p1(Hyz, Vy, Hyz_Vy); 
   binop_mul_3d_ser_p1(Hyz_Vy, Uz, Hyz_Vy_Uz); 
+ 
+  double Hyz_Uy[8] = {0.0}; 
+  double Hyz_Uy_Vz[8] = {0.0}; 
+  binop_mul_3d_ser_p1(Hyz, Uy, Hyz_Uy); 
+  binop_mul_3d_ser_p1(Hyz_Uy, Vz, Hyz_Uy_Vz); 
  
   double Hzz_Vz[8] = {0.0}; 
   double Hzz_Vz_Uz[8] = {0.0}; 
@@ -60,59 +75,59 @@ GKYL_CU_DH void canonical_pb_vars_util_3x3v_tensor_p1(const double *h_ij_inv, co
  
   v_dot_u[0] = 0.0; 
   v_dot_u[0] += Hxx_Vx_Ux[0]; 
-  v_dot_u[0] += (Hxy_Vx_Uy[0])*2.0; 
+  v_dot_u[0] += (Hxy_Vx_Uy[0] + Hxy_Ux_Vy[0]); 
   v_dot_u[0] +=  Hyy_Vy_Uy[0]; 
-  v_dot_u[0] += (Hxz_Vx_Uz[0])*2.0; 
-  v_dot_u[0] += (Hyz_Vy_Uz[0])*2.0; 
+  v_dot_u[0] += (Hxz_Vx_Uz[0] + Hxz_Ux_Vz[0]); 
+  v_dot_u[0] += (Hyz_Vy_Uz[0] + Hyz_Uy_Vz[0]); 
   v_dot_u[0] +=  Hzz_Vz_Uz[0]; 
   v_dot_u[1] = 0.0; 
   v_dot_u[1] += Hxx_Vx_Ux[1]; 
-  v_dot_u[1] += (Hxy_Vx_Uy[1])*2.0; 
+  v_dot_u[1] += (Hxy_Vx_Uy[1] + Hxy_Ux_Vy[1]); 
   v_dot_u[1] +=  Hyy_Vy_Uy[1]; 
-  v_dot_u[1] += (Hxz_Vx_Uz[1])*2.0; 
-  v_dot_u[1] += (Hyz_Vy_Uz[1])*2.0; 
+  v_dot_u[1] += (Hxz_Vx_Uz[1] + Hxz_Ux_Vz[1]); 
+  v_dot_u[1] += (Hyz_Vy_Uz[1] + Hyz_Uy_Vz[1]); 
   v_dot_u[1] +=  Hzz_Vz_Uz[1]; 
   v_dot_u[2] = 0.0; 
   v_dot_u[2] += Hxx_Vx_Ux[2]; 
-  v_dot_u[2] += (Hxy_Vx_Uy[2])*2.0; 
+  v_dot_u[2] += (Hxy_Vx_Uy[2] + Hxy_Ux_Vy[2]); 
   v_dot_u[2] +=  Hyy_Vy_Uy[2]; 
-  v_dot_u[2] += (Hxz_Vx_Uz[2])*2.0; 
-  v_dot_u[2] += (Hyz_Vy_Uz[2])*2.0; 
+  v_dot_u[2] += (Hxz_Vx_Uz[2] + Hxz_Ux_Vz[2]); 
+  v_dot_u[2] += (Hyz_Vy_Uz[2] + Hyz_Uy_Vz[2]); 
   v_dot_u[2] +=  Hzz_Vz_Uz[2]; 
   v_dot_u[3] = 0.0; 
   v_dot_u[3] += Hxx_Vx_Ux[3]; 
-  v_dot_u[3] += (Hxy_Vx_Uy[3])*2.0; 
+  v_dot_u[3] += (Hxy_Vx_Uy[3] + Hxy_Ux_Vy[3]); 
   v_dot_u[3] +=  Hyy_Vy_Uy[3]; 
-  v_dot_u[3] += (Hxz_Vx_Uz[3])*2.0; 
-  v_dot_u[3] += (Hyz_Vy_Uz[3])*2.0; 
+  v_dot_u[3] += (Hxz_Vx_Uz[3] + Hxz_Ux_Vz[3]); 
+  v_dot_u[3] += (Hyz_Vy_Uz[3] + Hyz_Uy_Vz[3]); 
   v_dot_u[3] +=  Hzz_Vz_Uz[3]; 
   v_dot_u[4] = 0.0; 
   v_dot_u[4] += Hxx_Vx_Ux[4]; 
-  v_dot_u[4] += (Hxy_Vx_Uy[4])*2.0; 
+  v_dot_u[4] += (Hxy_Vx_Uy[4] + Hxy_Ux_Vy[4]); 
   v_dot_u[4] +=  Hyy_Vy_Uy[4]; 
-  v_dot_u[4] += (Hxz_Vx_Uz[4])*2.0; 
-  v_dot_u[4] += (Hyz_Vy_Uz[4])*2.0; 
+  v_dot_u[4] += (Hxz_Vx_Uz[4] + Hxz_Ux_Vz[4]); 
+  v_dot_u[4] += (Hyz_Vy_Uz[4] + Hyz_Uy_Vz[4]); 
   v_dot_u[4] +=  Hzz_Vz_Uz[4]; 
   v_dot_u[5] = 0.0; 
   v_dot_u[5] += Hxx_Vx_Ux[5]; 
-  v_dot_u[5] += (Hxy_Vx_Uy[5])*2.0; 
+  v_dot_u[5] += (Hxy_Vx_Uy[5] + Hxy_Ux_Vy[5]); 
   v_dot_u[5] +=  Hyy_Vy_Uy[5]; 
-  v_dot_u[5] += (Hxz_Vx_Uz[5])*2.0; 
-  v_dot_u[5] += (Hyz_Vy_Uz[5])*2.0; 
+  v_dot_u[5] += (Hxz_Vx_Uz[5] + Hxz_Ux_Vz[5]); 
+  v_dot_u[5] += (Hyz_Vy_Uz[5] + Hyz_Uy_Vz[5]); 
   v_dot_u[5] +=  Hzz_Vz_Uz[5]; 
   v_dot_u[6] = 0.0; 
   v_dot_u[6] += Hxx_Vx_Ux[6]; 
-  v_dot_u[6] += (Hxy_Vx_Uy[6])*2.0; 
+  v_dot_u[6] += (Hxy_Vx_Uy[6] + Hxy_Ux_Vy[6]); 
   v_dot_u[6] +=  Hyy_Vy_Uy[6]; 
-  v_dot_u[6] += (Hxz_Vx_Uz[6])*2.0; 
-  v_dot_u[6] += (Hyz_Vy_Uz[6])*2.0; 
+  v_dot_u[6] += (Hxz_Vx_Uz[6] + Hxz_Ux_Vz[6]); 
+  v_dot_u[6] += (Hyz_Vy_Uz[6] + Hyz_Uy_Vz[6]); 
   v_dot_u[6] +=  Hzz_Vz_Uz[6]; 
   v_dot_u[7] = 0.0; 
   v_dot_u[7] += Hxx_Vx_Ux[7]; 
-  v_dot_u[7] += (Hxy_Vx_Uy[7])*2.0; 
+  v_dot_u[7] += (Hxy_Vx_Uy[7] + Hxy_Ux_Vy[7]); 
   v_dot_u[7] +=  Hyy_Vy_Uy[7]; 
-  v_dot_u[7] += (Hxz_Vx_Uz[7])*2.0; 
-  v_dot_u[7] += (Hyz_Vy_Uz[7])*2.0; 
+  v_dot_u[7] += (Hxz_Vx_Uz[7] + Hxz_Ux_Vz[7]); 
+  v_dot_u[7] += (Hyz_Vy_Uz[7] + Hyz_Uy_Vz[7]); 
   v_dot_u[7] +=  Hzz_Vz_Uz[7]; 
  
 } 

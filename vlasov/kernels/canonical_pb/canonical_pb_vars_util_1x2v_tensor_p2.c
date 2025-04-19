@@ -33,6 +33,11 @@ GKYL_CU_DH void canonical_pb_vars_util_1x2v_tensor_p2(const double *h_ij_inv, co
   binop_mul_1d_ser_p2(Hxy, Vx, Hxy_Vx); 
   binop_mul_1d_ser_p2(Hxy_Vx, Uy, Hxy_Vx_Uy); 
  
+  double Hxy_Ux[3] = {0.0}; 
+  double Hxy_Ux_Vy[3] = {0.0}; 
+  binop_mul_1d_ser_p2(Hxy, Ux, Hxy_Ux); 
+  binop_mul_1d_ser_p2(Hxy_Ux, Vy, Hxy_Ux_Vy); 
+ 
   double Hyy_Vy[3] = {0.0}; 
   double Hyy_Vy_Uy[3] = {0.0}; 
   binop_mul_1d_ser_p2(Hyy, Vy, Hyy_Vy); 
@@ -40,15 +45,15 @@ GKYL_CU_DH void canonical_pb_vars_util_1x2v_tensor_p2(const double *h_ij_inv, co
  
   v_dot_u[0] = 0.0; 
   v_dot_u[0] += Hxx_Vx_Ux[0]; 
-  v_dot_u[0] += (Hxy_Vx_Uy[0])*2.0; 
+  v_dot_u[0] += (Hxy_Vx_Uy[0] + Hxy_Ux_Vy[0]); 
   v_dot_u[0] +=  Hyy_Vy_Uy[0]; 
   v_dot_u[1] = 0.0; 
   v_dot_u[1] += Hxx_Vx_Ux[1]; 
-  v_dot_u[1] += (Hxy_Vx_Uy[1])*2.0; 
+  v_dot_u[1] += (Hxy_Vx_Uy[1] + Hxy_Ux_Vy[1]); 
   v_dot_u[1] +=  Hyy_Vy_Uy[1]; 
   v_dot_u[2] = 0.0; 
   v_dot_u[2] += Hxx_Vx_Ux[2]; 
-  v_dot_u[2] += (Hxy_Vx_Uy[2])*2.0; 
+  v_dot_u[2] += (Hxy_Vx_Uy[2] + Hxy_Ux_Vy[2]); 
   v_dot_u[2] +=  Hyy_Vy_Uy[2]; 
  
 } 
