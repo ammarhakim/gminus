@@ -184,7 +184,7 @@ ${BUILD_DIR}/gyrokinetic/unit/%:
 ${BUILD_DIR}/pkpm/unit/%:
 	cd pkpm && $(MAKE) -f Makefile-pkpm ../$@
 
-all: core moments vlasov gyrokinetic pkpm 
+all: core moments vlasov gyrokinetic pkpm gkeyll
 	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 	cp ./data/adas/radiation_fit_parameters.txt ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 
@@ -308,9 +308,12 @@ pkpm-valcheck: pkpm ## Run valgrind on unit tests in PKPM
 	cd pkpm && $(MAKE) -f Makefile-pkpm valcheck
 
 ## Top-level Gkeyll target
-.PHONY: gkeyll
+.PHONY: gkeyll gkeyll-install
 gkeyll: pkpm
 	cd gkeyll && ${MAKE} -f Makefile-gkeyll gkeyll
+
+gkeyll-install: gkeyll pkpm-install
+	cd gkeyll && ${MAKE} -f Makefile-gkeyll install
 
 ## Targets to build things all parts of the code
 

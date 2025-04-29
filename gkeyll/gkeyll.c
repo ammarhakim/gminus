@@ -130,9 +130,9 @@ static void
 show_usage()
 {
   fprintf(stdout, "This is the Gkeyll code. See gkeyll.rtfd.io for details.\n");
-  fprintf(stdout, "Type 'gkyl man' for help.\n\n");
+  fprintf(stdout, "Type 'gkeyll man' for help.\n\n");
 
-  fprintf(stdout, "gkyl [OPTIONS] input-file/tool-name [APP-OPTIONS]\n");
+  fprintf(stdout, "gkeyll [OPTIONS] input-file/tool-name [APP-OPTIONS]\n");
   fprintf(stdout, "Available options are\n");
   fprintf(stdout, "  -e chunk   Execute string 'chunk'\n");
   fprintf(stdout, "  -t         Show list of registered tools\n");
@@ -155,7 +155,7 @@ static void
 show_version()
 {
   fprintf(stdout, "This is the Gkeyll code. See gkeyll.rtfd.io for details.\n");
-  fprintf(stdout, "Type 'gkyl -h' for help.\n\n");
+  fprintf(stdout, "Type 'gkeyll -h' for help.\n\n");
 #ifdef GKYL_GIT_CHANGESET  
   fprintf(stdout, "Built with git changeset %s\n", STRINGIFY(GKYL_GIT_CHANGESET));
 #endif
@@ -303,8 +303,8 @@ show_banner(FILE *fp)
     char s[64];
     size_t ret = strftime(s, sizeof(s), "%c", tm);
     fprintf(fp, "%s\n", s);
-    fprintf(fp, "Gkyl built with Git changset %s\n", STRINGIFY(GKYL_GIT_CHANGESET));
-    fprintf(fp, "Gkyl build on %s\n", STRINGIFY(GKYL_BUILD_DATE));
+    fprintf(fp, "Gkeyll built with Git changset %s\n", STRINGIFY(GKYL_GIT_CHANGESET));
+    fprintf(fp, "Gkeyll build on %s\n", STRINGIFY(GKYL_BUILD_DATE));
 #ifdef GKYL_HAVE_CUDA
     fprintf(fp, "Built with CUDA\n");
 #else
