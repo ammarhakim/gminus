@@ -184,7 +184,7 @@ ${BUILD_DIR}/gyrokinetic/unit/%:
 ${BUILD_DIR}/pkpm/unit/%:
 	cd pkpm && $(MAKE) -f Makefile-pkpm ../$@
 
-all: core moments vlasov gyrokinetic pkpm
+all: core moments vlasov gyrokinetic pkpm 
 	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 	cp ./data/adas/radiation_fit_parameters.txt ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 
@@ -307,10 +307,15 @@ pkpm-check: pkpm ## Run unit tests in PKPM
 pkpm-valcheck: pkpm ## Run valgrind on unit tests in PKPM
 	cd pkpm && $(MAKE) -f Makefile-pkpm valcheck
 
+## Top-level Gkeyll target
+.PHONY: gkeyll
+gkeyll: pkpm
+	cd gkeyll && ${MAKE} -f Makefile-gkeyll gkeyll
+
 ## Targets to build things all parts of the code
 
 # build all unit tests 
-.PHONY: unit 
+.PHONY: unit
 unit: core-unit moments-unit vlasov-unit gyrokinetic-unit pkpm-unit ## Build all unit tests
 
 # build all regression tests 
@@ -318,11 +323,11 @@ unit: core-unit moments-unit vlasov-unit gyrokinetic-unit pkpm-unit ## Build all
 regression: core-regression moments-regression vlasov-regression gyrokinetic-regression pkpm-regression ## Build all regression tests
 
 # Install everything
-.PHONY: install 
+.PHONY: install
 install: core-install moments-install vlasov-install gyrokinetic-install pkpm-install ## Install all code
 
 # Clean everything
-.PHONY: clean 
+.PHONY: clean
 clean: core-clean moments-clean vlasov-clean gyrokinetic-clean pkpm-clean ## Clean all builds
 
 # Check everything
