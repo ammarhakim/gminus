@@ -186,7 +186,7 @@ ${BUILD_DIR}/pkpm/unit/%:
 
 all: core moments vlasov gyrokinetic pkpm gkeyll
 	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
-	cp ./data/adas/radiation_fit_parameters.txt ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
+	#cp ./data/adas/radiation_fit_parameters.txt ${INSTALL_PREFIX}/${PROJ_NAME}/share/adas
 
 ## Core infrastructure targets
 .PHONY: core core-unit core-clean core-install core-check core-valcheck core-regression
