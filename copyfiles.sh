@@ -16,11 +16,6 @@ $RM_CMD $G0/LICENSE
 $RM_CMD $G0/README.md
 $RM_CMD $G0/run-cppcheck.sh
 
-# lua
-mkdir -p lua
-$CP_CMD -r $G0/lua .
-
-$RM_CMD -r $G0/lua
 
 # install-deps
 mkdir -p install-deps

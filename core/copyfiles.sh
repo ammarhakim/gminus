@@ -4,6 +4,10 @@ CP_CMD=cp
 RM_CMD=rm
 G0=../../gkylzero
 
+# lua
+mkdir -p lua
+$CP_CMD -r $G0/lua .
+
 # data
 mkdir -p data/unit
 $CP_CMD $G0/data/unit/euler_riem_2d_hllc-euler_1.gkyl data/unit/
