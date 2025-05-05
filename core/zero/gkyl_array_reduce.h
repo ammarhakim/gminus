@@ -2,7 +2,7 @@
 
 #include <gkyl_array.h>
 #include <gkyl_range.h>
-
+#include <float.h>
 /**
  * Perform an "reduce" operation of data in the array.
  *

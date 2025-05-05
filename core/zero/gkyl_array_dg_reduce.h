@@ -4,6 +4,8 @@
 #include <gkyl_range.h>
 #include <gkyl_basis.h>
 
+#include <float.h>
+
 /**
  * Perform a "reduce" operation of data in the array accounting for the DG
  * representation within the array. It evaluates the DG field at Gauss-Legendre

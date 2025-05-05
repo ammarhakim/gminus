@@ -1,9 +1,11 @@
 /* -*- c -*- */
 
 #include <stdio.h>
-#include <gkylzero.h>
 
 extern "C" {
+#include <gkyl_alloc.h>
+#include <gkyl_array.h>
+#include <gkyl_dg_vlasov.h>
 #include <gkyl_dg_vlasov_priv.h>    
 int cu_vlasov_test(const struct gkyl_dg_eqn *eqn);
 }

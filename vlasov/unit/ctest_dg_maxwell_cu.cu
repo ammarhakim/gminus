@@ -1,9 +1,11 @@
 /* -*- c -*- */
 
 #include <stdio.h>
-#include <gkylzero.h>
 
 extern "C" {
+#include <gkyl_alloc.h>
+#include <gkyl_array.h>
+#include <gkyl_dg_maxwell.h>
 #include <gkyl_dg_maxwell_priv.h>
 int cu_maxwell_test(const struct gkyl_dg_eqn *eqn);
 }
