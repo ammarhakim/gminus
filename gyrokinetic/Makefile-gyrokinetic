@@ -13,7 +13,7 @@ else
 endif
 
 LLIB := ../$(BUILD_DIR)/gyrokinetic/libg0gyrokinetic.so
-SLLIB := ../$(BUILD_DIR)/gyrokinetic/libg0gyrokinetic.a
+SLLIB := 
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
 ifdef USING_NVCC
 	SRCS += $(shell find $(SRC_DIRS) -name *.cu)
@@ -207,7 +207,6 @@ install: all
 	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/${PROJ_NAME}/include
 # libraries
 	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0gyrokinetic.so
-	cp -f $(SLLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0gyrokinetic.a
 
 .PHONY: clean
 clean: ## Clean build output

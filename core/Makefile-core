@@ -16,7 +16,7 @@ else
 endif
 
 LLIB := ../$(BUILD_DIR)/core/libg0core.so
-SLLIB := ../$(BUILD_DIR)/core/libg0core.a
+SLLIB := 
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
 ifdef USING_NVCC
 	SRCS += $(shell find $(SRC_DIRS) -name *.cu)
@@ -164,7 +164,6 @@ install: all
 	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/${PROJ_NAME}/include
 # libraries
 	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0core.so
-	cp -f $(SLLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0core.a
 # Copy Lua code from various directories
 	${MKDIR_P} ${INSTALL_PREFIX}/${PROJ_NAME}/bin/lua/xsys
 	find lua/xsys -name '*.lua' | xargs -I {} rsync -R {} ${INSTALL_PREFIX}/${PROJ_NAME}/bin
