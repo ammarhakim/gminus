@@ -12,6 +12,8 @@ else
 	SUPERLU_LIB = $(PREFIX)/superlu/lib/libsuperlu.a
 endif
 
+CORELLIB := ../$(BUILD_DIR)/core/libg0core.so
+CORESLLIB := 
 LLIB := ../$(BUILD_DIR)/moments/libg0moments.so
 SLLIB := 
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
@@ -47,7 +49,7 @@ CORE_LIB := -lg0core
 
 EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR}
 EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
-EXEC_LIBS = -L../${BUILD_DIR}/moments ${LLIB} ${SLLIB} ${CORE_LIB_DIR} ${CORE_LIB} ${EXEC_EXT_LIBS}
+EXEC_LIBS = -L../${BUILD_DIR}/moments ${LLIB} ${SLLIB} ${EXEC_EXT_LIBS}
 
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/core
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/moments
@@ -55,7 +57,7 @@ LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/moments
 LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/core
 LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/moments
 
-unit: ${LLIB} ${SLLIB} $(UNITS) ${MPI_UNITS} ## Build unit tests
+unit: ${LLIB} ${SLLIB} ${CORELLIB} ${CORESLLIB} $(UNITS) ${MPI_UNITS} ## Build unit tests
 regression: ${LLIB} ${SLLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
 amr_regression: ${LLIB} ${SLLIB} ${AMR_REGS} ## Build AMR regression tests
 
