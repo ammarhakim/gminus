@@ -104,12 +104,12 @@ $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
 ifeq ($(UNAME),Linux)
 ifdef USING_NVCC
-	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o -Xlinker=-soname -Xlinker=libg0moments.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH} -rdc=true --compiler-options="-fPIC"
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/minus/*.o ../$(BUILD_DIR)/core/minus/*/*.o ../$(BUILD_DIR)/core/kernels/*.o ../$(BUILD_DIR)/core/kernels/*/*.o ../$(BUILD_DIR)/core/zero/*.o ../$(BUILD_DIR)/core/zero/*/*.o ../$(BUILD_DIR)/moments/zero/*.o ../$(BUILD_DIR)/moments/zero/*/*.o ../$(BUILD_DIR)/moments/kernels/*.o ../$(BUILD_DIR)/moments/kernels/*/*.o ../$(BUILD_DIR)/moments/apps/*.o ../$(BUILD_DIR)/moments/apps/*/*.o ../$(BUILD_DIR)/moments/amr/*.o ../$(BUILD_DIR)/moments/amr/*/*.o -Xlinker=-soname -Xlinker=libg0moments.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH} -rdc=true --compiler-options="-fPIC"
 else
-	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o -Wl,-soname,libg0moments.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/minus/*.o ../$(BUILD_DIR)/core/minus/*/*.o ../$(BUILD_DIR)/core/kernels/*.o ../$(BUILD_DIR)/core/kernels/*/*.o ../$(BUILD_DIR)/core/zero/*.o ../$(BUILD_DIR)/core/zero/*/*.o ../$(BUILD_DIR)/moments/zero/*.o ../$(BUILD_DIR)/moments/zero/*/*.o ../$(BUILD_DIR)/moments/kernels/*.o ../$(BUILD_DIR)/moments/kernels/*/*.o ../$(BUILD_DIR)/moments/apps/*.o ../$(BUILD_DIR)/moments/apps/*/*.o ../$(BUILD_DIR)/moments/amr/*.o ../$(BUILD_DIR)/moments/amr/*/*.o -Wl,-soname,libg0moments.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
 else
-	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o -Wl,-install_name,@rpath/libg0moments.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/minus/*.o ../$(BUILD_DIR)/core/minus/*/*.o ../$(BUILD_DIR)/core/kernels/*.o ../$(BUILD_DIR)/core/kernels/*/*.o ../$(BUILD_DIR)/core/zero/*.o ../$(BUILD_DIR)/core/zero/*/*.o ../$(BUILD_DIR)/moments/zero/*.o ../$(BUILD_DIR)/moments/zero/*/*.o ../$(BUILD_DIR)/moments/kernels/*.o ../$(BUILD_DIR)/moments/kernels/*/*.o ../$(BUILD_DIR)/moments/apps/*.o ../$(BUILD_DIR)/moments/apps/*/*.o ../$(BUILD_DIR)/moments/amr/*.o ../$(BUILD_DIR)/moments/amr/*/*.o -Wl,-install_name,@rpath/libg0moments.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
 
 $(SLLIB): $(OBJS)
@@ -141,6 +141,8 @@ install: all
 	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/${PROJ_NAME}/include
 # libraries
 	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0moments.so
+	cp -f $(SLLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0moments.a
+
 
 .PHONY: clean
 clean: ## Clean build output
