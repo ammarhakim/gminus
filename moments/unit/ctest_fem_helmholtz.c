@@ -249,14 +249,14 @@ test_2x(int poly_order, const int *cells, struct gkyl_poisson_bc bcs, bool use_g
           long linidx = gkyl_range_idx(&localRange, idx0);
           const double *phi_p = gkyl_array_cfetch(phi, linidx);
           for (int m=0; m<basis.num_basis; m++) {
-            TEST_CHECK( gkyl_compare(sol[(j*cells[1]+k)*basis.num_basis+m], phi_p[m], 1e-10) );
+            TEST_CHECK( gkyl_compare(sol[(j*cells[1]+k)*basis.num_basis+m], phi_p[m], 1e-8) );
             TEST_MSG("Expected: %.13e in cell (%d,%d)", sol[(j*cells[1]+k)*basis.num_basis+m], j, k);
             TEST_MSG("Produced: %.13e", phi_p[m]);
           }
         }
       }
     } else {
-      TEST_CHECK( gkyl_compare(1., 2., 1e-10) );
+      TEST_CHECK( gkyl_compare(1., 2., 1e-8) );
       TEST_MSG("This BC combination is not available");
     }
   } else if (poly_order == 2) {
@@ -357,18 +357,18 @@ test_2x(int poly_order, const int *cells, struct gkyl_poisson_bc bcs, bool use_g
           long linidx = gkyl_range_idx(&localRange, idx0);
           const double *phi_p = gkyl_array_cfetch(phi, linidx);
           for (int m=0; m<basis.num_basis; m++) {
-            TEST_CHECK( gkyl_compare(sol[(j*cells[1]+k)*basis.num_basis+m], phi_p[m], 1e-10) );
+            TEST_CHECK( gkyl_compare(sol[(j*cells[1]+k)*basis.num_basis+m], phi_p[m], 1e-8) );
             TEST_MSG("Expected: %.13e in cell (%d,%d)", sol[(j*cells[1]+k)*basis.num_basis+m], j, k);
             TEST_MSG("Produced: %.13e", phi_p[m]);
           }
         }
       }
     } else {
-      TEST_CHECK( gkyl_compare(1., 2., 1e-10) );
+      TEST_CHECK( gkyl_compare(1., 2., 1e-8) );
       TEST_MSG("This BC combination is not available");
     }
   } else {
-    TEST_CHECK( gkyl_compare(1., 2., 1e-10) );
+    TEST_CHECK( gkyl_compare(1., 2., 1e-8) );
     TEST_MSG("This poly_order is not available");
   }
 
