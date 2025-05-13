@@ -59,7 +59,7 @@ LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/moments
 LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/core
 LDFLAGS += -Wl,-rpath,../${BUILD_DIR}/moments
 
-unit: ${LLIB} ${SLLIB} ${CORELLIB} ${CORESLLIB} $(UNITS) ${MPI_UNITS} ## Build unit tests
+unit: ${LLIB} ${SLLIB} $(UNITS) ${MPI_UNITS} ## Build unit tests
 regression: ${LLIB} ${SLLIB} ${REGS} creg/rt_arg_parse.h ## Build regression tests
 amr_regression: ${LLIB} ${SLLIB} ${AMR_REGS} ## Build AMR regression tests
 
