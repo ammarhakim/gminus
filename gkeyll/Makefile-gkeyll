@@ -42,7 +42,7 @@ INSTALLED_LDFLAGS += -Wl,-rpath,${PROJ_INSTALL_LIB_DIR}
 
 gkeyll: gkeyll.c
 	$(MKDIR_P) ../${BUILD_DIR}/gkeyll/
-	${CC} ${CFLAGS} ${LDFLAGS} -o ../${BUILD_DIR}/gkeyll/gkeyll $< -I. ${ALL_INCS} ${EXT_INCS} ${APP_LW_INCS} ${LDFLAGS} ${EXEC_LIB_DIRS} ${EXEC_LIBS}
+	${CC} ${CFLAGS} ${LDFLAGS} -o ../${BUILD_DIR}/gkeyll/gkeyll $< -I. ${ALL_INCS} ${EXT_INCS} ${APP_LW_INCS} ${LDFLAGS} ${EXEC_LIB_DIRS} ${FINAL_APP_LIB_DIR} ${FINAL_APP_LIB} ${EXEC_EXT_LIBS}
 
 gkeyll-install: gkeyll.c
 	$(MKDIR_P) ../${BUILD_DIR}/gkeyll/
