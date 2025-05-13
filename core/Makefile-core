@@ -4,6 +4,7 @@
 SQL_CFLAGS ?= -fPIC -Wno-implicit-int-float-conversion
 
 SRC_DIRS := minus kernels zero apps lua/Comm lua/Tool
+UNIT_DIRS := unit
 
 PREFIX ?= ${HOME}/gkylsoft
 SUPERLU_INC = $(PREFIX)/superlu/include
@@ -20,6 +21,7 @@ SLLIB :=
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
 ifdef USING_NVCC
 	SRCS += $(shell find $(SRC_DIRS) -name *.cu)
+	SRCS += $(shell find $(UNIT_DIRS) -name *.cu)
 endif
 OBJS := $(SRCS:%=../$(BUILD_DIR)/core/%.o)
 DEPS := $(OBJS:.o=.d)
