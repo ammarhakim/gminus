@@ -596,14 +596,10 @@ $CP_CMD $G0/unit/ctest_canonical_pb_equilibrium.c unit/
 $CP_CMD $G0/unit/ctest_correct_maxwellian.c unit/
 $CP_CMD $G0/unit/ctest_correct_mj_integrated.c unit/
 $CP_CMD $G0/unit/ctest_dg_lbo_vlasov.c unit/
-$CP_CMD $G0/unit/ctest_dg_maxwell_cu.cu unit/
 $CP_CMD $G0/unit/ctest_dg_maxwell.c unit/
-$CP_CMD $G0/unit/ctest_dg_vlasov_cu.cu unit/
 $CP_CMD $G0/unit/ctest_dg_vlasov.c unit/
-$CP_CMD $G0/unit/ctest_hyper_dg_cu.cu unit/
 $CP_CMD $G0/unit/ctest_hyper_dg.c unit/
 $CP_CMD $G0/unit/ctest_hyper3x_dg.c unit/
-$CP_CMD $G0/unit/ctest_mom_vlasov_cu.cu unit/
 $CP_CMD $G0/unit/ctest_mom_vlasov.c unit/
 $CP_CMD $G0/unit/ctest_prim_vlasov.c unit/
 $CP_CMD $G0/unit/ctest_proj_mj_on_basis.c unit/
@@ -618,14 +614,10 @@ $RM_CMD $G0/unit/ctest_canonical_pb_equilibrium.c
 $RM_CMD $G0/unit/ctest_correct_maxwellian.c
 $RM_CMD $G0/unit/ctest_correct_mj_integrated.c
 $RM_CMD $G0/unit/ctest_dg_lbo_vlasov.c
-$RM_CMD $G0/unit/ctest_dg_maxwell_cu.cu
 $RM_CMD $G0/unit/ctest_dg_maxwell.c
-$RM_CMD $G0/unit/ctest_dg_vlasov_cu.cu
 $RM_CMD $G0/unit/ctest_dg_vlasov.c
-$RM_CMD $G0/unit/ctest_hyper_dg_cu.cu
 $RM_CMD $G0/unit/ctest_hyper_dg.c
 $RM_CMD $G0/unit/ctest_hyper3x_dg.c
-$RM_CMD $G0/unit/ctest_mom_vlasov_cu.cu
 $RM_CMD $G0/unit/ctest_mom_vlasov.c
 $RM_CMD $G0/unit/ctest_prim_vlasov.c
 $RM_CMD $G0/unit/ctest_proj_mj_on_basis.c
