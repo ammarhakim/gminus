@@ -92,34 +92,6 @@ $(REGS): ../${BUILD_DIR}/vlasov/creg/%: creg/%.c $(LLIB) $(SLLIB)
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $< -I. $(INCS) ${EXEC_LIB_DIRS} ${EXEC_LIBS}
 
 ifdef USING_NVCC
-../$(BUILD_DIR)/core/kernels/array_average/%.c.o : kernels/array_average/%.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
-
-../$(BUILD_DIR)/core/kernels/bin_op/%.c.o : kernels/bin_op/%.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
-
-../$(BUILD_DIR)/core/kernels/array_integrate/%.c.o : kernels/array_integrate/%.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
-
-../$(BUILD_DIR)/core/kernels/basis/%.c.o : kernels/basis/%.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
-
-../$(BUILD_DIR)/core/kernels/dg_interpolate/%.c.o : kernels/dg_interpolate/%.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
-
-../$(BUILD_DIR)/core/kernels/skin_surf_from_ghost/%.c.o : kernels/skin_surf_from_ghost/%.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
-
-../$(BUILD_DIR)/moments/kernels/fem_poisson/%.c.o : kernels/fem_poisson/%.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
-
 ../$(BUILD_DIR)/vlasov/kernels/advection/%.c.o : kernels/advection/%.c
 	$(MKDIR_P) $(dir $@)
 	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
