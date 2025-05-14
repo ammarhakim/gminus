@@ -32,9 +32,15 @@ $CP_CMD $G0/kernels/bin_op/*.c kernels/bin_op/
 mkdir -p kernels/dg_interpolate
 $CP_CMD $G0/kernels/dg_interpolate/*.h kernels/dg_interpolate/
 $CP_CMD $G0/kernels/dg_interpolate/*.c kernels/dg_interpolate/
+mkdir -p kernels/fem_poisson
+$CP_CMD $G0/kernels/fem_poisson/*.h kernels/fem_poisson/
+$CP_CMD $G0/kernels/fem_poisson/*.c kernels/fem_poisson/
 mkdir -p kernels/skin_surf_from_ghost
 $CP_CMD $G0/kernels/skin_surf_from_ghost/*.h kernels/skin_surf_from_ghost/
 $CP_CMD $G0/kernels/skin_surf_from_ghost/*.c kernels/skin_surf_from_ghost/
+mkdir -p kernels/translate_dim
+$CP_CMD $G0/kernels/translate_dim/*.h kernels/translate_dim/
+$CP_CMD $G0/kernels/translate_dim/*.c kernels/translate_dim/
 
 $RM_CMD $G0/kernels/array_average/*.h
 $RM_CMD $G0/kernels/array_average/*.c
@@ -46,8 +52,12 @@ $RM_CMD $G0/kernels/bin_op/*.h
 $RM_CMD $G0/kernels/bin_op/*.c
 $RM_CMD $G0/kernels/dg_interpolate/*.h
 $RM_CMD $G0/kernels/dg_interpolate/*.c
+$RM_CMD $G0/kernels/fem_poisson/*.h
+$RM_CMD $G0/kernels/fem_poisson/*.c
 $RM_CMD $G0/kernels/skin_surf_from_ghost/*.h
 $RM_CMD $G0/kernels/skin_surf_from_ghost/*.c
+$RM_CMD $G0/kernels/translate_dim/*.h
+$RM_CMD $G0/kernels/translate_dim/*.c
 
 # minus
 mkdir -p minus
@@ -75,6 +85,8 @@ $CP_CMD $G0/zero/comm.c zero/
 $CP_CMD $G0/zero/dynvec.c zero/
 $CP_CMD $G0/zero/eval_offset_fd.c zero/
 $CP_CMD $G0/zero/eval_on_nodes.c zero/
+$CP_CMD $G0/zero/fem_poisson_cu.cu zero/
+$CP_CMD $G0/zero/fem_poisson.c zero/
 $CP_CMD $G0/zero/fv_proj.c zero/
 $CP_CMD $G0/zero/gauss_quad_data.c zero/
 $CP_CMD $G0/zero/gkyl_alloc.h zero/
@@ -106,6 +118,9 @@ $CP_CMD $G0/zero/gkyl_eqn_type.h zero/
 $CP_CMD $G0/zero/gkyl_eval_offset_fd.h zero/
 $CP_CMD $G0/zero/gkyl_eval_on_nodes.h zero/
 $CP_CMD $G0/zero/gkyl_evalf_def.h zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson_bctype.h zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson_priv.h zero/
+$CP_CMD $G0/zero/gkyl_fem_poisson.h zero/
 $CP_CMD $G0/zero/gkyl_fv_proj.h zero/
 $CP_CMD $G0/zero/gkyl_gauss_quad_data.h zero/
 $CP_CMD $G0/zero/gkyl_lua_utils.h zero/
@@ -170,18 +185,26 @@ $CP_CMD $G0/zero/gkyl_nccl_comm_priv.h zero/
 $CP_CMD $G0/zero/gkyl_nccl_comm.h zero/
 $CP_CMD $G0/zero/gkyl_nodal_ops.h zero/
 $CP_CMD $G0/zero/gkyl_null_pool.h zero/
+$CP_CMD $G0/zero/gkyl_proj_powsqrt_on_basis_priv.h zero/
+$CP_CMD $G0/zero/gkyl_proj_powsqrt_on_basis.h zero/
 $CP_CMD $G0/zero/gkyl_skin_surf_from_ghost_priv.h zero/
 $CP_CMD $G0/zero/gkyl_skin_surf_from_ghost.h zero/
 $CP_CMD $G0/zero/gkyl_superlu_ops.h zero/
 $CP_CMD $G0/zero/gkyl_superlu.h zero/
 $CP_CMD $G0/zero/gkyl_thread_pool.h zero/
+$CP_CMD $G0/zero/gkyl_translate_dim_priv.h zero/
+$CP_CMD $G0/zero/gkyl_translate_dim.h zero/
 $CP_CMD $G0/zero/job_pool.c zero/
 $CP_CMD $G0/zero/nccl_comm.c zero/
 $CP_CMD $G0/zero/nodal_ops_cu.cu zero/
 $CP_CMD $G0/zero/nodal_ops.c zero/
 $CP_CMD $G0/zero/null_pool.c zero/
+$CP_CMD $G0/zero/proj_powsqrt_on_basis_cu.cu zero/
+$CP_CMD $G0/zero/proj_powsqrt_on_basis.c zero/
 $CP_CMD $G0/zero/superlu_ops.c zero/
 $CP_CMD $G0/zero/thread_pool.c zero/
+$CP_CMD $G0/zero/translate_dim_cu.cu zero/
+$CP_CMD $G0/zero/translate_dim.c zero/
 $CP_CMD $G0/zero/gkyl_dg_basis_ops.h zero/
 $CP_CMD $G0/zero/gkyl_dg_bin_ops_priv.h zero/
 $CP_CMD $G0/zero/gkyl_dg_interpolate.h zero/
@@ -217,6 +240,8 @@ $RM_CMD $G0/zero/dynvec.c
 $RM_CMD $G0/zero/eval_offset_fd.c
 $RM_CMD $G0/zero/eval_on_nodes.c
 $RM_CMD $G0/zero/fv_proj.c
+$RM_CMD $G0/zero/fem_poisson_cu.cu
+$RM_CMD $G0/zero/fem_poisson.c
 $RM_CMD $G0/zero/gauss_quad_data.c
 $RM_CMD $G0/zero/gkyl_alloc.h
 $RM_CMD $G0/zero/gkyl_alloc_flags_priv.h
@@ -247,6 +272,9 @@ $RM_CMD $G0/zero/gkyl_eqn_type.h
 $RM_CMD $G0/zero/gkyl_eval_offset_fd.h
 $RM_CMD $G0/zero/gkyl_eval_on_nodes.h
 $RM_CMD $G0/zero/gkyl_evalf_def.h
+$RM_CMD $G0/zero/gkyl_fem_poisson_bctype.h
+$RM_CMD $G0/zero/gkyl_fem_poisson_priv.h
+$RM_CMD $G0/zero/gkyl_fem_poisson.h
 $RM_CMD $G0/zero/gkyl_fv_proj.h
 $RM_CMD $G0/zero/gkyl_gauss_quad_data.h
 $RM_CMD $G0/zero/gkyl_lua_utils.h
@@ -311,18 +339,26 @@ $RM_CMD $G0/zero/gkyl_nccl_comm_priv.h
 $RM_CMD $G0/zero/gkyl_nccl_comm.h
 $RM_CMD $G0/zero/gkyl_nodal_ops.h
 $RM_CMD $G0/zero/gkyl_null_pool.h
+$RM_CMD $G0/zero/gkyl_proj_powsqrt_on_basis_priv.h
+$RM_CMD $G0/zero/gkyl_proj_powsqrt_on_basis.h
 $RM_CMD $G0/zero/gkyl_skin_surf_from_ghost_priv.h
 $RM_CMD $G0/zero/gkyl_skin_surf_from_ghost.h
 $RM_CMD $G0/zero/gkyl_superlu_ops.h
 $RM_CMD $G0/zero/gkyl_superlu.h
 $RM_CMD $G0/zero/gkyl_thread_pool.h
+$RM_CMD $G0/zero/gkyl_translate_dim_priv.h
+$RM_CMD $G0/zero/gkyl_translate_dim.h
 $RM_CMD $G0/zero/job_pool.c
 $RM_CMD $G0/zero/nccl_comm.c
 $RM_CMD $G0/zero/nodal_ops_cu.cu
 $RM_CMD $G0/zero/nodal_ops.c
 $RM_CMD $G0/zero/null_pool.c
+$RM_CMD $G0/zero/proj_powsqrt_on_basis_cu.cu
+$RM_CMD $G0/zero/proj_powsqrt_on_basis.c
 $RM_CMD $G0/zero/superlu_ops.c
 $RM_CMD $G0/zero/thread_pool.c
+$RM_CMD $G0/zero/translate_dim_cu.cu
+$RM_CMD $G0/zero/translate_dim.c
 $RM_CMD $G0/zero/gkyl_dg_basis_ops.h
 $RM_CMD $G0/zero/gkyl_dg_bin_ops_priv.h
 $RM_CMD $G0/zero/gkyl_dg_interpolate.h
@@ -367,6 +403,9 @@ $CP_CMD $G0/unit/ctest_block_topo.c unit/
 $CP_CMD $G0/unit/ctest_dynvec.c unit/
 $CP_CMD $G0/unit/ctest_eval_offset_fd.c unit/
 $CP_CMD $G0/unit/ctest_eval_on_nodes.c unit/
+$CP_CMD $G0/unit/ctest_fem_poisson.c unit/
+$CP_CMD $G0/unit/ctest_fem_poisson_vareps.c unit/
+$CP_CMD $G0/unit/ctest_fem_helmholtz.c unit/
 $CP_CMD $G0/unit/ctest_fv_proj.c unit/
 $CP_CMD $G0/unit/ctest_mat.c unit/
 $CP_CMD $G0/unit/ctest_mat_triples.c unit/
@@ -395,6 +434,7 @@ $CP_CMD $G0/unit/ctest_gauss_quad.c unit/
 $CP_CMD $G0/unit/ctest_linsolvers.c unit/
 $CP_CMD $G0/unit/ctest_math.c unit/
 $CP_CMD $G0/unit/ctest_mpack.c unit/
+$CP_CMD $G0/unit/ctest_proj_powsqrt_on_basis.c unit/
 $CP_CMD $G0/unit/ctest_range_cu.cu unit/
 $CP_CMD $G0/unit/ctest_rect_decomp.c unit/
 $CP_CMD $G0/unit/ctest_rect_grid_cu.cu unit/
@@ -402,6 +442,7 @@ $CP_CMD $G0/unit/ctest_ref_count.c unit/
 $CP_CMD $G0/unit/ctest_rrobin_decomp.c unit/
 $CP_CMD $G0/unit/ctest_struct_of_arrays_cu.cu unit/
 $CP_CMD $G0/unit/ctest_struct_of_arrays.c unit/
+$CP_CMD $G0/unit/ctest_translate_dim.c unit/
 $CP_CMD $G0/unit/mctest_nccl_comm.c unit/
 $CP_CMD $G0/unit/ctest_skin_surf_from_ghost.c unit/
 
@@ -413,6 +454,9 @@ $RM_CMD $G0/unit/ctest_block_topo.c
 $RM_CMD $G0/unit/ctest_dynvec.c
 $RM_CMD $G0/unit/ctest_eval_offset_fd.c
 $RM_CMD $G0/unit/ctest_eval_on_nodes.c
+$RM_CMD $G0/unit/ctest_fem_poisson.c
+$RM_CMD $G0/unit/ctest_fem_poisson_vareps.c
+$RM_CMD $G0/unit/ctest_fem_helmholtz.c
 $RM_CMD $G0/unit/ctest_fv_proj.c
 $RM_CMD $G0/unit/ctest_mat.c
 $RM_CMD $G0/unit/ctest_mat_triples.c
@@ -441,6 +485,7 @@ $RM_CMD $G0/unit/ctest_gauss_quad.c
 $RM_CMD $G0/unit/ctest_linsolvers.c
 $RM_CMD $G0/unit/ctest_math.c
 $RM_CMD $G0/unit/ctest_mpack.c
+$RM_CMD $G0/unit/ctest_proj_powsqrt_on_basis.c
 $RM_CMD $G0/unit/ctest_range_cu.cu
 $RM_CMD $G0/unit/ctest_rect_decomp.c
 $RM_CMD $G0/unit/ctest_rect_grid_cu.cu
@@ -448,6 +493,7 @@ $RM_CMD $G0/unit/ctest_ref_count.c
 $RM_CMD $G0/unit/ctest_rrobin_decomp.c
 $RM_CMD $G0/unit/ctest_struct_of_arrays_cu.cu
 $RM_CMD $G0/unit/ctest_struct_of_arrays.c
+$RM_CMD $G0/unit/ctest_translate_dim.c
 $RM_CMD $G0/unit/mctest_nccl_comm.c
 $RM_CMD $G0/unit/ctest_skin_surf_from_ghost.c
 

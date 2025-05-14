@@ -122,14 +122,6 @@ $RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_roe_hyperbolicity.rkt
 $RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_roe_strict_hyperbolicity.rkt
 $RM_CMD $G0/proofs/prover_core.rkt
 
-# kernels
-mkdir -p kernels/fem_poisson
-$CP_CMD $G0/kernels/fem_poisson/*.h kernels/fem_poisson/
-$CP_CMD $G0/kernels/fem_poisson/*.c kernels/fem_poisson/
-
-$RM_CMD $G0/kernels/fem_poisson/*.h
-$RM_CMD $G0/kernels/fem_poisson/*.c
-
 # zero
 mkdir -p zero
 $CP_CMD $G0/zero/gkyl_gr_blackhole.h  zero/
@@ -231,11 +223,6 @@ $CP_CMD $G0/zero/wv_reactive_euler.c  zero/
 $CP_CMD $G0/zero/wv_sr_euler.c  zero/
 $CP_CMD $G0/zero/wv_ten_moment.c  zero/
 $CP_CMD $G0/zero/wv_ten_moment_cu.cu zero/
-$CP_CMD $G0/zero/gkyl_fem_poisson_bctype.h zero/
-$CP_CMD $G0/zero/gkyl_fem_poisson_priv.h zero/
-$CP_CMD $G0/zero/gkyl_fem_poisson.h zero/
-$CP_CMD $G0/zero/fem_poisson_cu.cu zero/
-$CP_CMD $G0/zero/fem_poisson.c zero/
 $CP_CMD $G0/zero/gkyl_wv_advect_priv.h zero/
 $CP_CMD $G0/zero/gkyl_wv_burgers_priv.h zero/
 $CP_CMD $G0/zero/gkyl_wv_iso_euler_priv.h zero/
@@ -339,11 +326,6 @@ $RM_CMD $G0/zero/wv_reactive_euler.c
 $RM_CMD $G0/zero/wv_sr_euler.c
 $RM_CMD $G0/zero/wv_ten_moment.c
 $RM_CMD $G0/zero/wv_ten_moment_cu.cu
-$RM_CMD $G0/zero/gkyl_fem_poisson_bctype.h
-$RM_CMD $G0/zero/gkyl_fem_poisson_priv.h
-$RM_CMD $G0/zero/gkyl_fem_poisson.h
-$RM_CMD $G0/zero/fem_poisson_cu.cu
-$RM_CMD $G0/zero/fem_poisson.c
 $RM_CMD $G0/zero/gkyl_wv_advect_priv.h
 $RM_CMD $G0/zero/gkyl_wv_burgers_priv.h
 $RM_CMD $G0/zero/gkyl_wv_iso_euler_priv.h
@@ -438,9 +420,6 @@ $CP_CMD $G0/unit/ctest_wv_euler_cu.cu unit/
 $CP_CMD $G0/unit/ctest_wv_maxwell_cu.cu unit/
 $CP_CMD $G0/unit/ctest_wv_ten_moment_cu.cu unit/
 $CP_CMD $G0/unit/ctest_wave_geom_cu.cu unit/
-$CP_CMD $G0/unit/ctest_fem_poisson.c unit/
-$CP_CMD $G0/unit/ctest_fem_poisson_vareps.c unit/
-$CP_CMD $G0/unit/ctest_fem_helmholtz.c unit/
 
 $RM_CMD $G0/unit/ctest_wave_geom.c
 $RM_CMD $G0/unit/ctest_wave_geom_helpers.c
@@ -466,9 +445,6 @@ $RM_CMD $G0/unit/ctest_wv_euler_cu.cu
 $RM_CMD $G0/unit/ctest_wv_maxwell_cu.cu
 $RM_CMD $G0/unit/ctest_wv_ten_moment_cu.cu
 $RM_CMD $G0/unit/ctest_wave_geom_cu.cu
-$RM_CMD $G0/unit/ctest_fem_poisson.c
-$RM_CMD $G0/unit/ctest_fem_poisson_vareps.c
-$RM_CMD $G0/unit/ctest_fem_helmholtz.c
 
 # C regression tests
 mkdir -p creg

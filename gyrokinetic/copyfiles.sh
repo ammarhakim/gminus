@@ -115,9 +115,6 @@ $CP_CMD $G0/kernels/positivity_shift_gyrokinetic/*.c kernels/positivity_shift_gy
 mkdir -p kernels/rad
 $CP_CMD $G0/kernels/rad/*.h kernels/rad/
 $CP_CMD $G0/kernels/rad/*.c kernels/rad/
-mkdir -p kernels/translate_dim
-$CP_CMD $G0/kernels/translate_dim/*.h kernels/translate_dim/
-$CP_CMD $G0/kernels/translate_dim/*.c kernels/translate_dim/
 mkdir -p kernels/twistshift
 $CP_CMD $G0/kernels/twistshift/*.h kernels/twistshift/
 $CP_CMD $G0/kernels/twistshift/*.c kernels/twistshift/
@@ -152,8 +149,6 @@ $RM_CMD $G0/kernels/positivity_shift_gyrokinetic/*.h
 $RM_CMD $G0/kernels/positivity_shift_gyrokinetic/*.c
 $RM_CMD $G0/kernels/rad/*.h
 $RM_CMD $G0/kernels/rad/*.c
-$RM_CMD $G0/kernels/translate_dim/*.h
-$RM_CMD $G0/kernels/translate_dim/*.c
 $RM_CMD $G0/kernels/twistshift/*.h
 $RM_CMD $G0/kernels/twistshift/*.c
 
@@ -166,8 +161,6 @@ $CP_CMD $G0/zero/bc_sheath_gyrokinetic_cu.cu zero/
 $CP_CMD $G0/zero/bc_sheath_gyrokinetic.c zero/
 $CP_CMD $G0/zero/bc_twistshift_cu.cu zero/
 $CP_CMD $G0/zero/bc_twistshift.c zero/
-$CP_CMD $G0/zero/boundary_flux_cu.cu zero/
-$CP_CMD $G0/zero/boundary_flux.c zero/
 $CP_CMD $G0/zero/calc_bmag.c zero/
 $CP_CMD $G0/zero/calc_derived_geo.c zero/
 $CP_CMD $G0/zero/calc_metric.c zero/
@@ -227,8 +220,6 @@ $CP_CMD $G0/zero/gkyl_bc_sheath_gyrokinetic_priv.h zero/
 $CP_CMD $G0/zero/gkyl_bc_sheath_gyrokinetic.h zero/
 $CP_CMD $G0/zero/gkyl_bc_twistshift_priv.h zero/
 $CP_CMD $G0/zero/gkyl_bc_twistshift.h zero/
-$CP_CMD $G0/zero/gkyl_boundary_flux_priv.h zero/
-$CP_CMD $G0/zero/gkyl_boundary_flux.h zero/
 $CP_CMD $G0/zero/gkyl_calc_bmag_priv.h zero/
 $CP_CMD $G0/zero/gkyl_calc_bmag.h zero/
 $CP_CMD $G0/zero/gkyl_calc_derived_geo_priv.h zero/
@@ -303,8 +294,6 @@ $CP_CMD $G0/zero/gkyl_position_map_priv.h zero/
 $CP_CMD $G0/zero/gkyl_position_map.h zero/
 $CP_CMD $G0/zero/gkyl_positivity_shift_gyrokinetic_priv.h zero/
 $CP_CMD $G0/zero/gkyl_positivity_shift_gyrokinetic.h zero/
-$CP_CMD $G0/zero/gkyl_proj_powsqrt_on_basis_priv.h zero/
-$CP_CMD $G0/zero/gkyl_proj_powsqrt_on_basis.h zero/
 $CP_CMD $G0/zero/gkyl_radiation_read.h zero/
 $CP_CMD $G0/zero/gkyl_rescale_ghost_jacf_priv.h zero/
 $CP_CMD $G0/zero/gkyl_rescale_ghost_jacf.h zero/
@@ -323,8 +312,6 @@ $CP_CMD $G0/zero/mom_gyrokinetic.c zero/
 $CP_CMD $G0/zero/position_map.c zero/
 $CP_CMD $G0/zero/positivity_shift_gyrokinetic_cu.cu zero/
 $CP_CMD $G0/zero/positivity_shift_gyrokinetic.c zero/
-$CP_CMD $G0/zero/proj_powsqrt_on_basis_cu.cu zero/
-$CP_CMD $G0/zero/proj_powsqrt_on_basis.c zero/
 $CP_CMD $G0/zero/radiation_read.c zero/
 $CP_CMD $G0/zero/rescale_ghost_jacf_cu.cu zero/
 $CP_CMD $G0/zero/rescale_ghost_jacf.c zero/
@@ -340,10 +327,6 @@ $CP_CMD $G0/zero/prim_lbo_gyrokinetic.c zero/
 $CP_CMD $G0/zero/mom_calc_bcorr_gyrokinetic.c zero/
 $CP_CMD $G0/zero/prim_lbo_calc_gyrokinetic.c zero/
 $CP_CMD $G0/zero/prim_lbo_cross_calc_gyrokinetic.c zero/
-$CP_CMD $G0/zero/gkyl_translate_dim_priv.h zero/
-$CP_CMD $G0/zero/gkyl_translate_dim.h zero/
-$CP_CMD $G0/zero/translate_dim_cu.cu zero/
-$CP_CMD $G0/zero/translate_dim.c zero/
 $CP_CMD $G0/zero/dg_calc_gk_neut_hamil.c zero/
 $CP_CMD $G0/zero/dg_calc_gk_neut_hamil_cu.cu zero/
 $CP_CMD $G0/zero/gkyl_dg_calc_gk_neut_hamil.h zero/
@@ -356,8 +339,6 @@ $RM_CMD $G0/zero/bc_sheath_gyrokinetic_cu.cu
 $RM_CMD $G0/zero/bc_sheath_gyrokinetic.c
 $RM_CMD $G0/zero/bc_twistshift_cu.cu
 $RM_CMD $G0/zero/bc_twistshift.c
-$RM_CMD $G0/zero/boundary_flux_cu.cu
-$RM_CMD $G0/zero/boundary_flux.c
 $RM_CMD $G0/zero/calc_bmag.c
 $RM_CMD $G0/zero/calc_derived_geo.c
 $RM_CMD $G0/zero/calc_metric.c
@@ -417,8 +398,6 @@ $RM_CMD $G0/zero/gkyl_bc_sheath_gyrokinetic_priv.h
 $RM_CMD $G0/zero/gkyl_bc_sheath_gyrokinetic.h
 $RM_CMD $G0/zero/gkyl_bc_twistshift_priv.h
 $RM_CMD $G0/zero/gkyl_bc_twistshift.h
-$RM_CMD $G0/zero/gkyl_boundary_flux_priv.h
-$RM_CMD $G0/zero/gkyl_boundary_flux.h
 $RM_CMD $G0/zero/gkyl_calc_bmag_priv.h
 $RM_CMD $G0/zero/gkyl_calc_bmag.h
 $RM_CMD $G0/zero/gkyl_calc_derived_geo_priv.h
@@ -493,8 +472,6 @@ $RM_CMD $G0/zero/gkyl_position_map_priv.h
 $RM_CMD $G0/zero/gkyl_position_map.h
 $RM_CMD $G0/zero/gkyl_positivity_shift_gyrokinetic_priv.h
 $RM_CMD $G0/zero/gkyl_positivity_shift_gyrokinetic.h
-$RM_CMD $G0/zero/gkyl_proj_powsqrt_on_basis_priv.h
-$RM_CMD $G0/zero/gkyl_proj_powsqrt_on_basis.h
 $RM_CMD $G0/zero/gkyl_radiation_read.h
 $RM_CMD $G0/zero/gkyl_rescale_ghost_jacf_priv.h
 $RM_CMD $G0/zero/gkyl_rescale_ghost_jacf.h
@@ -513,8 +490,6 @@ $RM_CMD $G0/zero/mom_gyrokinetic.c
 $RM_CMD $G0/zero/position_map.c
 $RM_CMD $G0/zero/positivity_shift_gyrokinetic_cu.cu
 $RM_CMD $G0/zero/positivity_shift_gyrokinetic.c
-$RM_CMD $G0/zero/proj_powsqrt_on_basis_cu.cu
-$RM_CMD $G0/zero/proj_powsqrt_on_basis.c
 $RM_CMD $G0/zero/radiation_read.c
 $RM_CMD $G0/zero/rescale_ghost_jacf_cu.cu
 $RM_CMD $G0/zero/rescale_ghost_jacf.c
@@ -530,10 +505,6 @@ $RM_CMD $G0/zero/prim_lbo_gyrokinetic.c
 $RM_CMD $G0/zero/mom_calc_bcorr_gyrokinetic.c
 $RM_CMD $G0/zero/prim_lbo_calc_gyrokinetic.c
 $RM_CMD $G0/zero/prim_lbo_cross_calc_gyrokinetic.c
-$RM_CMD $G0/zero/gkyl_translate_dim_priv.h
-$RM_CMD $G0/zero/gkyl_translate_dim.h
-$RM_CMD $G0/zero/translate_dim_cu.cu
-$RM_CMD $G0/zero/translate_dim.c
 $RM_CMD $G0/zero/dg_calc_gk_neut_hamil.c
 $RM_CMD $G0/zero/dg_calc_gk_neut_hamil_cu.cu
 $RM_CMD $G0/zero/gkyl_dg_calc_gk_neut_hamil.h
@@ -657,14 +628,12 @@ $CP_CMD $G0/unit/ctest_position_map.c unit/
 $CP_CMD $G0/unit/ctest_positivity_shift_gyrokinetic.c unit/
 $CP_CMD $G0/unit/ctest_proj_gk_bimaxwellian_on_basis.c unit/
 $CP_CMD $G0/unit/ctest_proj_gk_maxwellian_on_basis.c unit/
-$CP_CMD $G0/unit/ctest_proj_powsqrt_on_basis.c unit/
 $CP_CMD $G0/unit/ctest_rescale_ghost_jacf.c unit/
 $CP_CMD $G0/unit/ctest_step_compare.c unit/
 $CP_CMD $G0/unit/ctest_step_outboard.c unit/
 $CP_CMD $G0/unit/ctest_time_roots.c unit/
 $CP_CMD $G0/unit/mctest_multib_sync.c unit/
 $CP_CMD $G0/unit/mctest_multib_allgather.c unit/
-$CP_CMD $G0/unit/ctest_translate_dim.c unit/
 $CP_CMD $G0/unit/ctest_ltx_miller.c unit/
 
 $RM_CMD $G0/unit/ctest_ambi_bolt_potential.c
@@ -701,14 +670,12 @@ $RM_CMD $G0/unit/ctest_position_map.c
 $RM_CMD $G0/unit/ctest_positivity_shift_gyrokinetic.c
 $RM_CMD $G0/unit/ctest_proj_gk_bimaxwellian_on_basis.c
 $RM_CMD $G0/unit/ctest_proj_gk_maxwellian_on_basis.c
-$RM_CMD $G0/unit/ctest_proj_powsqrt_on_basis.c
 $RM_CMD $G0/unit/ctest_rescale_ghost_jacf.c
 $RM_CMD $G0/unit/ctest_step_compare.c
 $RM_CMD $G0/unit/ctest_step_outboard.c
 $RM_CMD $G0/unit/ctest_time_roots.c
 $RM_CMD $G0/unit/mctest_multib_sync.c
 $RM_CMD $G0/unit/mctest_multib_allgather.c
-$RM_CMD $G0/unit/ctest_translate_dim.c
 $RM_CMD $G0/unit/ctest_ltx_miller.c
 
 # C regression tests

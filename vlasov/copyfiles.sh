@@ -74,6 +74,8 @@ $RM_CMD $G0/kernels/positivity_shift_vlasov/*.c
 
 # zero
 mkdir -p zero
+$CP_CMD $G0/zero/boundary_flux_cu.cu zero/
+$CP_CMD $G0/zero/boundary_flux.c zero/
 $CP_CMD $G0/zero/dg_diffusion_vlasov_cu.cu zero/
 $CP_CMD $G0/zero/dg_diffusion_vlasov.c zero/
 $CP_CMD $G0/zero/dg_fpo_vlasov_diff_cu.cu zero/
@@ -98,6 +100,8 @@ $CP_CMD $G0/zero/dg_vlasov_poisson.c zero/
 $CP_CMD $G0/zero/dg_vlasov_sr_cu.cu zero/
 $CP_CMD $G0/zero/dg_vlasov_sr.c zero/
 $CP_CMD $G0/zero/dg_vlasov.c zero/
+$CP_CMD $G0/zero/gkyl_boundary_flux_priv.h zero/
+$CP_CMD $G0/zero/gkyl_boundary_flux.h zero/
 $CP_CMD $G0/zero/gkyl_dg_canonical_pb_priv.h zero/
 $CP_CMD $G0/zero/gkyl_dg_diffusion_vlasov_priv.h zero/
 $CP_CMD $G0/zero/gkyl_dg_diffusion_vlasov.h zero/
@@ -302,6 +306,8 @@ $CP_CMD $G0/zero/gkyl_positivity_shift_vlasov_priv.h zero/
 $CP_CMD $G0/zero/positivity_shift_vlasov.c zero/
 $CP_CMD $G0/zero/positivity_shift_vlasov_cu.cu zero/
 
+$RM_CMD $G0/zero/boundary_flux_cu.cu
+$RM_CMD $G0/zero/boundary_flux.c
 $RM_CMD $G0/zero/dg_diffusion_vlasov_cu.cu
 $RM_CMD $G0/zero/dg_diffusion_vlasov.c
 $RM_CMD $G0/zero/dg_fpo_vlasov_diff_cu.cu
@@ -326,6 +332,8 @@ $RM_CMD $G0/zero/dg_vlasov_poisson.c
 $RM_CMD $G0/zero/dg_vlasov_sr_cu.cu
 $RM_CMD $G0/zero/dg_vlasov_sr.c
 $RM_CMD $G0/zero/dg_vlasov.c
+$RM_CMD $G0/zero/gkyl_boundary_flux_priv.h
+$RM_CMD $G0/zero/gkyl_boundary_flux.h
 $RM_CMD $G0/zero/gkyl_dg_canonical_pb_priv.h
 $RM_CMD $G0/zero/gkyl_dg_diffusion_vlasov_priv.h
 $RM_CMD $G0/zero/gkyl_dg_diffusion_vlasov.h
