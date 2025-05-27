@@ -209,3 +209,59 @@ $RM_CMD $G0/regression/rt_pkpm_travel_pulse_p1.c
 $RM_CMD $G0/regression/rt_pkpm_travel_pulse_p2.c
 $RM_CMD $G0/regression/rt_pkpm_wall_p1.c
 $RM_CMD $G0/regression/rt_pkpm_wall_p2.c
+
+# Lua regression tests
+mkdir -p luareg
+$CP_CMD $G0/regression/lua/rt_pkpm_2d_travel_pulse_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_alf_wave_1x_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_alf_wave_1x_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_alf_wave_explicit_1x_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_alf_wave_explicit_1x_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_em_advect_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_em_advect_resonant_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_es_pot_well_1x_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_es_pot_well_1x_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_es_shock_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_es_shock_reflect_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_landau_damping_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_landau_damping_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_neut_sodshock_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_neut_sodshock_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_periodic_es_shock_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_periodic_es_shock_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_periodic_neut_sodshock_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_periodic_neut_sodshock_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_sheath_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_square_relax_1x_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_square_relax_1x_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_travel_pulse_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_travel_pulse_p2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_wall_p1.lua luareg/
+$CP_CMD $G0/regression/lua/rt_pkpm_wall_p2.lua luareg/
+
+$RM_CMD $G0/regression/lua/rt_pkpm_2d_travel_pulse_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_alf_wave_1x_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_alf_wave_1x_p2.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_alf_wave_explicit_1x_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_alf_wave_explicit_1x_p2.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_em_advect_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_em_advect_resonant_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_es_pot_well_1x_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_es_pot_well_1x_p2.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_es_shock_p2.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_es_shock_reflect_p2.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_landau_damping_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_landau_damping_p2.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_neut_sodshock_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_neut_sodshock_p2.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_periodic_es_shock_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_periodic_es_shock_p2.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_periodic_neut_sodshock_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_periodic_neut_sodshock_p2.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_sheath_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_square_relax_1x_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_square_relax_1x_p2.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_travel_pulse_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_travel_pulse_p2.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_wall_p1.lua
+$RM_CMD $G0/regression/lua/rt_pkpm_wall_p2.lua

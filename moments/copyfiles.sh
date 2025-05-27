@@ -6,7 +6,7 @@ G0=../../gkylzero
 
 # data
 mkdir -p data/regression
-$CP_CMD $G0/data/regression/euler_riem_2d_hllc-euler_0.gkyl data/unit/
+$CP_CMD $G0/data/regression/euler_riem_2d_hllc-euler_0.gkyl data/regression/
 
 $RM_CMD $G0/data/regression/euler_riem_2d_hllc-euler_0.gkyl
 
@@ -122,14 +122,6 @@ $RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_roe_hyperbolicity.rkt
 $RM_CMD $G0/proofs/finite_volume/proof_maxwell_1d_Ez_By_roe_strict_hyperbolicity.rkt
 $RM_CMD $G0/proofs/prover_core.rkt
 
-# kernels
-mkdir -p kernels/fem_poisson
-$CP_CMD $G0/kernels/fem_poisson/*.h kernels/fem_poisson/
-$CP_CMD $G0/kernels/fem_poisson/*.c kernels/fem_poisson/
-
-$RM_CMD $G0/kernels/fem_poisson/*.h
-$RM_CMD $G0/kernels/fem_poisson/*.c
-
 # zero
 mkdir -p zero
 $CP_CMD $G0/zero/gkyl_gr_blackhole.h  zero/
@@ -231,11 +223,6 @@ $CP_CMD $G0/zero/wv_reactive_euler.c  zero/
 $CP_CMD $G0/zero/wv_sr_euler.c  zero/
 $CP_CMD $G0/zero/wv_ten_moment.c  zero/
 $CP_CMD $G0/zero/wv_ten_moment_cu.cu zero/
-$CP_CMD $G0/zero/gkyl_fem_poisson_bctype.h zero/
-$CP_CMD $G0/zero/gkyl_fem_poisson_priv.h zero/
-$CP_CMD $G0/zero/gkyl_fem_poisson.h zero/
-$CP_CMD $G0/zero/fem_poisson_cu.cu zero/
-$CP_CMD $G0/zero/fem_poisson.c zero/
 $CP_CMD $G0/zero/gkyl_wv_advect_priv.h zero/
 $CP_CMD $G0/zero/gkyl_wv_burgers_priv.h zero/
 $CP_CMD $G0/zero/gkyl_wv_iso_euler_priv.h zero/
@@ -339,11 +326,6 @@ $RM_CMD $G0/zero/wv_reactive_euler.c
 $RM_CMD $G0/zero/wv_sr_euler.c
 $RM_CMD $G0/zero/wv_ten_moment.c
 $RM_CMD $G0/zero/wv_ten_moment_cu.cu
-$RM_CMD $G0/zero/gkyl_fem_poisson_bctype.h
-$RM_CMD $G0/zero/gkyl_fem_poisson_priv.h
-$RM_CMD $G0/zero/gkyl_fem_poisson.h
-$RM_CMD $G0/zero/fem_poisson_cu.cu
-$RM_CMD $G0/zero/fem_poisson.c
 $RM_CMD $G0/zero/gkyl_wv_advect_priv.h
 $RM_CMD $G0/zero/gkyl_wv_burgers_priv.h
 $RM_CMD $G0/zero/gkyl_wv_iso_euler_priv.h
@@ -438,9 +420,6 @@ $CP_CMD $G0/unit/ctest_wv_euler_cu.cu unit/
 $CP_CMD $G0/unit/ctest_wv_maxwell_cu.cu unit/
 $CP_CMD $G0/unit/ctest_wv_ten_moment_cu.cu unit/
 $CP_CMD $G0/unit/ctest_wave_geom_cu.cu unit/
-$CP_CMD $G0/unit/ctest_fem_poisson.c unit/
-$CP_CMD $G0/unit/ctest_fem_poisson_vareps.c unit/
-$CP_CMD $G0/unit/ctest_fem_helmholtz.c unit/
 
 $RM_CMD $G0/unit/ctest_wave_geom.c
 $RM_CMD $G0/unit/ctest_wave_geom_helpers.c
@@ -466,9 +445,6 @@ $RM_CMD $G0/unit/ctest_wv_euler_cu.cu
 $RM_CMD $G0/unit/ctest_wv_maxwell_cu.cu
 $RM_CMD $G0/unit/ctest_wv_ten_moment_cu.cu
 $RM_CMD $G0/unit/ctest_wave_geom_cu.cu
-$RM_CMD $G0/unit/ctest_fem_poisson.c
-$RM_CMD $G0/unit/ctest_fem_poisson_vareps.c
-$RM_CMD $G0/unit/ctest_fem_helmholtz.c
 
 # C regression tests
 mkdir -p creg
@@ -719,6 +695,217 @@ $RM_CMD $G0/regression/rt_multib_euler_2d.c
 
 # Lua regression tests
 mkdir -p luareg
+$CP_CMD $G0/regression/lua/rt_10m_burch.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_burch_grad_closure.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_expanding.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_expanding_axi_sodshock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_expanding_sodshock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_gem.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_gem_grad_closure.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_lhdi.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_lhdi_grad_closure.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_par_firehose.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_par_firehose_grad_closure.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_riem.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_riem_grad_closure.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_sodshock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_10m_sodshock_lax.lua luareg/
+$CP_CMD $G0/regression/lua/rt_5m_burch.lua luareg/
+$CP_CMD $G0/regression/lua/rt_5m_em_advect.lua luareg/
+$CP_CMD $G0/regression/lua/rt_5m_em_advect_resonant.lua luareg/
+$CP_CMD $G0/regression/lua/rt_5m_expanding.lua luareg/
+$CP_CMD $G0/regression/lua/rt_5m_expanding_axi_sodshock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_5m_expanding_sodshock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_5m_gem.lua luareg/
+$CP_CMD $G0/regression/lua/rt_5m_hartmann.lua luareg/
+$CP_CMD $G0/regression/lua/rt_5m_mom_beach.lua luareg/
+$CP_CMD $G0/regression/lua/rt_5m_riem.lua luareg/
+$CP_CMD $G0/regression/lua/rt_advect_wv.lua luareg/
+$CP_CMD $G0/regression/lua/rt_advect_wv_mp.lua luareg/
+$CP_CMD $G0/regression/lua/rt_burgers_shock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_burgers_shock_mp.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_axi_sodshock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_axi_vac_riem.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_bump_in_channel.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_c2p_sodshock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_cart_axi_sodshock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_mixture_fedkiw_shock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_mixture_shock_bubble.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_noh_1d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_p_perturbation.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_reflect_2d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_riem_2d_hll.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_riem_2d_hllc.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_riem_2d_lax.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_riem_2d_roe.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_riem_3d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_rt.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_sodshock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_sodshock_lax.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_sodshock_mp.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_superwedge.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_vac.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_vac_riem_1d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_wave_2d_kep.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_wave_2d_mp.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_wave_2d_wv.lua luareg/
+$CP_CMD $G0/regression/lua/rt_euler_wedge_sodshock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_bhl_spinning.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_bhl_spinning_tetrad.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_bhl_static.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_bhl_static_neutronstar.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_bhl_static_tetrad.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_blackhole_spinning.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_blackhole_static.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_bz_monopole_fast.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_bz_monopole_fast_tetrad.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_bz_monopole_slow.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_bz_monopole_slow_tetrad.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_current_sheet.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_current_sheet_tetrad.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_einstein_plane_shock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_kh_2d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_mild_shock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_mild_shock_tetrad.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_perturbed_density.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_quadrants_2d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_strong_blast.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_ultra_rel_bhl_spinning.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_ultra_rel_bhl_spinning_tetrad.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_ultra_rel_bhl_static.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_ultra_rel_bhl_static_tetrad.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_ultra_rel_shock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_ultra_rel_shock_tetrad.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_wald_magnetosphere_spinning.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_wald_magnetosphere_spinning_tetrad.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_wald_magnetosphere_static.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_wald_magnetosphere_static_neutronstar.lua luareg/
+$CP_CMD $G0/regression/lua/rt_gr_wald_magnetosphere_static_tetrad.lua luareg/
+$CP_CMD $G0/regression/lua/rt_iso_euler_hartmann.lua luareg/
+$CP_CMD $G0/regression/lua/rt_iso_euler_mixture_fedkiw_shock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_iso_euler_mixture_shock_bubble.lua luareg/
+$CP_CMD $G0/regression/lua/rt_iso_euler_sodshock.lua luareg/
+$CP_CMD $G0/regression/lua/rt_iso_euler_sodshock_lax.lua luareg/
+$CP_CMD $G0/regression/lua/rt_iso_gem.lua luareg/
+$CP_CMD $G0/regression/lua/rt_maxwell_annulus.lua luareg/
+$CP_CMD $G0/regression/lua/rt_maxwell_expanding.lua luareg/
+$CP_CMD $G0/regression/lua/rt_maxwell_expanding_2d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_maxwell_plane_wave_1d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_maxwell_plane_wave_1d_mp.lua luareg/
+$CP_CMD $G0/regression/lua/rt_maxwell_plane_wave_2d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_maxwell_plane_wave_2d_mp.lua luareg/
+$CP_CMD $G0/regression/lua/rt_maxwell_reflect_2d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_maxwell_wg_2d.lua luareg/
+$CP_CMD $G0/regression/lua/rt_mhd_brio_wu.lua luareg/
+$CP_CMD $G0/regression/lua/rt_mhd_ot.lua luareg/
+$CP_CMD $G0/regression/lua/rt_mhd_rj2.lua luareg/
+$CP_CMD $G0/regression/lua/rt_reactive_euler_detonation.lua luareg/
+
+$RM_CMD $G0/regression/lua/rt_10m_burch.lua
+$RM_CMD $G0/regression/lua/rt_10m_burch_grad_closure.lua
+$RM_CMD $G0/regression/lua/rt_10m_expanding.lua
+$RM_CMD $G0/regression/lua/rt_10m_expanding_axi_sodshock.lua
+$RM_CMD $G0/regression/lua/rt_10m_expanding_sodshock.lua
+$RM_CMD $G0/regression/lua/rt_10m_gem.lua
+$RM_CMD $G0/regression/lua/rt_10m_gem_grad_closure.lua
+$RM_CMD $G0/regression/lua/rt_10m_lhdi.lua
+$RM_CMD $G0/regression/lua/rt_10m_lhdi_grad_closure.lua
+$RM_CMD $G0/regression/lua/rt_10m_par_firehose.lua
+$RM_CMD $G0/regression/lua/rt_10m_par_firehose_grad_closure.lua
+$RM_CMD $G0/regression/lua/rt_10m_riem.lua
+$RM_CMD $G0/regression/lua/rt_10m_riem_grad_closure.lua
+$RM_CMD $G0/regression/lua/rt_10m_sodshock.lua
+$RM_CMD $G0/regression/lua/rt_10m_sodshock_lax.lua
+$RM_CMD $G0/regression/lua/rt_5m_burch.lua
+$RM_CMD $G0/regression/lua/rt_5m_em_advect.lua
+$RM_CMD $G0/regression/lua/rt_5m_em_advect_resonant.lua
+$RM_CMD $G0/regression/lua/rt_5m_expanding.lua
+$RM_CMD $G0/regression/lua/rt_5m_expanding_axi_sodshock.lua
+$RM_CMD $G0/regression/lua/rt_5m_expanding_sodshock.lua
+$RM_CMD $G0/regression/lua/rt_5m_gem.lua
+$RM_CMD $G0/regression/lua/rt_5m_hartmann.lua
+$RM_CMD $G0/regression/lua/rt_5m_mom_beach.lua
+$RM_CMD $G0/regression/lua/rt_5m_riem.lua
+$RM_CMD $G0/regression/lua/rt_advect_wv.lua
+$RM_CMD $G0/regression/lua/rt_advect_wv_mp.lua
+$RM_CMD $G0/regression/lua/rt_burgers_shock.lua
+$RM_CMD $G0/regression/lua/rt_burgers_shock_mp.lua
+$RM_CMD $G0/regression/lua/rt_euler_axi_sodshock.lua
+$RM_CMD $G0/regression/lua/rt_euler_axi_vac_riem.lua
+$RM_CMD $G0/regression/lua/rt_euler_bump_in_channel.lua
+$RM_CMD $G0/regression/lua/rt_euler_c2p_sodshock.lua
+$RM_CMD $G0/regression/lua/rt_euler_cart_axi_sodshock.lua
+$RM_CMD $G0/regression/lua/rt_euler_mixture_fedkiw_shock.lua
+$RM_CMD $G0/regression/lua/rt_euler_mixture_shock_bubble.lua
+$RM_CMD $G0/regression/lua/rt_euler_noh_1d.lua
+$RM_CMD $G0/regression/lua/rt_euler_p_perturbation.lua
+$RM_CMD $G0/regression/lua/rt_euler_reflect_2d.lua
+$RM_CMD $G0/regression/lua/rt_euler_riem_2d_hll.lua
+$RM_CMD $G0/regression/lua/rt_euler_riem_2d_hllc.lua
+$RM_CMD $G0/regression/lua/rt_euler_riem_2d_lax.lua
+$RM_CMD $G0/regression/lua/rt_euler_riem_2d_roe.lua
+$RM_CMD $G0/regression/lua/rt_euler_riem_3d.lua
+$RM_CMD $G0/regression/lua/rt_euler_rt.lua
+$RM_CMD $G0/regression/lua/rt_euler_sodshock.lua
+$RM_CMD $G0/regression/lua/rt_euler_sodshock_lax.lua
+$RM_CMD $G0/regression/lua/rt_euler_sodshock_mp.lua
+$RM_CMD $G0/regression/lua/rt_euler_superwedge.lua
+$RM_CMD $G0/regression/lua/rt_euler_vac.lua
+$RM_CMD $G0/regression/lua/rt_euler_vac_riem_1d.lua
+$RM_CMD $G0/regression/lua/rt_euler_wave_2d_kep.lua
+$RM_CMD $G0/regression/lua/rt_euler_wave_2d_mp.lua
+$RM_CMD $G0/regression/lua/rt_euler_wave_2d_wv.lua
+$RM_CMD $G0/regression/lua/rt_euler_wedge_sodshock.lua
+$RM_CMD $G0/regression/lua/rt_gr_bhl_spinning.lua
+$RM_CMD $G0/regression/lua/rt_gr_bhl_spinning_tetrad.lua
+$RM_CMD $G0/regression/lua/rt_gr_bhl_static.lua
+$RM_CMD $G0/regression/lua/rt_gr_bhl_static_neutronstar.lua
+$RM_CMD $G0/regression/lua/rt_gr_bhl_static_tetrad.lua
+$RM_CMD $G0/regression/lua/rt_gr_blackhole_spinning.lua
+$RM_CMD $G0/regression/lua/rt_gr_blackhole_static.lua
+$RM_CMD $G0/regression/lua/rt_gr_bz_monopole_fast.lua
+$RM_CMD $G0/regression/lua/rt_gr_bz_monopole_fast_tetrad.lua
+$RM_CMD $G0/regression/lua/rt_gr_bz_monopole_slow.lua
+$RM_CMD $G0/regression/lua/rt_gr_bz_monopole_slow_tetrad.lua
+$RM_CMD $G0/regression/lua/rt_gr_current_sheet.lua
+$RM_CMD $G0/regression/lua/rt_gr_current_sheet_tetrad.lua
+$RM_CMD $G0/regression/lua/rt_gr_einstein_plane_shock.lua
+$RM_CMD $G0/regression/lua/rt_gr_kh_2d.lua
+$RM_CMD $G0/regression/lua/rt_gr_mild_shock.lua
+$RM_CMD $G0/regression/lua/rt_gr_mild_shock_tetrad.lua
+$RM_CMD $G0/regression/lua/rt_gr_perturbed_density.lua
+$RM_CMD $G0/regression/lua/rt_gr_quadrants_2d.lua
+$RM_CMD $G0/regression/lua/rt_gr_strong_blast.lua
+$RM_CMD $G0/regression/lua/rt_gr_ultra_rel_bhl_spinning.lua
+$RM_CMD $G0/regression/lua/rt_gr_ultra_rel_bhl_spinning_tetrad.lua
+$RM_CMD $G0/regression/lua/rt_gr_ultra_rel_bhl_static.lua
+$RM_CMD $G0/regression/lua/rt_gr_ultra_rel_bhl_static_tetrad.lua
+$RM_CMD $G0/regression/lua/rt_gr_ultra_rel_shock.lua
+$RM_CMD $G0/regression/lua/rt_gr_ultra_rel_shock_tetrad.lua
+$RM_CMD $G0/regression/lua/rt_gr_wald_magnetosphere_spinning.lua
+$RM_CMD $G0/regression/lua/rt_gr_wald_magnetosphere_spinning_tetrad.lua
+$RM_CMD $G0/regression/lua/rt_gr_wald_magnetosphere_static.lua
+$RM_CMD $G0/regression/lua/rt_gr_wald_magnetosphere_static_neutronstar.lua
+$RM_CMD $G0/regression/lua/rt_gr_wald_magnetosphere_static_tetrad.lua
+$RM_CMD $G0/regression/lua/rt_iso_euler_hartmann.lua
+$RM_CMD $G0/regression/lua/rt_iso_euler_mixture_fedkiw_shock.lua
+$RM_CMD $G0/regression/lua/rt_iso_euler_mixture_shock_bubble.lua
+$RM_CMD $G0/regression/lua/rt_iso_euler_sodshock.lua
+$RM_CMD $G0/regression/lua/rt_iso_euler_sodshock_lax.lua
+$RM_CMD $G0/regression/lua/rt_iso_gem.lua
+$RM_CMD $G0/regression/lua/rt_maxwell_annulus.lua
+$RM_CMD $G0/regression/lua/rt_maxwell_expanding.lua
+$RM_CMD $G0/regression/lua/rt_maxwell_expanding_2d.lua
+$RM_CMD $G0/regression/lua/rt_maxwell_plane_wave_1d.lua
+$RM_CMD $G0/regression/lua/rt_maxwell_plane_wave_1d_mp.lua
+$RM_CMD $G0/regression/lua/rt_maxwell_plane_wave_2d.lua
+$RM_CMD $G0/regression/lua/rt_maxwell_plane_wave_2d_mp.lua
+$RM_CMD $G0/regression/lua/rt_maxwell_reflect_2d.lua
+$RM_CMD $G0/regression/lua/rt_maxwell_wg_2d.lua
+$RM_CMD $G0/regression/lua/rt_mhd_brio_wu.lua
+$RM_CMD $G0/regression/lua/rt_mhd_ot.lua
+$RM_CMD $G0/regression/lua/rt_mhd_rj2.lua
+$RM_CMD $G0/regression/lua/rt_reactive_euler_detonation.lua
 
 # AMR C regression tests
 mkdir -p amr_creg

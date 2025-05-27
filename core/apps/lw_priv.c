@@ -33,7 +33,6 @@ static const struct gkyl_str_int_pair field_bcs[] = {
   { 0, 0 }
 };
 
-
 void
 gkyl_register_species_bc_types(lua_State *L)
 {

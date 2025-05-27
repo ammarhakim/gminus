@@ -1,6 +1,7 @@
 # -*- makefile-gmake -*-
 
 SRC_DIRS := kernels zero apps data/adas
+UNIT_DIRS := unit
 
 PREFIX ?= ${HOME}/gkylsoft
 SUPERLU_INC = $(PREFIX)/superlu/include
@@ -12,11 +13,14 @@ else
 	SUPERLU_LIB = $(PREFIX)/superlu/lib/libsuperlu.a
 endif
 
+CORELLIB := ../$(BUILD_DIR)/core/libg0core.so
+CORESLLIB := 
 LLIB := ../$(BUILD_DIR)/gyrokinetic/libg0gyrokinetic.so
-SLLIB := ../$(BUILD_DIR)/gyrokinetic/libg0gyrokinetic.a
+SLLIB := 
 SRCS := $(shell find $(SRC_DIRS) -name *.c)
 ifdef USING_NVCC
 	SRCS += $(shell find $(SRC_DIRS) -name *.cu)
+	SRCS += $(shell find $(UNIT_DIRS) -name *.cu)
 endif
 OBJS := $(SRCS:%=../$(BUILD_DIR)/gyrokinetic/%.o)
 DEPS := $(OBJS:.o=.d)
@@ -37,17 +41,17 @@ REGS := $(patsubst %.c,../${BUILD_DIR}/gyrokinetic/%,$(wildcard creg/rt_*.c))
 
 KERN_INC_DIRS = $(shell find kernels -type d)
 KERN_INCLUDES = $(addprefix -I,$(KERN_INC_DIRS))
-EXT_INCS := -I${MPI_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC} -I${SUPERLU_INC}
-CORE_INCS := -I../core/kernels/array_average -I../core/kernels/array_integrate -I../core/kernels/basis -I../core/kernels/bin_op -I../core/kernels/dg_interpolate -I../core/kernels/skin_surf_from_ghost -I../core/apps -I../core/zero -I../core/minus -I../core/minus/STC/include -I../zero
-MOMENTS_INCS := -I../moments/kernels/fem_poisson -I../moments/apps -I../moments/zero
-VLASOV_INCS := -I../vlasov/kernels/advection -I../vlasov/kernels/canonical_pb -I../vlasov/kernels/dg_diffusion_fluid -I../vlasov/kernels/dg_diffusion_gen -I../vlasov/kernels/dg_diffusion_vlasov -I../vlasov/kernels/euler -I../vlasov/kernels/fpo -I../vlasov/kernels/lbo_vlasov -I../vlasov/kernels/maxwell -I../vlasov/kernels/sr_vlasov -I../vlasov/kernels/vlasov -I../vlasov/kernels/vlasov_poisson -I../vlasov/apps -I../vlasov/zero
+EXT_INCS := -I${MPI_INC_DIR} -I${NCCL_INC_DIR} -I${CUDSS_INC_DIR} -I${LUA_INC_DIR} -I${LAPACK_INC} -I${SUPERLU_INC}
+CORE_INCS := -I../core/kernels/array_average -I../core/kernels/array_integrate -I../core/kernels/basis -I../core/kernels/bin_op -I../core/kernels/dg_interpolate -I../core/kernels/fem_poisson -I../core/kernels/skin_surf_from_ghost -I../core/kernels/translate_dim -I../core/apps -I../core/zero -I../core/minus -I../core/minus/STC/include -I../zero
+MOMENTS_INCS := -I../moments/apps -I../moments/zero
+VLASOV_INCS := -I../vlasov/kernels/advection -I../vlasov/kernels/canonical_pb -I../vlasov/kernels/dg_diffusion_fluid -I../vlasov/kernels/dg_diffusion_gen -I../vlasov/kernels/dg_diffusion_vlasov -I../vlasov/kernels/euler -I../vlasov/kernels/fpo -I../vlasov/kernels/lbo_vlasov -I../vlasov/kernels/maxwell -I../vlasov/kernels/sr_vlasov -I../vlasov/kernels/vlasov -I../vlasov/kernels/vlasov_poisson -I../vlasov/kernels/positivity_shift_vlasov -I../vlasov/apps -I../vlasov/zero
 INCS := ${EXT_INCS} ${CORE_INCS} ${MOMENTS_INCS} ${VLASOV_INCS} -Ikernels -Izero -Iapps -Icreg -Idata/adas $(KERN_INCLUDES)
 
 CORE_LIB_DIR := -L../${BUILD_DIR}/core
 CORE_LIB := -lg0core
 
-EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
-EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
+EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 EXEC_LIBS = -L../${BUILD_DIR}/gyrokinetic ${LLIB} ${SLLIB} ${CORE_LIB_DIR} ${CORE_LIB} ${EXEC_EXT_LIBS}
 
 LDFLAGS += -Wl,-rpath,./${BUILD_DIR}/core
@@ -143,15 +147,15 @@ ifdef USING_NVCC
 	$(MKDIR_P) $(dir $@)
 	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
 
-../$(BUILD_DIR)/gyrokinetic/kernels/positivity_shift/%.c.o : kernels/positivity_shift/%.c
+../$(BUILD_DIR)/gyrokinetic/kernels/neutral/%.c.o : kernels/neutral/%.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
+
+../$(BUILD_DIR)/gyrokinetic/kernels/positivity_shift_gyrokinetic/%.c.o : kernels/positivity_shift_gyrokinetic/%.c
 	$(MKDIR_P) $(dir $@)
 	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
 
 ../$(BUILD_DIR)/gyrokinetic/kernels/rad/%.c.o : kernels/rad/%.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
-
-../$(BUILD_DIR)/gyrokinetic/kernels/translate_dim/%.c.o : kernels/translate_dim/%.c
 	$(MKDIR_P) $(dir $@)
 	$(CC) $(CFLAGS) $(NVCC_FLAGS) $(INCS) -c $< -o $@
 
@@ -165,12 +169,12 @@ $(LLIB): $(OBJS)
 	$(MKDIR_P) $(dir $@)
 ifeq ($(UNAME),Linux)
 ifdef USING_NVCC
-	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o -Xlinker=-soname -Xlinker=libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH} -rdc=true --compiler-options="-fPIC"
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/minus/*.o ../$(BUILD_DIR)/core/kernels/*/*.o ../$(BUILD_DIR)/core/zero/*.o ../$(BUILD_DIR)/core/apps/*.o ../$(BUILD_DIR)/moments/zero/*.o ../$(BUILD_DIR)/moments/apps/*.o ../$(BUILD_DIR)/moments/amr/*.o ../$(BUILD_DIR)/vlasov/kernels/*/*.o ../$(BUILD_DIR)/vlasov/zero/*.o ../$(BUILD_DIR)/vlasov/apps/*.o ../$(BUILD_DIR)/gyrokinetic/zero/*.o ../$(BUILD_DIR)/gyrokinetic/apps/*.o ../$(BUILD_DIR)/gyrokinetic/data/adas/*.o ../$(BUILD_DIR)/gyrokinetic/kernels/*/*.o -Xlinker=-soname -Xlinker=libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl -arch=sm_${CUDA_ARCH} -rdc=true --compiler-options="-fPIC"
 else
-	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o -Wl,-soname,libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/minus/*.o ../$(BUILD_DIR)/core/kernels/*/*.o ../$(BUILD_DIR)/core/zero/*.o ../$(BUILD_DIR)/core/apps/*.o ../$(BUILD_DIR)/moments/zero/*.o ../$(BUILD_DIR)/moments/apps/*.o ../$(BUILD_DIR)/moments/amr/*.o ../$(BUILD_DIR)/vlasov/kernels/*/*.o ../$(BUILD_DIR)/vlasov/zero/*.o ../$(BUILD_DIR)/vlasov/apps/*.o ../$(BUILD_DIR)/gyrokinetic/zero/*.o ../$(BUILD_DIR)/gyrokinetic/apps/*.o ../$(BUILD_DIR)/gyrokinetic/data/adas/*.o ../$(BUILD_DIR)/gyrokinetic/kernels/*/*.o -Wl,-soname,libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR} -L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${NCCL_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
 else
-	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/*/*.o ../$(BUILD_DIR)/core/*/*/*.o ../$(BUILD_DIR)/moments/*/*.o ../$(BUILD_DIR)/moments/*/*/*.o ../$(BUILD_DIR)/vlasov/*/*.o ../$(BUILD_DIR)/vlasov/*/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*.o ../$(BUILD_DIR)/gyrokinetic/*/*/*.o -Wl,-install_name,@rpath/libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} ${CORE_LIB_DIR} ${CORE_LIB} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+	$(CC) -shared -o $@ ../$(BUILD_DIR)/core/minus/*.o ../$(BUILD_DIR)/core/kernels/*/*.o ../$(BUILD_DIR)/core/zero/*.o ../$(BUILD_DIR)/core/apps/*.o ../$(BUILD_DIR)/moments/zero/*.o ../$(BUILD_DIR)/moments/apps/*.o ../$(BUILD_DIR)/moments/amr/*.o ../$(BUILD_DIR)/vlasov/kernels/*/*.o ../$(BUILD_DIR)/vlasov/zero/*.o ../$(BUILD_DIR)/vlasov/apps/*.o ../$(BUILD_DIR)/gyrokinetic/zero/*.o ../$(BUILD_DIR)/gyrokinetic/apps/*.o ../$(BUILD_DIR)/gyrokinetic/data/adas/*.o ../$(BUILD_DIR)/gyrokinetic/kernels/*/*.o -Wl,-install_name,@rpath/libg0gyrokinetic.so -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${NCCL_LIB_DIR}-L${CUDSS_LIB_DIR} -L${LUA_LIB_DIR} -L${LAPACK_LIB_DIR} -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${CUDSS_RPATH} ${CUDSS_LIBS} ${NCCL_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 endif
 
 $(SLLIB): $(OBJS)
@@ -203,7 +207,6 @@ install: all
 	cp ${INSTALL_HEADERS} ${INSTALL_PREFIX}/${PROJ_NAME}/include
 # libraries
 	cp -f $(LLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0gyrokinetic.so
-	cp -f $(SLLIB) ${INSTALL_PREFIX}/${PROJ_NAME}/lib/libg0gyrokinetic.a
 
 .PHONY: clean
 clean: ## Clean build output

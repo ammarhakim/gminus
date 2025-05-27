@@ -53,7 +53,6 @@ static const struct gkyl_str_int_pair projection_type[] = {
 static const struct gkyl_str_int_pair model_type[] = {
   { "Default", GKYL_MODEL_DEFAULT },
   { "SR", GKYL_MODEL_SR },
-  { "GeneralGeometry", GKYL_MODEL_GEN_GEO },
   { "CanonicalPB", GKYL_MODEL_CANONICAL_PB },
   { "CanonicalPBGR", GKYL_MODEL_CANONICAL_PB_GR },
   { 0, 0 }
@@ -1942,6 +1941,13 @@ vm_app_new(lua_State *L)
   struct gkyl_tool_args *args = gkyl_tool_args_new(L);
   struct script_cli script_cli = vm_parse_script_cli(args);
 
+  script_cli.use_mpi = false;
+  with_lua_global(L, "GKYL_MPI_COMM") {
+    if (lua_islightuserdata(L, -1)) {
+      script_cli.use_mpi = true;
+    }
+  }
+
 #ifdef GKYL_HAVE_MPI
   if (script_cli.use_gpu && script_cli.use_mpi) {
 #ifdef GKYL_HAVE_NCCL
@@ -1993,6 +1999,12 @@ vm_app_new(lua_State *L)
   );
 #endif
 
+  if (comm == 0)
+    comm = gkyl_null_comm_inew( &(struct gkyl_null_comm_inp) {
+        .use_gpu = script_cli.use_gpu,
+      }
+    );    
+
   vm.parallelism.comm = comm;
   vm.parallelism.use_gpu = script_cli.use_gpu;
 
@@ -2023,6 +2035,9 @@ vm_app_new(lua_State *L)
   // Set metatable.
   luaL_getmetatable(L, VLASOV_APP_METATABLE_NM);
   lua_setmetatable(L, -2);
+
+  gkyl_tool_args_release(script_cli.rest);
+  gkyl_tool_args_release(args);
   
   return 1;
 }
