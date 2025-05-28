@@ -102,7 +102,7 @@ create_ctx(void)
 
   double rhob = 0.01; // Background fluid mass density.
   double ub = 0.0; // Background fluid velocity.
-  double pb = 0.01; // Background fluid pressure.
+  double pb = 0.0075; // Background fluid pressure.
 
   double rhol = 1.0; // Left ring fluid mass density.
   double ul = 0.0; // Left ring fluid velocity.
@@ -115,14 +115,14 @@ create_ctx(void)
   // Simulation parameters.
   int Nr = 16; // Cell count (configuration space: radial direction).
   int Ntheta = 16; // Cell count (configuration space: azimuthal angular direction).
-  int Nvr = 64; // Cell count (velocity space: radial direction).
-  int Nvtheta = 64; // Cell count (velocity space: azimuthal angular direction).
+  int Nvr = 32; // Cell count (velocity space: radial direction).
+  int Nvtheta = 32; // Cell count (velocity space: azimuthal angular direction).
   double Lr_min = 1.0; // Domain size radius min (configuration space: radial direction).
   double Lr_max = 2.5; // Domain size radius max (configuration space: radial direction).
   double Ltheta_min = 0.0; // Domain size minimum (configuration space: azimuthal angular direction).
   double Ltheta_max = 2.0 * pi; // Domain size maximum (configuration space: azimuthal angular direction).
-  double v_r_max = 16.0 * vt; // Domain boundary (velocity space: radial direction).
-  double v_theta_max = 16.0 * vt; // Domain boundary (velocity space: azimuthal angular direction).
+  double v_r_max = 5.0 * vt; // Domain boundary (velocity space: radial direction).
+  double v_theta_max = 5.0 * vt; // Domain boundary (velocity space: azimuthal angular direction).
   int poly_order = 2; // Polynomial order.
   double cfl_frac = 1.0; // CFL coefficient.
 

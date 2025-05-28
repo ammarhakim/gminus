@@ -388,6 +388,9 @@ main(int argc, char **argv)
     .hamil_ctx = &ctx,
     .h_ij = evalMetric,
     .h_ij_ctx = &ctx,
+    // H = E for this case
+    .energy = evalHamiltonian, 
+    .energy_ctx = &ctx,
     .h_ij_inv = evalInvMetric,
     .h_ij_inv_ctx = &ctx,
     .det_h = evalMetricDet,

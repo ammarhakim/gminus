@@ -204,6 +204,25 @@ evalHamiltonian(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT 
   fout[0] = hamiltonian;
 }
 
+void 
+evalEnergy(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
+{
+  struct star_newtonian_static_ctx *app = ctx;
+
+  double q_r = xn[0], q_theta = xn[1], p_r_dot = xn[2], p_theta_dot = xn[3];
+
+  double inv_metric_r_r = 1.0; // Inverse metric tensor (radial-radial component).
+  double inv_metric_r_theta = 0.0; // Inverse metric tensor (radial-angular component).
+  double inv_metric_theta_theta = 1.0 / (q_r * q_r); // Inverse metric tensor (angular-angular component).
+  
+  // H = \alpha \gamma - \beta \cdot p
+  double energy = (0.5 * inv_metric_r_r * p_r_dot * p_r_dot) + (0.5 * (2.0 * inv_metric_r_theta * p_r_dot * p_theta_dot)) +
+    (0.5 * inv_metric_theta_theta * p_theta_dot * p_theta_dot); // Energy (no potential term)
+  
+  // Set energy.
+  fout[0] = energy;
+}
+
 void
 evalInvMetric(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
 {
@@ -398,6 +417,8 @@ main(int argc, char **argv)
     .hamil_ctx = &ctx,
     .h_ij = evalMetric,
     .h_ij_ctx = &ctx,
+    .energy = evalEnergy, 
+    .energy_ctx = &ctx,
     .h_ij_inv = evalInvMetric,
     .h_ij_inv_ctx = &ctx,
     .det_h = evalMetricDet,
@@ -426,8 +447,8 @@ main(int argc, char **argv)
       .upper = { .type = GKYL_SPECIES_ABSORB, },
     },
     
-    .num_diag_moments = 2,
-    .diag_moments = { "M0", "M1i_from_H" },
+    .num_diag_moments = 4,
+    .diag_moments = { "M0", "M1i", "LTEMoments", "MEnergy" },
   };
 
   // Vlasov-Maxwell app.
