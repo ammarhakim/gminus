@@ -58,12 +58,12 @@ gkyl_dg_calc_gr_vars_new(const struct gkyl_rect_grid *phase_grid, const struct g
   return up;
 }
 
-void gkyl_dg_calc_gr_vars_n(struct gkyl_dg_calc_gr_vars *up, const struct gkyl_array* h_ij_inv, 
+void gkyl_dg_calc_gr_vars_n(struct gkyl_dg_calc_gr_vars *up, const struct gkyl_array* h_ij, 
   const struct gkyl_array* M0, const struct gkyl_array* M1i, struct gkyl_array* n)
 {
 #ifdef GKYL_HAVE_CUDA
   if (gkyl_array_is_cu_dev(n)) {
-    return gkyl_dg_calc_gr_vars_n_cu(up, h_ij_inv, M0, M1i, n);
+    return gkyl_dg_calc_gr_vars_n_cu(up, h_ij, M0, M1i, n);
   }
 #endif
 
@@ -96,9 +96,9 @@ void gkyl_dg_calc_gr_vars_n(struct gkyl_dg_calc_gr_vars *up, const struct gkyl_a
 
     const double *M0_d = gkyl_array_cfetch(M0, loc);
     double* n_d = gkyl_array_fetch(n, loc);
-    const double *h_ij_inv_d = gkyl_array_cfetch(h_ij_inv, loc);
+    const double *h_ij_d = gkyl_array_cfetch(h_ij, loc);
 
-    up->gr_n_copy(count, h_ij_inv_d, up->xs, M0_d, n_d);
+    up->gr_n_copy(count, h_ij_d, up->xs, M0_d, n_d);
 
     count += up->Ncomp;
   }

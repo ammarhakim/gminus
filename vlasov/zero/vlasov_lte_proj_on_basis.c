@@ -550,7 +550,9 @@ gkyl_vlasov_lte_proj_on_basis_advance(gkyl_vlasov_lte_proj_on_basis *up,
             fq[0] += expamp_quad[cqidx]*exp(-efact/(2.0*T_over_m_quad[cqidx]));
           }
           else if (up->is_canonical_pb_gr) {
-            // Assumes a (particle) hamiltonian in canocial form (GR): H = \alpha gamma + \beta \cdot p
+            // Assumes a (particle) Energy in the form (GR): 
+            // exp(-Ev) = C*exp( - (1/T) gammaVdrift *( gamma - p . V_drift) )
+            // where C = Aexp(1/T) (from normalization).
             const double *h_ij_inv_quad = gkyl_array_cfetch(up->h_ij_inv_quad, midx);
             double vv = 0.0;
             double vu = 0.0;

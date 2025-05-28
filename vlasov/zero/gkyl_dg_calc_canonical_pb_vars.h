@@ -68,8 +68,8 @@ void gkyl_dg_calc_canonical_pb_vars_alpha_surf_cu(struct gkyl_dg_calc_canonical_
  * @param h_ij Covariant metric tensor expansion coefficients
  * @param V_drift Drift velocity moment expansion (contravariant components)
  * @param M1i Drift velocity times density moment expansion (contravariant components)
- * @param V_drift_cov Drift velocity moment expansion (covariant components)
- * @param M1i_cov Drift velocity times density moment expansion (covariant components)
+ * @param V_drift_cov (output) Drift velocity moment expansion (covariant components)
+ * @param M1i_cov (output) Drift velocity times density moment expansion (covariant components)
  */
 void gkyl_canonical_pb_contra_to_covariant_m1i(struct gkyl_dg_calc_canonical_pb_vars *up, const struct gkyl_range *conf_range,
  const struct gkyl_array *h_ij, const struct gkyl_array *V_drift, const struct gkyl_array *M1i, struct gkyl_array *V_drift_cov, 

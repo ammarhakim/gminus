@@ -776,6 +776,7 @@ vm_species_release(const gkyl_vlasov_app* app, const struct vm_species *s)
     gkyl_array_release(s->sgn_alpha_surf);
     gkyl_array_release(s->const_sgn_alpha);
     if (app->use_gpu){
+      gkyl_array_release(s->hamil_host);
       gkyl_array_release(s->energy_host);
       gkyl_array_release(s->h_ij_host);
       gkyl_array_release(s->h_ij_inv_host);

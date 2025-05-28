@@ -44,7 +44,7 @@ gkyl_dg_calc_gr_vars_n_set_cu_kernel(gkyl_dg_calc_gr_vars* up,
 
 __global__ static void
 gkyl_dg_calc_gr_vars_n_copy_cu_kernel(gkyl_dg_calc_gr_vars* up, 
-  struct gkyl_nmat *xs, struct gkyl_range conf_range, const struct gkyl_array* h_ij_inv,
+  struct gkyl_nmat *xs, struct gkyl_range conf_range, const struct gkyl_array* h_ij,
   const struct gkyl_array* M0, struct gkyl_array* n)
 {
   int idx[GKYL_MAX_DIM];
@@ -64,16 +64,16 @@ gkyl_dg_calc_gr_vars_n_copy_cu_kernel(gkyl_dg_calc_gr_vars* up,
     // fetch the correct count in the matrix (since we solve Ncomp systems in each cell)
     long count = linc1*up->Ncomp;
 
-    const double *h_ij_inv_d = (const double*) gkyl_array_cfetch(h_ij_inv, loc);
+    const double *h_ij_d = (const double*) gkyl_array_cfetch(h_ij, loc);
     const double *M0_d = (const double*) gkyl_array_cfetch(M0, loc);
     double* n_d = (double*) gkyl_array_fetch(n, loc);
 
-    up->gr_n_copy(count, h_ij_inv_d, xs, M0_d, n_d);
+    up->gr_n_copy(count, h_ij_d, xs, M0_d, n_d);
   }
 }
 
 // Host-side wrapper for gr rest-frame density calculation
-void gkyl_dg_calc_gr_vars_n_cu(struct gkyl_dg_calc_gr_vars *up, const struct gkyl_array* h_ij_inv,
+void gkyl_dg_calc_gr_vars_n_cu(struct gkyl_dg_calc_gr_vars *up, const struct gkyl_array* h_ij,
   const struct gkyl_array* M0, const struct gkyl_array* M1i, struct gkyl_array* n)
 {
   struct gkyl_range conf_range = up->mem_range;
@@ -88,7 +88,7 @@ void gkyl_dg_calc_gr_vars_n_cu(struct gkyl_dg_calc_gr_vars *up, const struct gky
   }
 
   gkyl_dg_calc_gr_vars_n_copy_cu_kernel<<<conf_range.nblocks, conf_range.nthreads>>>(up->on_dev,
-    up->xs->on_dev, conf_range, h_ij_inv->on_dev, M0->on_dev, n->on_dev);
+    up->xs->on_dev, conf_range, h_ij->on_dev, M0->on_dev, n->on_dev);
 }
 
 __global__ void

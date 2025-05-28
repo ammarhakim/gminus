@@ -3,10 +3,10 @@
 #include <gkyl_canonical_pb_kernels.h>  
 #include <gkyl_basis_ser_2x_p2_sqrt.h> 
 #include <gkyl_basis_ser_2x_p1_sqrt.h> 
-GKYL_CU_DH void gr_vars_n_copy_2x2v_ser_p2(int count, const double *h_ij_inv, struct gkyl_nmat *x, const double *M0, double* GKYL_RESTRICT n) 
+GKYL_CU_DH void gr_vars_n_copy_2x2v_ser_p2(int count, const double *h_ij, struct gkyl_nmat *x, const double *M0, double* GKYL_RESTRICT n) 
 { 
   // count: integer to indicate which matrix being fetched. 
-  // h_ij_inv:         Input volume expansion of the inverse metric tensor.
+  // h_ij(_inv):         Input volume expansion of the metric tensor (could be covariant or contravaraint depending on use).
   //                   [Hxx, Hxy, Hxz, 
   //                     - , Hyy, Hyz, 
   //                     - ,  - , Hzz] 
@@ -37,8 +37,8 @@ GKYL_CU_DH void gr_vars_n_copy_2x2v_ser_p2(int count, const double *h_ij_inv, st
   V[14] = gkyl_mat_get(&x1,6,0);   V_1[6] = gkyl_mat_get(&x1,6,0); 
   V[15] = gkyl_mat_get(&x1,7,0);   V_1[7] = gkyl_mat_get(&x1,7,0); 
  
-  double V_sq[16] = {0.0}; 
-  canonical_pb_vars_util_2x2v_ser_p2(h_ij_inv, V, V, V_sq); 
+  double V_sq[8] = {0.0}; 
+  canonical_pb_vars_util_2x2v_ser_p2(h_ij, V, V, V_sq); 
  
   double Gamma2_inv[8] = {0.0}; 
   Gamma2_inv[0] = 2.0-1.0*V_sq[0]; 
@@ -60,9 +60,9 @@ GKYL_CU_DH void gr_vars_n_copy_2x2v_ser_p2(int count, const double *h_ij_inv, st
   if (0.5999999999999995*Gamma2_inv[7]-0.5999999999999999*Gamma2_inv[6]+0.4472135954999579*Gamma2_inv[5]+0.4472135954999579*Gamma2_inv[4]-0.9*Gamma2_inv[3]-0.6708203932499369*Gamma2_inv[2]+0.6708203932499369*Gamma2_inv[1]+0.5*Gamma2_inv[0] < 0.0) cell_avg = 1; 
   if ((-0.75*Gamma2_inv[7])-0.5590169943749475*Gamma2_inv[5]+0.4472135954999579*Gamma2_inv[4]+0.6708203932499369*Gamma2_inv[1]+0.5*Gamma2_inv[0] < 0.0) cell_avg = 1; 
   if (0.5999999999999995*Gamma2_inv[7]+0.5999999999999999*Gamma2_inv[6]+0.4472135954999579*Gamma2_inv[5]+0.4472135954999579*Gamma2_inv[4]+0.9*Gamma2_inv[3]+0.6708203932499369*Gamma2_inv[2]+0.6708203932499369*Gamma2_inv[1]+0.5*Gamma2_inv[0] < 0.0) cell_avg = 1; 
-  const double *Hxx = &h_ij_inv[0]; 
-  const double *Hxy = &h_ij_inv[8]; 
-  const double *Hyy = &h_ij_inv[16]; 
+  const double *Hxx = &h_ij[0]; 
+  const double *Hxy = &h_ij[8]; 
+  const double *Hyy = &h_ij[16]; 
 
   if (cell_avg) { 
     double Gamma2_inv_lobatto[4] = {0.0}; 

@@ -270,6 +270,9 @@ gkyl_vlasov_lte_moments_advance(struct gkyl_vlasov_lte_moments *lte_moms,
     // This moment is computed *in the stationary frame* with the appropriate weight.
     // We find computing this moment *in the stationary frame* to be more accurate than 
     // computing the lab frame moment and then Lorentz transforming to the stationary frame. 
+    // Integral kernel is: GammaV_sq sqrt( 1 + h^ij p_i p_j)  - 2 GammaV u^i p_i 
+    //  + (1/(1 + h^ij p_i p_j) )* ( (u^ip_i)^2 - 1 ) f dp_1 dp_2 dp_3
+    // So we require: h^ij, V_drift = u^i, V_drift_sq, GammaV
     gkyl_dg_calc_gr_vars_pressure(lte_moms->gr_vars, 
       conf_local, phase_local, lte_moms->h_ij_inv,
       lte_moms->V_drift, lte_moms->V_drift_sq, 

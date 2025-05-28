@@ -62,14 +62,17 @@ gkyl_dg_calc_gr_vars_cu_dev_new(const struct gkyl_rect_grid *phase_grid, const s
  * and then evaluates 1 - (V_drift_lobatto)^2 (with V_drift_lobatto = 1.0e-16 if the result is still negative).
  * We can then guarantee the 1 - (V_drift_lobatto)^2 > 0.0 at quadrature points and GammaV_inv is well defined.
  * Finally, the rest-frame density is computed with weak multiplication with the final GammaV_inv basis expansion.
+ * 
+ * For can-pb the momentum is computed initally in contravariant form, u^i, so to compute v . v, we use
+ * covaraint components of the metric, h_ij
  *
  * @param up  Updater for computing gr variables
- * @param h_ij_inv    Spatial Metric Components
+ * @param h_ij    Spatial Metric Components
  * @param M0  Input lab-frame density = GammaV*n
  * @param M1i Input lab-frame flux = GammaV*n*V_drift
  * @param n   Output rest-frame density.
  */
-void gkyl_dg_calc_gr_vars_n(struct gkyl_dg_calc_gr_vars *up, const struct gkyl_array* h_ij_inv, 
+void gkyl_dg_calc_gr_vars_n(struct gkyl_dg_calc_gr_vars *up, const struct gkyl_array* h_ij, 
   const struct gkyl_array* M0, const struct gkyl_array* M1i, struct gkyl_array* n);
 
 /**
@@ -128,7 +131,7 @@ void gkyl_dg_calc_gr_vars_release(struct gkyl_dg_calc_gr_vars *up);
  * Host-side wrappers for gr vars operations on device
  */
 
-void gkyl_dg_calc_gr_vars_n_cu(struct gkyl_dg_calc_gr_vars *up, const struct gkyl_array* h_ij_inv,
+void gkyl_dg_calc_gr_vars_n_cu(struct gkyl_dg_calc_gr_vars *up, const struct gkyl_array* h_ij,
   const struct gkyl_array* M0, const struct gkyl_array* M1i, struct gkyl_array* n);
 
 void gkyl_dg_calc_gr_vars_GammaV_cu(struct gkyl_dg_calc_gr_vars *up, 

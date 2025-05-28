@@ -2,10 +2,10 @@
 #include <gkyl_canonical_pb_gr_Gamma_kernels.h> 
 #include <gkyl_canonical_pb_kernels.h>  
 #include <gkyl_basis_ser_2x_p1_sqrt.h> 
-GKYL_CU_DH void gr_vars_n_copy_2x2v_ser_p1(int count, const double *h_ij_inv, struct gkyl_nmat *x, const double *M0, double* GKYL_RESTRICT n) 
+GKYL_CU_DH void gr_vars_n_copy_2x2v_ser_p1(int count, const double *h_ij, struct gkyl_nmat *x, const double *M0, double* GKYL_RESTRICT n) 
 { 
   // count: integer to indicate which matrix being fetched. 
-  // h_ij_inv:         Input volume expansion of the inverse metric tensor.
+  // h_ij(_inv):         Input volume expansion of the metric tensor (could be covariant or contravaraint depending on use).
   //                   [Hxx, Hxy, Hxz, 
   //                     - , Hyy, Hyz, 
   //                     - ,  - , Hzz] 
@@ -28,8 +28,8 @@ GKYL_CU_DH void gr_vars_n_copy_2x2v_ser_p1(int count, const double *h_ij_inv, st
   V[6] = gkyl_mat_get(&x1,2,0);   V_1[2] = gkyl_mat_get(&x1,2,0); 
   V[7] = gkyl_mat_get(&x1,3,0);   V_1[3] = gkyl_mat_get(&x1,3,0); 
  
-  double V_sq[8] = {0.0}; 
-  canonical_pb_vars_util_2x2v_ser_p1(h_ij_inv, V, V, V_sq); 
+  double V_sq[4] = {0.0}; 
+  canonical_pb_vars_util_2x2v_ser_p1(h_ij, V, V, V_sq); 
  
   double Gamma2_inv[4] = {0.0}; 
   Gamma2_inv[0] = 2.0-1.0*V_sq[0]; 
@@ -42,9 +42,9 @@ GKYL_CU_DH void gr_vars_n_copy_2x2v_ser_p1(int count, const double *h_ij_inv, st
   if ((-0.5*Gamma2_inv[3])+0.5*Gamma2_inv[2]-0.5*Gamma2_inv[1]+0.5*Gamma2_inv[0] < 0.0) cell_avg = 1; 
   if ((-0.5*Gamma2_inv[3])-0.5*Gamma2_inv[2]+0.5*Gamma2_inv[1]+0.5*Gamma2_inv[0] < 0.0) cell_avg = 1; 
   if (0.5*Gamma2_inv[3]+0.5*Gamma2_inv[2]+0.5*Gamma2_inv[1]+0.5*Gamma2_inv[0] < 0.0) cell_avg = 1; 
-  const double *Hxx = &h_ij_inv[0]; 
-  const double *Hxy = &h_ij_inv[4]; 
-  const double *Hyy = &h_ij_inv[8]; 
+  const double *Hxx = &h_ij[0]; 
+  const double *Hxy = &h_ij[4]; 
+  const double *Hyy = &h_ij[8]; 
 
   if (cell_avg) { 
     double Gamma2_inv_lobatto[4] = {0.0}; 

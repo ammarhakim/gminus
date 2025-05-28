@@ -104,6 +104,7 @@ gkyl_mom_canonical_pb_new(const struct gkyl_basis* cbasis, const struct gkyl_bas
   mom_can_pb->phase_range = *phase_range;
 
   mom_can_pb->auxfields.hamil = 0;
+  mom_can_pb->auxfields.energy = 0;
 
   mom_can_pb->momt.flags = 0;
   GKYL_CLEAR_CU_ALLOC(mom_can_pb->momt.flags);
@@ -170,6 +171,7 @@ gkyl_int_mom_canonical_pb_new(const struct gkyl_basis* cbasis, const struct gkyl
   mom_can_pb->phase_range = *phase_range;
 
   mom_can_pb->auxfields.hamil = 0;
+  mom_can_pb->auxfields.energy = 0;
 
   mom_can_pb->momt.flags = 0;
   GKYL_CLEAR_CU_ALLOC(mom_can_pb->momt.flags);

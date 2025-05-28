@@ -21,7 +21,7 @@ get_mom_id(const char *mom)
 {
   int mom_idx = BAD;
 
-  if (strcmp(mom, "MEnergy") == 0) { // total energy = integral(hamil*f) 
+  if (strcmp(mom, "MEnergy") == 0) { // total energy = integral(E*f) 
     mom_idx = MEnergy;
   }
   else if (strcmp(mom, "M1i_from_H") == 0) { // Jnu^i = integral(\alpha^i*f) velocity moment
@@ -81,6 +81,7 @@ set_cu_ptrs(struct mom_type_canonical_pb* mom_can_pb, int mom_id, enum gkyl_basi
   int poly_order, int tblidx)
 {
   mom_can_pb->auxfields.hamil = 0;
+  mom_can_pb->auxfields.energy = 0;
   
   // choose kernel tables based on basis-function type
   const gkyl_canonical_pb_mom_kern_list *menergy_kernels;
@@ -176,6 +177,7 @@ set_int_cu_ptrs(struct mom_type_canonical_pb* mom_can_pb, enum gkyl_basis_type b
   int poly_order, int tblidx)
 {
   mom_can_pb->auxfields.hamil = 0;
+  mom_can_pb->auxfields.energy = 0;
 
   // choose kernel tables based on basis-function type
   const gkyl_canonical_pb_mom_kern_list *int_mom_kernels;  
