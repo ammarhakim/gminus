@@ -28,7 +28,7 @@ FINAL_APP_LIB_DIR := -L../${BUILD_DIR}/pkpm
 FINAL_APP_LIB := -lg0pkpm
 
 EXEC_LIB_DIRS = -L${SUPERLU_LIB_DIR} -L${MPI_LIB_DIR} -L${MPI_LIB_DIR} -L${LUA_LIB_DIR}
-EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
+EXEC_EXT_LIBS = -lsuperlu ${LAPACK_LIB} ${CUDA_LIBS} ${MPI_RPATH} ${MPI_LIBS} ${LUA_RPATH} ${LUA_LIBS} -lm -lpthread -ldl
 EXEC_LIBS = ${CORE_LIB_DIR} ${CORE_LIB} ${FINAL_APP_LIB_DIR} ${FINAL_APP_LIB} ${EXEC_EXT_LIBS}
 INSTALLED_EXEC_LIBS = -L${PROJ_INSTALL_LIB_DIR} ${CORE_LIB} ${FINAL_APP_LIB} ${EXEC_EXT_LIBS}
 
@@ -42,7 +42,7 @@ INSTALLED_LDFLAGS += -Wl,-rpath,${PROJ_INSTALL_LIB_DIR}
 
 gkeyll: gkeyll.c
 	$(MKDIR_P) ../${BUILD_DIR}/gkeyll/
-	${CC} ${CFLAGS} ${LDFLAGS} -o ../${BUILD_DIR}/gkeyll/gkeyll $< -I. ${ALL_INCS} ${EXT_INCS} ${APP_LW_INCS} ${LDFLAGS} ${EXEC_LIB_DIRS} ${EXEC_LIBS}
+	${CC} ${CFLAGS} ${LDFLAGS} -o ../${BUILD_DIR}/gkeyll/gkeyll $< -I. ${ALL_INCS} ${EXT_INCS} ${APP_LW_INCS} ${LDFLAGS} ${EXEC_LIB_DIRS} ${FINAL_APP_LIB_DIR} ${FINAL_APP_LIB} ${EXEC_EXT_LIBS}
 
 gkeyll-install: gkeyll.c
 	$(MKDIR_P) ../${BUILD_DIR}/gkeyll/
