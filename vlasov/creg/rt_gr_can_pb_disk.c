@@ -102,7 +102,7 @@ create_ctx(void)
 
   double rhob = 0.01; // Background fluid mass density.
   double ub = 0.0; // Background fluid velocity.
-  double pb = 0.0075; // Background fluid pressure.
+  double pb = 0.00075; // Background fluid pressure.
 
   double rhol = 1.0; // Left ring fluid mass density.
   double ul = 0.0; // Left ring fluid velocity.
@@ -121,8 +121,8 @@ create_ctx(void)
   double Lr_max = 2.5; // Domain size radius max (configuration space: radial direction).
   double Ltheta_min = 0.0; // Domain size minimum (configuration space: azimuthal angular direction).
   double Ltheta_max = 2.0 * pi; // Domain size maximum (configuration space: azimuthal angular direction).
-  double v_r_max = 5.0 * vt; // Domain boundary (velocity space: radial direction).
-  double v_theta_max = 5.0 * vt; // Domain boundary (velocity space: azimuthal angular direction).
+  double v_r_max = 8.0 * vt; // Domain boundary (velocity space: radial direction).
+  double v_theta_max = 8.0 * vt; // Domain boundary (velocity space: azimuthal angular direction).
   int poly_order = 2; // Polynomial order.
   double cfl_frac = 1.0; // CFL coefficient.
 
@@ -573,7 +573,7 @@ main(int argc, char **argv)
       .ctx_temp = &ctx,
       .V_drift = evalVDriftInit,
       .ctx_V_drift = &ctx,
-      .correct_all_moms = false,
+      .correct_all_moms = true,
       .iter_eps = 0.0,
       .max_iter = 0,
       .use_last_converged = false,
@@ -584,7 +584,7 @@ main(int argc, char **argv)
       .self_nu = evalNu,
       .ctx = &ctx,
       .has_implicit_coll_scheme = true,
-      .correct_all_moms = false,
+      .correct_all_moms = true,
       .iter_eps = 0.0,
       .max_iter = 0,
       .use_last_converged = false,
