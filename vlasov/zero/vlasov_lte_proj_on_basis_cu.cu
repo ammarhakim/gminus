@@ -210,7 +210,7 @@ gkyl_vlasov_lte_proj_on_basis_f_lte_quad_ker(struct gkyl_rect_grid phase_grid,
             // Grab the spatial metric component, the ctx includes geometry that isn't 
             // part of the canonical set of variables, like R on the surf of a sphere
             // q_can includes the canonical variables list
-            double h_ij_inv_loc = h_ij_inv_quad_d[tot_conf_quad*sym_tensor_index + cqidx]; 
+            double h_ij_inv_loc = h_ij_inv_quad_d[tot_conf_quad*sym_tensor_index + cqidx];
             // For off-diagonal components, we need to count these twice, due to symmetry
             int sym_fact = (d0 == d1) ? 1 : 2;
             efact += sym_fact*h_ij_inv_loc*(xmu[cdim+d0]-V_drift_quad[tot_conf_quad*d0 + cqidx])*(xmu[cdim+d1]-V_drift_quad[tot_conf_quad*d1 + cqidx]);
@@ -231,7 +231,7 @@ gkyl_vlasov_lte_proj_on_basis_f_lte_quad_ker(struct gkyl_rect_grid phase_grid,
             // part of the canonical set of variables, like R on the surf of a sphere
             // q_can includes the canonical variables list
             double h_ij_inv_loc = h_ij_inv_quad_d[tot_conf_quad*sym_tensor_index + cqidx]; 
-            // For off-diagonal components, we need to count these twice, due to symmetry
+	    // For off-diagonal components, we need to count these twice, due to symmetry
             int sym_fact = (d0 == d1) ? 1 : 2;
             vv += sym_fact*h_ij_inv_loc*(V_drift_quad[tot_conf_quad*d0 + cqidx])*(V_drift_quad[tot_conf_quad*d1 + cqidx]);
             if (sym_fact == 1) {
@@ -283,7 +283,7 @@ gkyl_vlasov_lte_proj_on_basis_advance_cu(gkyl_vlasov_lte_proj_on_basis *up,
     *phase_range, *conf_range, 
     up->conf_basis_at_ords->on_dev, up->ordinates->on_dev,
     up->moms_lte_quad->on_dev, up->expamp_quad->on_dev, 
-    (up->is_canonical_pb || up->is_canonical_pb_gr) ? up->det_h_quad->on_dev : 0, 
+    (up->is_canonical_pb || up->is_canonical_pb_gr) ? up->h_ij_inv_quad->on_dev : 0,  
     up->p2c_qidx, up->is_relativistic, up->is_canonical_pb, up->is_canonical_pb_gr, 
     up->f_lte_quad->on_dev);
 
