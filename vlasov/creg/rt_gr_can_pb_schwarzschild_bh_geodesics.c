@@ -267,8 +267,9 @@ void
 evalMetricDet(double t, const double* GKYL_RESTRICT xn, double* GKYL_RESTRICT fout, void* ctx)
 {
   double q_r = xn[0];
+  struct blackhole_static_ctx *app = ctx;
 
-  double metric_det = q_r; // Metric tensor determinant.
+  double metric_det = q_r/sqrt(1.0 - 2.0*app->bh_mass/q_r); // Metric tensor determinant.
   
   // Set metric tensor determinant.
   fout[0] = metric_det;
