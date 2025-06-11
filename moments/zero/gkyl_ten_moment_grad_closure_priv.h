@@ -1,8 +1,7 @@
 #include <gkyl_moment_non_ideal_priv.h>
 
-typedef double (*heat_flux_calc_t)(const gkyl_ten_moment_grad_closure *gces,
-  const double *fluid_d[], double *cflrate, double cfl,
-  double dt, double *rhs_d[]);
+typedef void (*heat_flux_calc_t)(const gkyl_ten_moment_grad_closure *gces,
+  const double *fluid_d[], double *cflrate, double dt, double *rhs_d[]);
 
 struct gkyl_ten_moment_grad_closure {
   struct gkyl_rect_grid grid; // grid object
@@ -102,10 +101,9 @@ calc_sym_grad_limiter_3D(double alpha, double a, double b, double c, double d)
   }
 }
 
-double
+void
 calc_unmag_heat_flux_1d(const gkyl_ten_moment_grad_closure *gces,
-  const double *fluid_d[], double *cflrate,
-  double cfl, double dt, double *rhs_d[])
+  const double *fluid_d[], double *cflrate, double dt, double *rhs_d[])
 {
   const int ndim = gces->ndim;
   double rho_avg = 0.0;
@@ -161,13 +159,12 @@ calc_unmag_heat_flux_1d(const gkyl_ten_moment_grad_closure *gces,
   rhs_d[U_1D][P33] += signx[U_1D]*q[Q133]/dx;
 
   double cfla = dt/(dx*dx);
-  return fmax(alpha*vth_avg*cfla, cfl);
+  cflrate[0] = alpha*vth_avg*cfla;
 }
 
-double
+void
 calc_unmag_heat_flux_2d(const gkyl_ten_moment_grad_closure *gces,
-  const double *fluid_d[], double *cflrate,
-  double cfl, double dt, double *rhs_d[])
+  const double *fluid_d[], double *cflrate, double dt, double *rhs_d[])
 {
   const int ndim = gces->ndim;
   double rho_avg = 0.0;
@@ -353,13 +350,12 @@ calc_unmag_heat_flux_2d(const gkyl_ten_moment_grad_closure *gces,
   
   double da = fmin(dx, dy);
   double cfla = dt/(da*da);
-  return fmax(alpha*vth_avg*cfla, cfl);
+  cflrate[0] = alpha*vth_avg*cfla;
 }
 
-double
+void
 calc_unmag_heat_flux_3d(const gkyl_ten_moment_grad_closure *gces,
-  const double *fluid_d[], double *cflrate,
-  double cfl, double dt, double *rhs_d[])
+  const double *fluid_d[], double *cflrate, double dt, double *rhs_d[])
 {
   const int ndim = gces->ndim;
   double rho_avg = 0.0;
@@ -941,7 +937,7 @@ calc_unmag_heat_flux_3d(const gkyl_ten_moment_grad_closure *gces,
 
   double da = fmin(fmin(dx, dy), dz);
   double cfla = dt/(da*da);
-  return fmax(alpha*vth_avg*cfla, cfl);
+  cflrate[0] = alpha*vth_avg*cfla;
 }
 
 static const heat_flux_calc_t grad_closure_unmag_funcs[3] = { calc_unmag_heat_flux_1d,
