@@ -2,6 +2,7 @@
 
 #include <gkyl_alloc.h>
 #include <gkyl_array_ops.h>
+#include <gkyl_array_reduce.h>
 #include <gkyl_null_comm.h>
 #include <gkyl_ten_moment_grad_closure.h>
 #include <gkyl_ten_moment_grad_closure_priv.h>
@@ -68,7 +69,8 @@ gkyl_ten_moment_grad_closure_advance(const gkyl_ten_moment_grad_closure *gces,
   int ndim = update_range->ndim;
   long sz[] = { 2, 4, 8 };
 
-  double cfla = 0.0, cfl = gces->cfl, cflm = 1.1*cfl;
+  double cfla[1] = { 0.0 };
+  double cfl = gces->cfl, cflm = 1.1*cfl;
   double is_cfl_violated = 0.0; // deliberately a double
 
   gkyl_array_clear(rhs, 0.0);
@@ -96,22 +98,23 @@ gkyl_ten_moment_grad_closure_advance(const gkyl_ten_moment_grad_closure *gces,
       rhs_d[i] = gkyl_array_fetch(rhs, linc_center + offsets_vertices[i]);
     }
 
-    cfla = gces->calc_q(gces, fluid_d, gkyl_array_fetch(cflrate, linc_center),
-      cfla, dt, rhs_d);
+    gces->calc_q(gces, fluid_d, gkyl_array_fetch(cflrate, linc_center), dt, rhs_d);
   }
 
-  if (cfla > cflm)
+  gkyl_array_reduce(cfla, cflrate, GKYL_MAX);
+
+  if (cfla[0] > cflm)
     is_cfl_violated = 1.0;
 
   // compute actual CFL, status & max-speed across all domains
-  double red_vars[2] = { cfla, is_cfl_violated };
+  double red_vars[2] = { cfla[0], is_cfl_violated };
   double red_vars_global[2] = { 0.0, 0.0 };
   gkyl_comm_allreduce(gces->comm, GKYL_DOUBLE, GKYL_MAX, 2, &red_vars, &red_vars_global);
 
-  cfla = red_vars_global[0];
+  cfla[0] = red_vars_global[0];
   is_cfl_violated = red_vars_global[1];
 
-  double dt_suggested = dt*cfl/fmax(cfla, DBL_MIN);
+  double dt_suggested = dt*cfl/fmax(cfla[0], DBL_MIN);
 
   if (is_cfl_violated > 0.0)
     // indicate failure, and return smaller stable time-step
