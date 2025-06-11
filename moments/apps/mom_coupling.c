@@ -135,13 +135,11 @@ moment_coupling_init(const struct gkyl_moment_app *app, struct moment_coupling *
   gkyl_create_vertex_ranges(&app->local, ghost, &src->non_ideal_local_ext,
     &src->non_ideal_local);
 
-  // In Gradient-closure case, non-ideal variables are 10 heat flux tensor components
-  for (int n=0;  n<app->num_species; ++n)
-    src->non_ideal_vars[n] = mkarr(false, 10, src->non_ideal_local_ext.volume);
-
   // check if gradient-closure is present
   for (int i=0; i<app->num_species; ++i) {
     if (app->species[i].eqn_type == GKYL_EQN_TEN_MOMENT && app->species[i].has_grad_closure) {
+      int nadj[3] = { 1, 4, 8 }; // cells adjacent to a vertex
+      src->non_ideal_vars[i] = mkarr(false, nadj[app->ndim - 1]*10, src->non_ideal_local_ext.volume);
       struct gkyl_ten_moment_grad_closure_inp grad_closure_inp = {
         .grid = &app->grid,
         .k0 = app->species[i].k0,
@@ -162,6 +160,7 @@ moment_coupling_init(const struct gkyl_moment_app *app, struct moment_coupling *
       .coll_fac = app->coll_fac == 0 ? 1.0 : app->coll_fac,
     };
     for (int i=0; i<app->num_species; ++i) {
+      src->non_ideal_vars[i] = mkarr(false, 10, src->non_ideal_local_ext.volume);
       // Braginskii coefficients depend on pressure and coefficient to obtain
       // pressure is different for different equation systems (gasGamma, vt, Tr(P))
       double p_fac = 1.0;

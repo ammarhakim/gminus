@@ -57,6 +57,7 @@ gkyl_ten_moment_grad_closure_new(struct gkyl_ten_moment_grad_closure_inp inp)
     up->comm = gkyl_null_comm_inew( &(struct gkyl_null_comm_inp) { } );
 
   grad_closure_calc_q_choose(up);
+  grad_closure_update_q_choose(up);
   
   return up;
 }
@@ -75,8 +76,6 @@ gkyl_ten_moment_grad_closure_advance(const gkyl_ten_moment_grad_closure *gces,
   double cfl = gces->cfl, cflm = 1.1*cfl;
   double is_cfl_violated = 0.0; // deliberately a double
 
-  gkyl_array_clear(rhs, 0.0);
-
   long offsets_vertices[sz[ndim-1]];
   create_offsets_vertices(update_range, offsets_vertices);
 
@@ -85,7 +84,9 @@ gkyl_ten_moment_grad_closure_advance(const gkyl_ten_moment_grad_closure *gces,
 
   const double* fluid_d[sz[ndim-1]];
   const double* em_tot_d[sz[ndim-1]];
-  double *rhs_d[sz[ndim-1]];
+  double *heat_flux_d;
+  const double* heat_flux_up[sz[ndim-1]];
+  double *rhs_d;
 
   struct gkyl_range_iter iter_vertex;
   gkyl_range_iter_init(&iter_vertex, heat_flux_range);
@@ -97,10 +98,27 @@ gkyl_ten_moment_grad_closure_advance(const gkyl_ten_moment_grad_closure *gces,
     for (int i=0; i<sz[ndim-1]; ++i) {
       em_tot_d[i] =  gkyl_array_cfetch(em_tot, linc_center + offsets_vertices[i]);
       fluid_d[i] = gkyl_array_cfetch(fluid, linc_center + offsets_vertices[i]);
-      rhs_d[i] = gkyl_array_fetch(rhs, linc_center + offsets_vertices[i]);
     }
 
-    gces->calc_q(gces, fluid_d, gkyl_array_fetch(cflrate, linc_center), dt, rhs_d);
+    heat_flux_d = gkyl_array_fetch(heat_flux, linc_vertex);
+
+    gces->calc_q(gces, fluid_d, gkyl_array_fetch(cflrate, linc_center), dt, heat_flux_d);
+  }
+
+  struct gkyl_range_iter iter_center;
+  gkyl_range_iter_init(&iter_center, update_range);
+  while (gkyl_range_iter_next(&iter_center)) {
+
+    long linc_vertex = gkyl_range_idx(heat_flux_range, iter_center.idx);
+    long linc_center = gkyl_range_idx(update_range, iter_center.idx);
+
+    for (int i=0; i<sz[ndim-1]; ++i)
+      heat_flux_up[i] = gkyl_array_fetch(heat_flux, linc_vertex + offsets_centers[i]);
+
+
+    rhs_d = gkyl_array_fetch(rhs, linc_center);
+
+    gces->update_q(gces, heat_flux_up, rhs_d);
   }
 
   gkyl_array_reduce(cfla, cflrate, GKYL_MAX);
@@ -125,7 +143,6 @@ gkyl_ten_moment_grad_closure_advance(const gkyl_ten_moment_grad_closure *gces,
       .success = 0,
       .dt_suggested = dt_suggested,
     };
-
   // on success, suggest only bigger time-step; (Only way dt can
   // reduce is if the update fails. If the code comes here the update
   // succeeded and so we should not allow dt to reduce).

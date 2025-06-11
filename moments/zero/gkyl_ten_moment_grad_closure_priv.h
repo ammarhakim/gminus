@@ -1,7 +1,10 @@
 #include <gkyl_moment_non_ideal_priv.h>
 
 typedef void (*heat_flux_calc_t)(const gkyl_ten_moment_grad_closure *gces,
-  const double *fluid_d[], double *cflrate, double dt, double *rhs_d[]);
+  const double *fluid_d[], double *cflrate, double dt, double *q);
+
+typedef void (*heat_flux_update_t)(const gkyl_ten_moment_grad_closure *gces,
+  const double *q[], double *rhs);
 
 struct gkyl_ten_moment_grad_closure {
   struct gkyl_rect_grid grid; // grid object
@@ -13,6 +16,7 @@ struct gkyl_ten_moment_grad_closure {
   struct gkyl_comm *comm;
 
   heat_flux_calc_t calc_q;
+  heat_flux_update_t update_q;
 };
 
 // Makes indexing cleaner
@@ -105,7 +109,7 @@ calc_sym_grad_limiter_3D(double alpha, double a, double b, double c, double d)
 
 void
 calc_unmag_heat_flux_1d(const gkyl_ten_moment_grad_closure *gces,
-  const double *fluid_d[], double *cflrate, double dt, double *rhs_d[])
+  const double *fluid_d[], double *cflrate, double dt, double *q)
 {
   const int ndim = gces->ndim;
   double rho_avg = 0.0;
@@ -118,7 +122,6 @@ calc_unmag_heat_flux_1d(const gkyl_ten_moment_grad_closure *gces,
   double Tij[2][6] = {0.0};
   double rho[2] = {0.0};
   double p[2] = {0.0};
-  double q[10] = {0.0};
   var_setup(gces, L_1D, U_1D, fluid_d, rho, p, Tij);
 
   rho_avg = calc_harmonic_avg_1D(rho[L_1D], rho[U_1D]);
@@ -145,28 +148,40 @@ calc_unmag_heat_flux_1d(const gkyl_ten_moment_grad_closure *gces,
   q[Q123] = chi*dTdx[T23]/3.0;
   q[Q133] = chi*dTdx[T33]/3.0;
 
-  int signx[2] = { 1.0, -1.0 };
-  rhs_d[L_1D][P11] += signx[L_1D]*q[Q111]/dx;
-  rhs_d[L_1D][P12] += signx[L_1D]*q[Q112]/dx;
-  rhs_d[L_1D][P13] += signx[L_1D]*q[Q113]/dx;
-  rhs_d[L_1D][P22] += signx[L_1D]*q[Q122]/dx;
-  rhs_d[L_1D][P23] += signx[L_1D]*q[Q123]/dx;
-  rhs_d[L_1D][P33] += signx[L_1D]*q[Q133]/dx;
-
-  rhs_d[U_1D][P11] += signx[U_1D]*q[Q111]/dx;
-  rhs_d[U_1D][P12] += signx[U_1D]*q[Q112]/dx;
-  rhs_d[U_1D][P13] += signx[U_1D]*q[Q113]/dx;
-  rhs_d[U_1D][P22] += signx[U_1D]*q[Q122]/dx;
-  rhs_d[U_1D][P23] += signx[U_1D]*q[Q123]/dx;
-  rhs_d[U_1D][P33] += signx[U_1D]*q[Q133]/dx;
-
   double cfla = dt/(dx*dx);
   cflrate[0] = alpha*vth_avg*cfla;
 }
 
 void
+grad_closure_update_1d(const gkyl_ten_moment_grad_closure *gces,
+  const double *q[], double *rhs)
+{
+  double div_qx[6] = {0.0};
+
+  const double dx = gces->grid.dx[0];
+
+  div_qx[0] = calc_sym_grad_1D(dx, q[L_1D][Q111], q[U_1D][Q111]);
+  div_qx[1] = calc_sym_grad_1D(dx, q[L_1D][Q112], q[U_1D][Q112]);
+  div_qx[2] = calc_sym_grad_1D(dx, q[L_1D][Q113], q[U_1D][Q113]);
+  div_qx[3] = calc_sym_grad_1D(dx, q[L_1D][Q122], q[U_1D][Q122]);
+  div_qx[4] = calc_sym_grad_1D(dx, q[L_1D][Q123], q[U_1D][Q123]);
+  div_qx[5] = calc_sym_grad_1D(dx, q[L_1D][Q133], q[U_1D][Q133]);
+
+  rhs[RHO] = 0.0;
+  rhs[MX] = 0.0;
+  rhs[MY] = 0.0;
+  rhs[MZ] = 0.0;
+  rhs[P11] = div_qx[0];
+  rhs[P12] = div_qx[1];
+  rhs[P13] = div_qx[2];
+  rhs[P22] = div_qx[3];
+  rhs[P23] = div_qx[4];
+  rhs[P33] = div_qx[5];
+}
+
+void
 calc_unmag_heat_flux_2d(const gkyl_ten_moment_grad_closure *gces,
-  const double *fluid_d[], double *cflrate, double dt, double *rhs_d[])
+  const double *fluid_d[], double *cflrate, double dt, double *q)
 {
   const int ndim = gces->ndim;
   double rho_avg = 0.0;
@@ -182,7 +197,6 @@ calc_unmag_heat_flux_2d(const gkyl_ten_moment_grad_closure *gces,
   double Tij[4][6] = {0.0};
   double rho[4] = {0.0};
   double p[4] = {0.0};
-  double q[4][10] = {0.0};
   var_setup(gces, LL_2D, UU_2D, fluid_d, rho, p, Tij);
 
   rho_avg = calc_harmonic_avg_2D(rho[LL_2D], rho[LU_2D], rho[UL_2D], rho[UU_2D]);
@@ -244,7 +258,6 @@ calc_unmag_heat_flux_2d(const gkyl_ten_moment_grad_closure *gces,
   dTdy[U_1D][T23] = calc_sym_grad_limiter_2D(limit, dTy[U_1D][T23], dTy[L_1D][T23]);
   dTdy[U_1D][T33] = calc_sym_grad_limiter_2D(limit, dTy[U_1D][T33], dTy[L_1D][T33]);
 
-
   double alpha = 1.0/gces->k0;
   double vth_avg = sqrt(p_avg/rho_avg);
 
@@ -255,109 +268,114 @@ calc_unmag_heat_flux_2d(const gkyl_ten_moment_grad_closure *gces,
   int compx[4] = { L_1D, U_1D, L_1D, U_1D };
   int compy[4] = { L_1D, L_1D, U_1D, U_1D };
 
-  int signx[4] = { 1.0, 1.0, -1.0, -1.0 };
-  int signy[4] = { 1.0, -1.0, 1.0, -1.0 };
+  q[LL_2D*10 + Q111] = chi*dTdx[compx[LL_2D]][T11];
+  q[LL_2D*10 + Q112] = chi*(2.0*dTdx[compx[LL_2D]][T12]
+    + dTdy[compy[LL_2D]][T11])/3.0;
+  q[LL_2D*10 + Q113] = chi*2.0*dTdx[compx[LL_2D]][T13]/3.0;
+  q[LL_2D*10 + Q122] = chi*(dTdx[compx[LL_2D]][T22]
+    + 2.0*dTdy[compy[LL_2D]][T12])/3.0;
+  q[LL_2D*10 + Q123] = chi*(dTdx[compx[LL_2D]][T23]
+    + dTdy[compy[LL_2D]][T13])/3.0;
+  q[LL_2D*10 + Q133] = chi*dTdx[compx[LL_2D]][T33]/3.0;
+  q[LL_2D*10 + Q222] = chi*dTdy[compy[LL_2D]][T22];
+  q[LL_2D*10 + Q223] = chi*2.0*dTdy[compy[LL_2D]][T23]/3.0;
+  q[LL_2D*10 + Q233] = chi*dTdy[compy[LL_2D]][T33]/3.0;
 
-  q[LL_2D][Q111] = chi*dTdx[compx[LL_2D]][T11];
-  q[LL_2D][Q112] = chi*(2.0*dTdx[compx[LL_2D]][T12] + dTdy[compy[LL_2D]][T11])/3.0;
-  q[LL_2D][Q113] = chi*2.0*dTdx[compx[LL_2D]][T13]/3.0;
-  q[LL_2D][Q122] = chi*(dTdx[compx[LL_2D]][T22] + 2.0*dTdy[compy[LL_2D]][T12])/3.0;
-  q[LL_2D][Q123] = chi*(dTdx[compx[LL_2D]][T23] + dTdy[compy[LL_2D]][T13])/3.0;
-  q[LL_2D][Q133] = chi*dTdx[compx[LL_2D]][T33]/3.0;
-  q[LL_2D][Q222] = chi*dTdy[compy[LL_2D]][T22];
-  q[LL_2D][Q223] = chi*2.0*dTdy[compy[LL_2D]][T23]/3.0;
-  q[LL_2D][Q233] = chi*dTdy[compy[LL_2D]][T33]/3.0;
+  q[LU_2D*10 + Q111] = chi*dTdx[compx[LU_2D]][T11];
+  q[LU_2D*10 + Q112] = chi*(2.0*dTdx[compx[LU_2D]][T12]
+    + dTdy[compy[LU_2D]][T11])/3.0;
+  q[LU_2D*10 + Q113] = chi*2.0*dTdx[compx[LU_2D]][T13]/3.0;
+  q[LU_2D*10 + Q122] = chi*(dTdx[compx[LU_2D]][T22]
+    + 2.0*dTdy[compy[LU_2D]][T12])/3.0;
+  q[LU_2D*10 + Q123] = chi*(dTdx[compx[LU_2D]][T23]
+    + dTdy[compy[LU_2D]][T13])/3.0;
+  q[LU_2D*10 + Q133] = chi*dTdx[compx[LU_2D]][T33]/3.0;
+  q[LU_2D*10 + Q222] = chi*dTdy[compy[LU_2D]][T22];
+  q[LU_2D*10 + Q223] = chi*2.0*dTdy[compy[LU_2D]][T23]/3.0;
+  q[LU_2D*10 + Q233] = chi*dTdy[compy[LU_2D]][T33]/3.0;
 
-  q[LU_2D][Q111] = chi*dTdx[compx[LU_2D]][T11];
-  q[LU_2D][Q112] = chi*(2.0*dTdx[compx[LU_2D]][T12] + dTdy[compy[LU_2D]][T11])/3.0;
-  q[LU_2D][Q113] = chi*2.0*dTdx[compx[LU_2D]][T13]/3.0;
-  q[LU_2D][Q122] = chi*(dTdx[compx[LU_2D]][T22] + 2.0*dTdy[compy[LU_2D]][T12])/3.0;
-  q[LU_2D][Q123] = chi*(dTdx[compx[LU_2D]][T23] + dTdy[compy[LU_2D]][T13])/3.0;
-  q[LU_2D][Q133] = chi*dTdx[compx[LU_2D]][T33]/3.0;
-  q[LU_2D][Q222] = chi*dTdy[compy[LU_2D]][T22];
-  q[LU_2D][Q223] = chi*2.0*dTdy[compy[LU_2D]][T23]/3.0;
-  q[LU_2D][Q233] = chi*dTdy[compy[LU_2D]][T33]/3.0;
+  q[UL_2D*10 + Q111] = chi*dTdx[compx[UL_2D]][T11];
+  q[UL_2D*10 + Q112] = chi*(2.0*dTdx[compx[UL_2D]][T12]
+    + dTdy[compy[UL_2D]][T11])/3.0;
+  q[UL_2D*10 + Q113] = chi*2.0*dTdx[compx[UL_2D]][T13]/3.0;
+  q[UL_2D*10 + Q122] = chi*(dTdx[compx[UL_2D]][T22]
+    + 2.0*dTdy[compy[UL_2D]][T12])/3.0;
+  q[UL_2D*10 + Q123] = chi*(dTdx[compx[UL_2D]][T23]
+    + dTdy[compy[UL_2D]][T13])/3.0;
+  q[UL_2D*10 + Q133] = chi*dTdx[compx[UL_2D]][T33]/3.0;
+  q[UL_2D*10 + Q222] = chi*dTdy[compy[UL_2D]][T22];
+  q[UL_2D*10 + Q223] = chi*2.0*dTdy[compy[UL_2D]][T23]/3.0;
+  q[UL_2D*10 + Q233] = chi*dTdy[compy[UL_2D]][T33]/3.0;
 
-  q[UL_2D][Q111] = chi*dTdx[compx[UL_2D]][T11];
-  q[UL_2D][Q112] = chi*(2.0*dTdx[compx[UL_2D]][T12] + dTdy[compy[UL_2D]][T11])/3.0;
-  q[UL_2D][Q113] = chi*2.0*dTdx[compx[UL_2D]][T13]/3.0;
-  q[UL_2D][Q122] = chi*(dTdx[compx[UL_2D]][T22] + 2.0*dTdy[compy[UL_2D]][T12])/3.0;
-  q[UL_2D][Q123] = chi*(dTdx[compx[UL_2D]][T23] + dTdy[compy[UL_2D]][T13])/3.0;
-  q[UL_2D][Q133] = chi*dTdx[compx[UL_2D]][T33]/3.0;
-  q[UL_2D][Q222] = chi*dTdy[compy[UL_2D]][T22];
-  q[UL_2D][Q223] = chi*2.0*dTdy[compy[UL_2D]][T23]/3.0;
-  q[UL_2D][Q233] = chi*dTdy[compy[UL_2D]][T33]/3.0;
+  q[UU_2D*10 + Q111] = chi*dTdx[compx[UU_2D]][T11];
+  q[UU_2D*10 + Q112] = chi*(2.0*dTdx[compx[UU_2D]][T12]
+    + dTdy[compy[UU_2D]][T11])/3.0;
+  q[UU_2D*10 + Q113] = chi*2.0*dTdx[compx[UU_2D]][T13]/3.0;
+  q[UU_2D*10 + Q122] = chi*(dTdx[compx[UU_2D]][T22]
+    + 2.0*dTdy[compy[UU_2D]][T12])/3.0;
+  q[UU_2D*10 + Q123] = chi*(dTdx[compx[UU_2D]][T23]
+    + dTdy[compy[UU_2D]][T13])/3.0;
+  q[UU_2D*10 + Q133] = chi*dTdx[compx[UU_2D]][T33]/3.0;
+  q[UU_2D*10 + Q222] = chi*dTdy[compy[UU_2D]][T22];
+  q[UU_2D*10 + Q223] = chi*2.0*dTdy[compy[UU_2D]][T23]/3.0;
+  q[UU_2D*10 + Q233] = chi*dTdy[compy[UU_2D]][T33]/3.0;
 
-  q[UU_2D][Q111] = chi*dTdx[compx[UU_2D]][T11];
-  q[UU_2D][Q112] = chi*(2.0*dTdx[compx[UU_2D]][T12] + dTdy[compy[UU_2D]][T11])/3.0;
-  q[UU_2D][Q113] = chi*2.0*dTdx[compx[UU_2D]][T13]/3.0;
-  q[UU_2D][Q122] = chi*(dTdx[compx[UU_2D]][T22] + 2.0*dTdy[compy[UU_2D]][T12])/3.0;
-  q[UU_2D][Q123] = chi*(dTdx[compx[UU_2D]][T23] + dTdy[compy[UU_2D]][T13])/3.0;
-  q[UU_2D][Q133] = chi*dTdx[compx[UU_2D]][T33]/3.0;
-  q[UU_2D][Q222] = chi*dTdy[compy[UU_2D]][T22];
-  q[UU_2D][Q223] = chi*2.0*dTdy[compy[UU_2D]][T23]/3.0;
-  q[UU_2D][Q233] = chi*dTdy[compy[UU_2D]][T33]/3.0;
-
-  rhs_d[LL_2D][P11] += signx[LL_2D]*q[LL_2D][Q111]/(2.0*dx)
-    + signy[LL_2D]*q[LL_2D][Q112]/(2.0*dy);
-  rhs_d[LL_2D][P12] += signx[LL_2D]*q[LL_2D][Q112]/(2.0*dx)
-    + signy[LL_2D]*q[LL_2D][Q122]/(2.0*dy);
-  rhs_d[LL_2D][P13] += signx[LL_2D]*q[LL_2D][Q113]/(2.0*dx)
-    + signy[LL_2D]*q[LL_2D][Q123]/(2.0*dy);
-  rhs_d[LL_2D][P22] += signx[LL_2D]*q[LL_2D][Q122]/(2.0*dx)
-    + signy[LL_2D]*q[LL_2D][Q222]/(2.0*dy);
-  rhs_d[LL_2D][P23] += signx[LL_2D]*q[LL_2D][Q123]/(2.0*dx)
-    + signy[LL_2D]*q[LL_2D][Q223]/(2.0*dy);
-  rhs_d[LL_2D][P33] += signx[LL_2D]*q[LL_2D][Q133]/(2.0*dx)
-    + signy[LL_2D]*q[LL_2D][Q233]/(2.0*dy);
-
-  rhs_d[LU_2D][P11] += signx[LU_2D]*q[LU_2D][Q111]/(2.0*dx)
-    + signy[LU_2D]*q[LU_2D][Q112]/(2.0*dy);
-  rhs_d[LU_2D][P12] += signx[LU_2D]*q[LU_2D][Q112]/(2.0*dx)
-    + signy[LU_2D]*q[LU_2D][Q122]/(2.0*dy);
-  rhs_d[LU_2D][P13] += signx[LU_2D]*q[LU_2D][Q113]/(2.0*dx)
-    + signy[LU_2D]*q[LU_2D][Q123]/(2.0*dy);
-  rhs_d[LU_2D][P22] += signx[LU_2D]*q[LU_2D][Q122]/(2.0*dx)
-    + signy[LU_2D]*q[LU_2D][Q222]/(2.0*dy);
-  rhs_d[LU_2D][P23] += signx[LU_2D]*q[LU_2D][Q123]/(2.0*dx)
-    + signy[LU_2D]*q[LU_2D][Q223]/(2.0*dy);
-  rhs_d[LU_2D][P33] += signx[LU_2D]*q[LU_2D][Q133]/(2.0*dx)
-    + signy[LU_2D]*q[LU_2D][Q233]/(2.0*dy);
-
-  rhs_d[UL_2D][P11] += signx[UL_2D]*q[UL_2D][Q111]/(2.0*dx)
-    + signy[UL_2D]*q[UL_2D][Q112]/(2.0*dy);
-  rhs_d[UL_2D][P12] += signx[UL_2D]*q[UL_2D][Q112]/(2.0*dx)
-    + signy[UL_2D]*q[UL_2D][Q122]/(2.0*dy);
-  rhs_d[UL_2D][P13] += signx[UL_2D]*q[UL_2D][Q113]/(2.0*dx)
-    + signy[UL_2D]*q[UL_2D][Q123]/(2.0*dy);
-  rhs_d[UL_2D][P22] += signx[UL_2D]*q[UL_2D][Q122]/(2.0*dx)
-    + signy[UL_2D]*q[UL_2D][Q222]/(2.0*dy);
-  rhs_d[UL_2D][P23] += signx[UL_2D]*q[UL_2D][Q123]/(2.0*dx)
-    + signy[UL_2D]*q[UL_2D][Q223]/(2.0*dy);
-  rhs_d[UL_2D][P33] += signx[UL_2D]*q[UL_2D][Q133]/(2.0*dx)
-    + signy[UL_2D]*q[UL_2D][Q233]/(2.0*dy);
-
-  rhs_d[UU_2D][P11] += signx[UU_2D]*q[UU_2D][Q111]/(2.0*dx)
-    + signy[UU_2D]*q[UU_2D][Q112]/(2.0*dy);
-  rhs_d[UU_2D][P12] += signx[UU_2D]*q[UU_2D][Q112]/(2.0*dx)
-    + signy[UU_2D]*q[UU_2D][Q122]/(2.0*dy);
-  rhs_d[UU_2D][P13] += signx[UU_2D]*q[UU_2D][Q113]/(2.0*dx)
-    + signy[UU_2D]*q[UU_2D][Q123]/(2.0*dy);
-  rhs_d[UU_2D][P22] += signx[UU_2D]*q[UU_2D][Q122]/(2.0*dx)
-    + signy[UU_2D]*q[UU_2D][Q222]/(2.0*dy);
-  rhs_d[UU_2D][P23] += signx[UU_2D]*q[UU_2D][Q123]/(2.0*dx)
-    + signy[UU_2D]*q[UU_2D][Q223]/(2.0*dy);
-  rhs_d[UU_2D][P33] += signx[UU_2D]*q[UU_2D][Q133]/(2.0*dx)
-    + signy[UU_2D]*q[UU_2D][Q233]/(2.0*dy);
-  
   double da = fmin(dx, dy);
   double cfla = dt/(da*da);
   cflrate[0] = alpha*vth_avg*cfla;
 }
 
 void
+grad_closure_update_2d(const gkyl_ten_moment_grad_closure *gces,
+  const double *q[], double *rhs)
+{
+  double div_qx[6] = {0.0};
+  double div_qy[6] = {0.0};
+
+  const double dx = gces->grid.dx[0];
+  const double dy = gces->grid.dx[1];
+
+  div_qx[0] = calc_sym_gradx_2D(dx, q[LL_2D][UU_2D*10 + Q111],
+    q[LU_2D][UL_2D*10 + Q111], q[UL_2D][LU_2D*10 + Q111], q[UU_2D][LL_2D*10 + Q111]);
+  div_qx[1] = calc_sym_gradx_2D(dx, q[LL_2D][UU_2D*10 + Q112],
+    q[LU_2D][UL_2D*10 + Q112], q[UL_2D][LU_2D*10 + Q112], q[UU_2D][LL_2D*10 + Q112]);
+  div_qx[2] = calc_sym_gradx_2D(dx, q[LL_2D][UU_2D*10 + Q113],
+    q[LU_2D][UL_2D*10 + Q113], q[UL_2D][LU_2D*10 + Q113], q[UU_2D][LL_2D*10 + Q113]);
+  div_qx[3] = calc_sym_gradx_2D(dx, q[LL_2D][UU_2D*10 + Q122],
+    q[LU_2D][UL_2D*10 + Q122], q[UL_2D][LU_2D*10 + Q122], q[UU_2D][LL_2D*10 + Q122]);
+  div_qx[4] = calc_sym_gradx_2D(dx, q[LL_2D][UU_2D*10 + Q123],
+    q[LU_2D][UL_2D*10 + Q123], q[UL_2D][LU_2D*10 + Q123], q[UU_2D][LL_2D*10 + Q123]);
+  div_qx[5] = calc_sym_gradx_2D(dx, q[LL_2D][UU_2D*10 + Q133],
+    q[LU_2D][UL_2D*10 + Q133], q[UL_2D][LU_2D*10 + Q133], q[UU_2D][LL_2D*10 + Q133]);
+
+  div_qy[0] = calc_sym_grady_2D(dy, q[LL_2D][UU_2D*10 + Q112],
+    q[LU_2D][UL_2D*10 + Q112], q[UL_2D][LU_2D*10 + Q112], q[UU_2D][LL_2D*10 + Q112]);
+  div_qy[1] = calc_sym_grady_2D(dy, q[LL_2D][UU_2D*10 + Q122],
+    q[LU_2D][UL_2D*10 + Q122], q[UL_2D][LU_2D*10 + Q122], q[UU_2D][LL_2D*10 + Q122]);
+  div_qy[2] = calc_sym_grady_2D(dy, q[LL_2D][UU_2D*10 + Q123],
+    q[LU_2D][UL_2D*10 + Q123], q[UL_2D][LU_2D*10 + Q123], q[UU_2D][LL_2D*10 + Q123]);
+  div_qy[3] = calc_sym_grady_2D(dy, q[LL_2D][UU_2D*10 + Q222],
+    q[LU_2D][UL_2D*10 + Q222], q[UL_2D][LU_2D*10 + Q222], q[UU_2D][LL_2D*10 + Q222]);
+  div_qy[4] = calc_sym_grady_2D(dy, q[LL_2D][UU_2D*10 + Q223],
+    q[LU_2D][UL_2D*10 + Q223], q[UL_2D][LU_2D*10 + Q223], q[UU_2D][LL_2D*10 + Q223]);
+  div_qy[5] = calc_sym_grady_2D(dy, q[LL_2D][UU_2D*10 + Q233],
+    q[LU_2D][UL_2D*10 + Q233], q[UL_2D][LU_2D*10 + Q233], q[UU_2D][LL_2D*10 + Q233]);
+
+  rhs[RHO] = 0.0;
+  rhs[MX] = 0.0;
+  rhs[MY] = 0.0;
+  rhs[MZ] = 0.0;
+  rhs[P11] = div_qx[0] + div_qy[0];
+  rhs[P12] = div_qx[1] + div_qy[1];
+  rhs[P13] = div_qx[2] + div_qy[2];
+  rhs[P22] = div_qx[3] + div_qy[3];
+  rhs[P23] = div_qx[4] + div_qy[4];
+  rhs[P33] = div_qx[5] + div_qy[5];
+}
+
+void
 calc_unmag_heat_flux_3d(const gkyl_ten_moment_grad_closure *gces,
-  const double *fluid_d[], double *cflrate, double dt, double *rhs_d[])
+  const double *fluid_d[], double *cflrate, double dt, double *q)
 {
   const int ndim = gces->ndim;
   double rho_avg = 0.0;
@@ -377,7 +395,6 @@ calc_unmag_heat_flux_3d(const gkyl_ten_moment_grad_closure *gces,
   double Tij[8][6] = {0.0};
   double rho[8] = {0.0};
   double p[8] = {0.0};
-  double q[8][10] = {0.0};
   var_setup(gces, LLL_3D, UUU_3D, fluid_d, rho, p, Tij);
 
   rho_avg = calc_harmonic_avg_3D(rho[LLL_3D], rho[LLU_3D], rho[LUL_3D], rho[LUU_3D],
@@ -636,317 +653,252 @@ calc_unmag_heat_flux_3d(const gkyl_ten_moment_grad_closure *gces,
   int compy[8] = { LL_2D, UL_2D, LL_2D, UL_2D, LU_2D, UU_2D, LU_2D, UU_2D };
   int compz[8] = { LL_2D, LL_2D, UL_2D, UL_2D, LU_2D, LU_2D, UU_2D, UU_2D };
 
-  int signx[8] = { 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, -1.0 };
-  int signy[8] = { 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0 };
-  int signz[8] = { 1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0 };
-
-
-  q[LLL_3D][Q111] = chi*dTdx[compx[LLL_3D]][T11];
-  q[LLL_3D][Q112] = chi*(2.0*dTdx[compx[LLL_3D]][T12]
+  q[LLL_3D*10 + Q111] = chi*dTdx[compx[LLL_3D]][T11];
+  q[LLL_3D*10 + Q112] = chi*(2.0*dTdx[compx[LLL_3D]][T12]
     + dTdy[compy[LLL_3D]][T11])/3.0;
-  q[LLL_3D][Q113] = chi*(2.0*dTdx[compx[LLL_3D]][T13]
+  q[LLL_3D*10 + Q113] = chi*(2.0*dTdx[compx[LLL_3D]][T13]
     + dTdz[compz[LLL_3D]][T11])/3.0;
-  q[LLL_3D][Q122] = chi*(dTdx[compx[LLL_3D]][T22]
+  q[LLL_3D*10 + Q122] = chi*(dTdx[compx[LLL_3D]][T22]
     + 2.0*dTdy[compy[LLL_3D]][T12])/3.0;
-  q[LLL_3D][Q123] = chi*(dTdx[compx[LLL_3D]][T23]
+  q[LLL_3D*10 + Q123] = chi*(dTdx[compx[LLL_3D]][T23]
     + dTdy[compy[LLL_3D]][T13] + dTdz[compz[LLL_3D]][T12])/3.0;
-  q[LLL_3D][Q133] = chi*(dTdx[compx[LLL_3D]][T33]
+  q[LLL_3D*10 + Q133] = chi*(dTdx[compx[LLL_3D]][T33]
     + 2.0*dTdz[compz[LLL_3D]][T13])/3.0;
-  q[LLL_3D][Q222] = chi*dTdy[compy[LLL_3D]][T22];
-  q[LLL_3D][Q223] = chi*(2.0*dTdy[compy[LLL_3D]][T23]
+  q[LLL_3D*10 + Q222] = chi*dTdy[compy[LLL_3D]][T22];
+  q[LLL_3D*10 + Q223] = chi*(2.0*dTdy[compy[LLL_3D]][T23]
     + dTdz[compz[LLL_3D]][T22])/3.0;
-  q[LLL_3D][Q233] = chi*(dTdy[compy[LLL_3D]][T33]
+  q[LLL_3D*10 + Q233] = chi*(dTdy[compy[LLL_3D]][T33]
     + 2.0*dTdz[compz[LLL_3D]][T23])/3.0;
-  q[LLL_3D][Q333] = chi*dTdz[compz[LLL_3D]][T33];
+  q[LLL_3D*10 + Q333] = chi*dTdz[compz[LLL_3D]][T33];
 
-  q[LLU_3D][Q111] = chi*dTdx[compx[LLU_3D]][T11];
-  q[LLU_3D][Q112] = chi*(2.0*dTdx[compx[LLU_3D]][T12]
+  q[LLU_3D*10 + Q111] = chi*dTdx[compx[LLU_3D]][T11];
+  q[LLU_3D*10 + Q112] = chi*(2.0*dTdx[compx[LLU_3D]][T12]
     + dTdy[compy[LLU_3D]][T11])/3.0;
-  q[LLU_3D][Q113] = chi*(2.0*dTdx[compx[LLU_3D]][T13]
+  q[LLU_3D*10 + Q113] = chi*(2.0*dTdx[compx[LLU_3D]][T13]
     + dTdz[compz[LLU_3D]][T11])/3.0;
-  q[LLU_3D][Q122] = chi*(dTdx[compx[LLU_3D]][T22]
+  q[LLU_3D*10 + Q122] = chi*(dTdx[compx[LLU_3D]][T22]
     + 2.0*dTdy[compy[LLU_3D]][T12])/3.0;
-  q[LLU_3D][Q123] = chi*(dTdx[compx[LLU_3D]][T23]
+  q[LLU_3D*10 + Q123] = chi*(dTdx[compx[LLU_3D]][T23]
     + dTdy[compy[LLU_3D]][T13] + dTdz[compz[LLU_3D]][T12])/3.0;
-  q[LLU_3D][Q133] = chi*(dTdx[compx[LLU_3D]][T33]
+  q[LLU_3D*10 + Q133] = chi*(dTdx[compx[LLU_3D]][T33]
     + 2.0*dTdz[compz[LLU_3D]][T13])/3.0;
-  q[LLU_3D][Q222] = chi*dTdy[compy[LLU_3D]][T22];
-  q[LLU_3D][Q223] = chi*(2.0*dTdy[compy[LLU_3D]][T23]
+  q[LLU_3D*10 + Q222] = chi*dTdy[compy[LLU_3D]][T22];
+  q[LLU_3D*10 + Q223] = chi*(2.0*dTdy[compy[LLU_3D]][T23]
     + dTdz[compz[LLU_3D]][T22])/3.0;
-  q[LLU_3D][Q233] = chi*(dTdy[compy[LLU_3D]][T33]
+  q[LLU_3D*10 + Q233] = chi*(dTdy[compy[LLU_3D]][T33]
     + 2.0*dTdz[compz[LLU_3D]][T23])/3.0;
-  q[LLU_3D][Q333] = chi*dTdz[compz[LLU_3D]][T33];
+  q[LLU_3D*10 + Q333] = chi*dTdz[compz[LLU_3D]][T33];
 
- q[LUL_3D][Q111] = chi*dTdx[compx[LUL_3D]][T11];
-  q[LUL_3D][Q112] = chi*(2.0*dTdx[compx[LUL_3D]][T12]
+  q[LUL_3D*10 + Q111] = chi*dTdx[compx[LUL_3D]][T11];
+  q[LUL_3D*10 + Q112] = chi*(2.0*dTdx[compx[LUL_3D]][T12]
     + dTdy[compy[LUL_3D]][T11])/3.0;
-  q[LUL_3D][Q113] = chi*(2.0*dTdx[compx[LUL_3D]][T13]
+  q[LUL_3D*10 + Q113] = chi*(2.0*dTdx[compx[LUL_3D]][T13]
     + dTdz[compz[LUL_3D]][T11])/3.0;
-  q[LUL_3D][Q122] = chi*(dTdx[compx[LUL_3D]][T22]
+  q[LUL_3D*10 + Q122] = chi*(dTdx[compx[LUL_3D]][T22]
     + 2.0*dTdy[compy[LUL_3D]][T12])/3.0;
-  q[LUL_3D][Q123] = chi*(dTdx[compx[LUL_3D]][T23]
+  q[LUL_3D*10 + Q123] = chi*(dTdx[compx[LUL_3D]][T23]
     + dTdy[compy[LUL_3D]][T13] + dTdz[compz[LUL_3D]][T12])/3.0;
-  q[LUL_3D][Q133] = chi*(dTdx[compx[LUL_3D]][T33]
+  q[LUL_3D*10 + Q133] = chi*(dTdx[compx[LUL_3D]][T33]
     + 2.0*dTdz[compz[LUL_3D]][T13])/3.0;
-  q[LUL_3D][Q222] = chi*dTdy[compy[LUL_3D]][T22];
-  q[LUL_3D][Q223] = chi*(2.0*dTdy[compy[LUL_3D]][T23]
+  q[LUL_3D*10 + Q222] = chi*dTdy[compy[LUL_3D]][T22];
+  q[LUL_3D*10 + Q223] = chi*(2.0*dTdy[compy[LUL_3D]][T23]
     + dTdz[compz[LUL_3D]][T22])/3.0;
-  q[LUL_3D][Q233] = chi*(dTdy[compy[LUL_3D]][T33]
+  q[LUL_3D*10 + Q233] = chi*(dTdy[compy[LUL_3D]][T33]
     + 2.0*dTdz[compz[LUL_3D]][T23])/3.0;
-  q[LUL_3D][Q333] = chi*dTdz[compz[LUL_3D]][T33];
+  q[LUL_3D*10 + Q333] = chi*dTdz[compz[LUL_3D]][T33];
 
- q[LUU_3D][Q111] = chi*dTdx[compx[LUU_3D]][T11];
-  q[LUU_3D][Q112] = chi*(2.0*dTdx[compx[LUU_3D]][T12]
+  q[LUU_3D*10 + Q111] = chi*dTdx[compx[LUU_3D]][T11];
+  q[LUU_3D*10 + Q112] = chi*(2.0*dTdx[compx[LUU_3D]][T12]
     + dTdy[compy[LUU_3D]][T11])/3.0;
-  q[LUU_3D][Q113] = chi*(2.0*dTdx[compx[LUU_3D]][T13]
+  q[LUU_3D*10 + Q113] = chi*(2.0*dTdx[compx[LUU_3D]][T13]
     + dTdz[compz[LUU_3D]][T11])/3.0;
-  q[LUU_3D][Q122] = chi*(dTdx[compx[LUU_3D]][T22]
+  q[LUU_3D*10 + Q122] = chi*(dTdx[compx[LUU_3D]][T22]
     + 2.0*dTdy[compy[LUU_3D]][T12])/3.0;
-  q[LUU_3D][Q123] = chi*(dTdx[compx[LUU_3D]][T23]
+  q[LUU_3D*10 + Q123] = chi*(dTdx[compx[LUU_3D]][T23]
     + dTdy[compy[LUU_3D]][T13] + dTdz[compz[LUU_3D]][T12])/3.0;
-  q[LUU_3D][Q133] = chi*(dTdx[compx[LUU_3D]][T33]
+  q[LUU_3D*10 + Q133] = chi*(dTdx[compx[LUU_3D]][T33]
     + 2.0*dTdz[compz[LUU_3D]][T13])/3.0;
-  q[LUU_3D][Q222] = chi*dTdy[compy[LUU_3D]][T22];
-  q[LUU_3D][Q223] = chi*(2.0*dTdy[compy[LUU_3D]][T23]
+  q[LUU_3D*10 + Q222] = chi*dTdy[compy[LUU_3D]][T22];
+  q[LUU_3D*10 + Q223] = chi*(2.0*dTdy[compy[LUU_3D]][T23]
     + dTdz[compz[LUU_3D]][T22])/3.0;
-  q[LUU_3D][Q233] = chi*(dTdy[compy[LUU_3D]][T33]
+  q[LUU_3D*10 + Q233] = chi*(dTdy[compy[LUU_3D]][T33]
     + 2.0*dTdz[compz[LUU_3D]][T23])/3.0;
-  q[LUU_3D][Q333] = chi*dTdz[compz[LUU_3D]][T33];
+  q[LUU_3D*10 + Q333] = chi*dTdz[compz[LUU_3D]][T33];
 
- q[ULL_3D][Q111] = chi*dTdx[compx[ULL_3D]][T11];
-  q[ULL_3D][Q112] = chi*(2.0*dTdx[compx[ULL_3D]][T12]
+  q[ULL_3D*10 + Q111] = chi*dTdx[compx[ULL_3D]][T11];
+  q[ULL_3D*10 + Q112] = chi*(2.0*dTdx[compx[ULL_3D]][T12]
     + dTdy[compy[ULL_3D]][T11])/3.0;
-  q[ULL_3D][Q113] = chi*(2.0*dTdx[compx[ULL_3D]][T13]
+  q[ULL_3D*10 + Q113] = chi*(2.0*dTdx[compx[ULL_3D]][T13]
     + dTdz[compz[ULL_3D]][T11])/3.0;
-  q[ULL_3D][Q122] = chi*(dTdx[compx[ULL_3D]][T22]
+  q[ULL_3D*10 + Q122] = chi*(dTdx[compx[ULL_3D]][T22]
     + 2.0*dTdy[compy[ULL_3D]][T12])/3.0;
-  q[ULL_3D][Q123] = chi*(dTdx[compx[ULL_3D]][T23]
+  q[ULL_3D*10 + Q123] = chi*(dTdx[compx[ULL_3D]][T23]
     + dTdy[compy[ULL_3D]][T13] + dTdz[compz[ULL_3D]][T12])/3.0;
-  q[ULL_3D][Q133] = chi*(dTdx[compx[ULL_3D]][T33]
+  q[ULL_3D*10 + Q133] = chi*(dTdx[compx[ULL_3D]][T33]
     + 2.0*dTdz[compz[ULL_3D]][T13])/3.0;
-  q[ULL_3D][Q222] = chi*dTdy[compy[ULL_3D]][T22];
-  q[ULL_3D][Q223] = chi*(2.0*dTdy[compy[ULL_3D]][T23]
+  q[ULL_3D*10 + Q222] = chi*dTdy[compy[ULL_3D]][T22];
+  q[ULL_3D*10 + Q223] = chi*(2.0*dTdy[compy[ULL_3D]][T23]
     + dTdz[compz[ULL_3D]][T22])/3.0;
-  q[ULL_3D][Q233] = chi*(dTdy[compy[ULL_3D]][T33]
+  q[ULL_3D*10 + Q233] = chi*(dTdy[compy[ULL_3D]][T33]
     + 2.0*dTdz[compz[ULL_3D]][T23])/3.0;
-  q[ULL_3D][Q333] = chi*dTdz[compz[ULL_3D]][T33];
+  q[ULL_3D*10 + Q333] = chi*dTdz[compz[ULL_3D]][T33];
 
-  q[ULU_3D][Q111] = chi*dTdx[compx[ULU_3D]][T11];
-  q[ULU_3D][Q112] = chi*(2.0*dTdx[compx[ULU_3D]][T12]
+  q[ULU_3D*10 + Q111] = chi*dTdx[compx[ULU_3D]][T11];
+  q[ULU_3D*10 + Q112] = chi*(2.0*dTdx[compx[ULU_3D]][T12]
     + dTdy[compy[ULU_3D]][T11])/3.0;
-  q[ULU_3D][Q113] = chi*(2.0*dTdx[compx[ULU_3D]][T13]
+  q[ULU_3D*10 + Q113] = chi*(2.0*dTdx[compx[ULU_3D]][T13]
     + dTdz[compz[ULU_3D]][T11])/3.0;
-  q[ULU_3D][Q122] = chi*(dTdx[compx[ULU_3D]][T22]
+  q[ULU_3D*10 + Q122] = chi*(dTdx[compx[ULU_3D]][T22]
     + 2.0*dTdy[compy[ULU_3D]][T12])/3.0;
-  q[ULU_3D][Q123] = chi*(dTdx[compx[ULU_3D]][T23]
+  q[ULU_3D*10 + Q123] = chi*(dTdx[compx[ULU_3D]][T23]
     + dTdy[compy[ULU_3D]][T13] + dTdz[compz[ULU_3D]][T12])/3.0;
-  q[ULU_3D][Q133] = chi*(dTdx[compx[ULU_3D]][T33]
+  q[ULU_3D*10 + Q133] = chi*(dTdx[compx[ULU_3D]][T33]
     + 2.0*dTdz[compz[ULU_3D]][T13])/3.0;
-  q[ULU_3D][Q222] = chi*dTdy[compy[ULU_3D]][T22];
-  q[ULU_3D][Q223] = chi*(2.0*dTdy[compy[ULU_3D]][T23]
+  q[ULU_3D*10 + Q222] = chi*dTdy[compy[ULU_3D]][T22];
+  q[ULU_3D*10 + Q223] = chi*(2.0*dTdy[compy[ULU_3D]][T23]
     + dTdz[compz[ULU_3D]][T22])/3.0;
-  q[ULU_3D][Q233] = chi*(dTdy[compy[ULU_3D]][T33]
+  q[ULU_3D*10 + Q233] = chi*(dTdy[compy[ULU_3D]][T33]
     + 2.0*dTdz[compz[ULU_3D]][T23])/3.0;
-  q[ULU_3D][Q333] = chi*dTdz[compz[ULU_3D]][T33];
+  q[ULU_3D*10 + Q333] = chi*dTdz[compz[ULU_3D]][T33];
 
-  q[UUL_3D][Q111] = chi*dTdx[compx[UUL_3D]][T11];
-  q[UUL_3D][Q112] = chi*(2.0*dTdx[compx[UUL_3D]][T12]
+  q[UUL_3D*10 + Q111] = chi*dTdx[compx[UUL_3D]][T11];
+  q[UUL_3D*10 + Q112] = chi*(2.0*dTdx[compx[UUL_3D]][T12]
     + dTdy[compy[UUL_3D]][T11])/3.0;
-  q[UUL_3D][Q113] = chi*(2.0*dTdx[compx[UUL_3D]][T13]
+  q[UUL_3D*10 + Q113] = chi*(2.0*dTdx[compx[UUL_3D]][T13]
     + dTdz[compz[UUL_3D]][T11])/3.0;
-  q[UUL_3D][Q122] = chi*(dTdx[compx[UUL_3D]][T22]
+  q[UUL_3D*10 + Q122] = chi*(dTdx[compx[UUL_3D]][T22]
     + 2.0*dTdy[compy[UUL_3D]][T12])/3.0;
-  q[UUL_3D][Q123] = chi*(dTdx[compx[UUL_3D]][T23]
+  q[UUL_3D*10 + Q123] = chi*(dTdx[compx[UUL_3D]][T23]
     + dTdy[compy[UUL_3D]][T13] + dTdz[compz[UUL_3D]][T12])/3.0;
-  q[UUL_3D][Q133] = chi*(dTdx[compx[UUL_3D]][T33]
+  q[UUL_3D*10 + Q133] = chi*(dTdx[compx[UUL_3D]][T33]
     + 2.0*dTdz[compz[UUL_3D]][T13])/3.0;
-  q[UUL_3D][Q222] = chi*dTdy[compy[UUL_3D]][T22];
-  q[UUL_3D][Q223] = chi*(2.0*dTdy[compy[UUL_3D]][T23]
+  q[UUL_3D*10 + Q222] = chi*dTdy[compy[UUL_3D]][T22];
+  q[UUL_3D*10 + Q223] = chi*(2.0*dTdy[compy[UUL_3D]][T23]
     + dTdz[compz[UUL_3D]][T22])/3.0;
-  q[UUL_3D][Q233] = chi*(dTdy[compy[UUL_3D]][T33]
+  q[UUL_3D*10 + Q233] = chi*(dTdy[compy[UUL_3D]][T33]
     + 2.0*dTdz[compz[UUL_3D]][T23])/3.0;
-  q[UUL_3D][Q333] = chi*dTdz[compz[UUL_3D]][T33];
+  q[UUL_3D*10 + Q333] = chi*dTdz[compz[UUL_3D]][T33];
 
-  q[UUU_3D][Q111] = chi*dTdx[compx[UUU_3D]][T11];
-  q[UUU_3D][Q112] = chi*(2.0*dTdx[compx[UUU_3D]][T12]
+  q[UUU_3D*10 + Q111] = chi*dTdx[compx[UUU_3D]][T11];
+  q[UUU_3D*10 + Q112] = chi*(2.0*dTdx[compx[UUU_3D]][T12]
     + dTdy[compy[UUU_3D]][T11])/3.0;
-  q[UUU_3D][Q113] = chi*(2.0*dTdx[compx[UUU_3D]][T13]
+  q[UUU_3D*10 + Q113] = chi*(2.0*dTdx[compx[UUU_3D]][T13]
     + dTdz[compz[UUU_3D]][T11])/3.0;
-  q[UUU_3D][Q122] = chi*(dTdx[compx[UUU_3D]][T22]
+  q[UUU_3D*10 + Q122] = chi*(dTdx[compx[UUU_3D]][T22]
     + 2.0*dTdy[compy[UUU_3D]][T12])/3.0;
-  q[UUU_3D][Q123] = chi*(dTdx[compx[UUU_3D]][T23]
+  q[UUU_3D*10 + Q123] = chi*(dTdx[compx[UUU_3D]][T23]
     + dTdy[compy[UUU_3D]][T13] + dTdz[compz[UUU_3D]][T12])/3.0;
-  q[UUU_3D][Q133] = chi*(dTdx[compx[UUU_3D]][T33]
+  q[UUU_3D*10 + Q133] = chi*(dTdx[compx[UUU_3D]][T33]
     + 2.0*dTdz[compz[UUU_3D]][T13])/3.0;
-  q[UUU_3D][Q222] = chi*dTdy[compy[UUU_3D]][T22];
-  q[UUU_3D][Q223] = chi*(2.0*dTdy[compy[UUU_3D]][T23]
+  q[UUU_3D*10 + Q222] = chi*dTdy[compy[UUU_3D]][T22];
+  q[UUU_3D*10 + Q223] = chi*(2.0*dTdy[compy[UUU_3D]][T23]
     + dTdz[compz[UUU_3D]][T22])/3.0;
-  q[UUU_3D][Q233] = chi*(dTdy[compy[UUU_3D]][T33]
+  q[UUU_3D*10 + Q233] = chi*(dTdy[compy[UUU_3D]][T33]
     + 2.0*dTdz[compz[UUU_3D]][T23])/3.0;
-  q[UUU_3D][Q333] = chi*dTdz[compz[UUU_3D]][T33];
-
-  rhs_d[LLL_3D][P11] += signx[LLL_3D]*q[LLL_3D][Q111]/(4.0*dx)
-    + signy[LLL_3D]*q[LLL_3D][Q112]/(4.0*dy)
-    + signz[LLL_3D]*q[LLL_3D][Q113]/(4.0*dz);
-  rhs_d[LLL_3D][P12] += signx[LLL_3D]*q[LLL_3D][Q112]/(4.0*dx)
-    + signy[LLL_3D]*q[LLL_3D][Q122]/(4.0*dy)
-    + signz[LLL_3D]*q[LLL_3D][Q123]/(4.0*dz);
-  rhs_d[LLL_3D][P13] += signx[LLL_3D]*q[LLL_3D][Q113]/(4.0*dx)
-    + signy[LLL_3D]*q[LLL_3D][Q123]/(4.0*dy)
-    + signz[LLL_3D]*q[LLL_3D][Q133]/(4.0*dz);
-  rhs_d[LLL_3D][P22] += signx[LLL_3D]*q[LLL_3D][Q122]/(4.0*dx)
-    + signy[LLL_3D]*q[LLL_3D][Q222]/(4.0*dy)
-    + signz[LLL_3D]*q[LLL_3D][Q223]/(4.0*dz);
-  rhs_d[LLL_3D][P23] += signx[LLL_3D]*q[LLL_3D][Q123]/(4.0*dx) 
-    + signy[LLL_3D]*q[LLL_3D][Q223]/(4.0*dy)
-    + signz[LLL_3D]*q[LLL_3D][Q233]/(4.0*dz);
-  rhs_d[LLL_3D][P33] += signx[LLL_3D]*q[LLL_3D][Q133]/(4.0*dx)
-    + signy[LLL_3D]*q[LLL_3D][Q233]/(4.0*dy)
-    + signz[LLL_3D]*q[LLL_3D][Q333]/(4.0*dz);
-
-  rhs_d[LLU_3D][P11] += signx[LLU_3D]*q[LLU_3D][Q111]/(4.0*dx)
-    + signy[LLU_3D]*q[LLU_3D][Q112]/(4.0*dy)
-    + signz[LLU_3D]*q[LLU_3D][Q113]/(4.0*dz);
-  rhs_d[LLU_3D][P12] += signx[LLU_3D]*q[LLU_3D][Q112]/(4.0*dx)
-    + signy[LLU_3D]*q[LLU_3D][Q122]/(4.0*dy)
-    + signz[LLU_3D]*q[LLU_3D][Q123]/(4.0*dz);
-  rhs_d[LLU_3D][P13] += signx[LLU_3D]*q[LLU_3D][Q113]/(4.0*dx)
-    + signy[LLU_3D]*q[LLU_3D][Q123]/(4.0*dy)
-    + signz[LLU_3D]*q[LLU_3D][Q133]/(4.0*dz);
-  rhs_d[LLU_3D][P22] += signx[LLU_3D]*q[LLU_3D][Q122]/(4.0*dx)
-    + signy[LLU_3D]*q[LLU_3D][Q222]/(4.0*dy)
-    + signz[LLU_3D]*q[LLU_3D][Q223]/(4.0*dz);
-  rhs_d[LLU_3D][P23] += signx[LLU_3D]*q[LLU_3D][Q123]/(4.0*dx) 
-    + signy[LLU_3D]*q[LLU_3D][Q223]/(4.0*dy)
-    + signz[LLU_3D]*q[LLU_3D][Q233]/(4.0*dz);
-  rhs_d[LLU_3D][P33] += signx[LLU_3D]*q[LLU_3D][Q133]/(4.0*dx)
-    + signy[LLU_3D]*q[LLU_3D][Q233]/(4.0*dy)
-    + signz[LLU_3D]*q[LLU_3D][Q333]/(4.0*dz);
-
-  rhs_d[LUL_3D][P11] += signx[LUL_3D]*q[LUL_3D][Q111]/(4.0*dx)
-    + signy[LUL_3D]*q[LUL_3D][Q112]/(4.0*dy)
-    + signz[LUL_3D]*q[LUL_3D][Q113]/(4.0*dz);
-  rhs_d[LUL_3D][P12] += signx[LUL_3D]*q[LUL_3D][Q112]/(4.0*dx)
-    + signy[LUL_3D]*q[LUL_3D][Q122]/(4.0*dy)
-    + signz[LUL_3D]*q[LUL_3D][Q123]/(4.0*dz);
-  rhs_d[LUL_3D][P13] += signx[LUL_3D]*q[LUL_3D][Q113]/(4.0*dx)
-    + signy[LUL_3D]*q[LUL_3D][Q123]/(4.0*dy)
-    + signz[LUL_3D]*q[LUL_3D][Q133]/(4.0*dz);
-  rhs_d[LUL_3D][P22] += signx[LUL_3D]*q[LUL_3D][Q122]/(4.0*dx)
-    + signy[LUL_3D]*q[LUL_3D][Q222]/(4.0*dy)
-    + signz[LUL_3D]*q[LUL_3D][Q223]/(4.0*dz);
-  rhs_d[LUL_3D][P23] += signx[LUL_3D]*q[LUL_3D][Q123]/(4.0*dx) 
-    + signy[LUL_3D]*q[LUL_3D][Q223]/(4.0*dy)
-    + signz[LUL_3D]*q[LUL_3D][Q233]/(4.0*dz);
-  rhs_d[LUL_3D][P33] += signx[LUL_3D]*q[LUL_3D][Q133]/(4.0*dx)
-    + signy[LUL_3D]*q[LUL_3D][Q233]/(4.0*dy)
-    + signz[LUL_3D]*q[LUL_3D][Q333]/(4.0*dz);
-
-  rhs_d[LUU_3D][P11] += signx[LUU_3D]*q[LUU_3D][Q111]/(4.0*dx)
-    + signy[LUU_3D]*q[LUU_3D][Q112]/(4.0*dy)
-    + signz[LUU_3D]*q[LUU_3D][Q113]/(4.0*dz);
-  rhs_d[LUU_3D][P12] += signx[LUU_3D]*q[LUU_3D][Q112]/(4.0*dx)
-    + signy[LUU_3D]*q[LUU_3D][Q122]/(4.0*dy)
-    + signz[LUU_3D]*q[LUU_3D][Q123]/(4.0*dz);
-  rhs_d[LUU_3D][P13] += signx[LUU_3D]*q[LUU_3D][Q113]/(4.0*dx)
-    + signy[LUU_3D]*q[LUU_3D][Q123]/(4.0*dy)
-    + signz[LUU_3D]*q[LUU_3D][Q133]/(4.0*dz);
-  rhs_d[LUU_3D][P22] += signx[LUU_3D]*q[LUU_3D][Q122]/(4.0*dx)
-    + signy[LUU_3D]*q[LUU_3D][Q222]/(4.0*dy)
-    + signz[LUU_3D]*q[LUU_3D][Q223]/(4.0*dz);
-  rhs_d[LUU_3D][P23] += signx[LUU_3D]*q[LUU_3D][Q123]/(4.0*dx) 
-    + signy[LUU_3D]*q[LUU_3D][Q223]/(4.0*dy)
-    + signz[LUU_3D]*q[LUU_3D][Q233]/(4.0*dz);
-  rhs_d[LUU_3D][P33] += signx[LUU_3D]*q[LUU_3D][Q133]/(4.0*dx)
-    + signy[LUU_3D]*q[LUU_3D][Q233]/(4.0*dy)
-    + signz[LUU_3D]*q[LUU_3D][Q333]/(4.0*dz);
-
-  rhs_d[ULL_3D][P11] += signx[ULL_3D]*q[ULL_3D][Q111]/(4.0*dx)
-    + signy[ULL_3D]*q[ULL_3D][Q112]/(4.0*dy)
-    + signz[ULL_3D]*q[ULL_3D][Q113]/(4.0*dz);
-  rhs_d[ULL_3D][P12] += signx[ULL_3D]*q[ULL_3D][Q112]/(4.0*dx)
-    + signy[ULL_3D]*q[ULL_3D][Q122]/(4.0*dy)
-    + signz[ULL_3D]*q[ULL_3D][Q123]/(4.0*dz);
-  rhs_d[ULL_3D][P13] += signx[ULL_3D]*q[ULL_3D][Q113]/(4.0*dx)
-    + signy[ULL_3D]*q[ULL_3D][Q123]/(4.0*dy)
-    + signz[ULL_3D]*q[ULL_3D][Q133]/(4.0*dz);
-  rhs_d[ULL_3D][P22] += signx[ULL_3D]*q[ULL_3D][Q122]/(4.0*dx)
-    + signy[ULL_3D]*q[ULL_3D][Q222]/(4.0*dy)
-    + signz[ULL_3D]*q[ULL_3D][Q223]/(4.0*dz);
-  rhs_d[ULL_3D][P23] += signx[ULL_3D]*q[ULL_3D][Q123]/(4.0*dx) 
-    + signy[ULL_3D]*q[ULL_3D][Q223]/(4.0*dy)
-    + signz[ULL_3D]*q[ULL_3D][Q233]/(4.0*dz);
-  rhs_d[ULL_3D][P33] += signx[ULL_3D]*q[ULL_3D][Q133]/(4.0*dx)
-    + signy[ULL_3D]*q[ULL_3D][Q233]/(4.0*dy)
-    + signz[ULL_3D]*q[ULL_3D][Q333]/(4.0*dz);
-
-  rhs_d[ULU_3D][P11] += signx[ULU_3D]*q[ULU_3D][Q111]/(4.0*dx)
-    + signy[ULU_3D]*q[ULU_3D][Q112]/(4.0*dy)
-    + signz[ULU_3D]*q[ULU_3D][Q113]/(4.0*dz);
-  rhs_d[ULU_3D][P12] += signx[ULU_3D]*q[ULU_3D][Q112]/(4.0*dx)
-    + signy[ULU_3D]*q[ULU_3D][Q122]/(4.0*dy)
-    + signz[ULU_3D]*q[ULU_3D][Q123]/(4.0*dz);
-  rhs_d[ULU_3D][P13] += signx[ULU_3D]*q[ULU_3D][Q113]/(4.0*dx)
-    + signy[ULU_3D]*q[ULU_3D][Q123]/(4.0*dy)
-    + signz[ULU_3D]*q[ULU_3D][Q133]/(4.0*dz);
-  rhs_d[ULU_3D][P22] += signx[ULU_3D]*q[ULU_3D][Q122]/(4.0*dx)
-    + signy[ULU_3D]*q[ULU_3D][Q222]/(4.0*dy)
-    + signz[ULU_3D]*q[ULU_3D][Q223]/(4.0*dz);
-  rhs_d[ULU_3D][P23] += signx[ULU_3D]*q[ULU_3D][Q123]/(4.0*dx) 
-    + signy[ULU_3D]*q[ULU_3D][Q223]/(4.0*dy)
-    + signz[ULU_3D]*q[ULU_3D][Q233]/(4.0*dz);
-  rhs_d[ULU_3D][P33] += signx[ULU_3D]*q[ULU_3D][Q133]/(4.0*dx)
-    + signy[ULU_3D]*q[ULU_3D][Q233]/(4.0*dy)
-    + signz[ULU_3D]*q[ULU_3D][Q333]/(4.0*dz);
-
-  rhs_d[UUL_3D][P11] += signx[UUL_3D]*q[UUL_3D][Q111]/(4.0*dx)
-    + signy[UUL_3D]*q[UUL_3D][Q112]/(4.0*dy)
-    + signz[UUL_3D]*q[UUL_3D][Q113]/(4.0*dz);
-  rhs_d[UUL_3D][P12] += signx[UUL_3D]*q[UUL_3D][Q112]/(4.0*dx)
-    + signy[UUL_3D]*q[UUL_3D][Q122]/(4.0*dy)
-    + signz[UUL_3D]*q[UUL_3D][Q123]/(4.0*dz);
-  rhs_d[UUL_3D][P13] += signx[UUL_3D]*q[UUL_3D][Q113]/(4.0*dx)
-    + signy[UUL_3D]*q[UUL_3D][Q123]/(4.0*dy)
-    + signz[UUL_3D]*q[UUL_3D][Q133]/(4.0*dz);
-  rhs_d[UUL_3D][P22] += signx[UUL_3D]*q[UUL_3D][Q122]/(4.0*dx)
-    + signy[UUL_3D]*q[UUL_3D][Q222]/(4.0*dy)
-    + signz[UUL_3D]*q[UUL_3D][Q223]/(4.0*dz);
-  rhs_d[UUL_3D][P23] += signx[UUL_3D]*q[UUL_3D][Q123]/(4.0*dx) 
-    + signy[UUL_3D]*q[UUL_3D][Q223]/(4.0*dy)
-    + signz[UUL_3D]*q[UUL_3D][Q233]/(4.0*dz);
-  rhs_d[UUL_3D][P33] += signx[UUL_3D]*q[UUL_3D][Q133]/(4.0*dx)
-    + signy[UUL_3D]*q[UUL_3D][Q233]/(4.0*dy)
-    + signz[UUL_3D]*q[UUL_3D][Q333]/(4.0*dz);
-
-  rhs_d[UUU_3D][P11] += signx[UUU_3D]*q[UUU_3D][Q111]/(4.0*dx)
-    + signy[UUU_3D]*q[UUU_3D][Q112]/(4.0*dy)
-    + signz[UUU_3D]*q[UUU_3D][Q113]/(4.0*dz);
-  rhs_d[UUU_3D][P12] += signx[UUU_3D]*q[UUU_3D][Q112]/(4.0*dx)
-    + signy[UUU_3D]*q[UUU_3D][Q122]/(4.0*dy)
-    + signz[UUU_3D]*q[UUU_3D][Q123]/(4.0*dz);
-  rhs_d[UUU_3D][P13] += signx[UUU_3D]*q[UUU_3D][Q113]/(4.0*dx)
-    + signy[UUU_3D]*q[UUU_3D][Q123]/(4.0*dy)
-    + signz[UUU_3D]*q[UUU_3D][Q133]/(4.0*dz);
-  rhs_d[UUU_3D][P22] += signx[UUU_3D]*q[UUU_3D][Q122]/(4.0*dx)
-    + signy[UUU_3D]*q[UUU_3D][Q222]/(4.0*dy)
-    + signz[UUU_3D]*q[UUU_3D][Q223]/(4.0*dz);
-  rhs_d[UUU_3D][P23] += signx[UUU_3D]*q[UUU_3D][Q123]/(4.0*dx) 
-    + signy[UUU_3D]*q[UUU_3D][Q223]/(4.0*dy)
-    + signz[UUU_3D]*q[UUU_3D][Q233]/(4.0*dz);
-  rhs_d[UUU_3D][P33] += signx[UUU_3D]*q[UUU_3D][Q133]/(4.0*dx)
-    + signy[UUU_3D]*q[UUU_3D][Q233]/(4.0*dy)
-    + signz[UUU_3D]*q[UUU_3D][Q333]/(4.0*dz);
+  q[UUU_3D*10 + Q333] = chi*dTdz[compz[UUU_3D]][T33];
 
   double da = fmin(fmin(dx, dy), dz);
   double cfla = dt/(da*da);
   cflrate[0] = alpha*vth_avg*cfla;
 }
 
+void
+grad_closure_update_3d(const gkyl_ten_moment_grad_closure *gces,
+  const double *q[], double *rhs)
+{
+  double div_qx[6] = {0.0};
+  double div_qy[6] = {0.0};
+  double div_qz[6] = {0.0};
+
+  const double dx = gces->grid.dx[0];
+  const double dy = gces->grid.dx[1];
+  const double dz = gces->grid.dx[2];
+
+  div_qx[0] = calc_sym_gradx_3D(dx, q[LLL_3D][UUU_3D*10 + Q111],
+    q[LLU_3D][UUL_3D*10 + Q111], q[LUL_3D][ULU_3D*10 + Q111],
+    q[LUU_3D][ULL_3D*10 + Q111], q[ULL_3D][LUU_3D*10 + Q111],
+    q[ULU_3D][LUL_3D*10 + Q111], q[UUL_3D][LLU_3D*10 + Q111],
+    q[UUU_3D][LLL_3D*10 + Q111]);
+  div_qx[1] = calc_sym_gradx_3D(dx, q[LLL_3D][UUU_3D*10 + Q112],
+    q[LLU_3D][UUL_3D*10 + Q112], q[LUL_3D][ULU_3D*10 + Q112], q[LUU_3D][ULL_3D*10 + Q112], q[ULL_3D][LUU_3D*10 + Q112],
+    q[ULU_3D][LUL_3D*10 + Q112], q[UUL_3D][LLU_3D*10 + Q112], q[UUU_3D][LLL_3D*10 + Q112]);
+  div_qx[2] = calc_sym_gradx_3D(dx, q[LLL_3D][UUU_3D*10 + Q113], q[LLU_3D][UUL_3D*10 + Q113],
+    q[LUL_3D][ULU_3D*10 + Q113], q[LUU_3D][ULL_3D*10 + Q113], q[ULL_3D][LUU_3D*10 + Q113],
+    q[ULU_3D][LUL_3D*10 + Q113], q[UUL_3D][LLU_3D*10 + Q113], q[UUU_3D][LLL_3D*10 + Q113]);
+  div_qx[3] = calc_sym_gradx_3D(dx, q[LLL_3D][UUU_3D*10 + Q122], q[LLU_3D][UUL_3D*10 + Q122],
+    q[LUL_3D][ULU_3D*10 + Q122], q[LUU_3D][ULL_3D*10 + Q122], q[ULL_3D][LUU_3D*10 + Q122],
+    q[ULU_3D][LUL_3D*10 + Q122], q[UUL_3D][LLU_3D*10 + Q122], q[UUU_3D][LLL_3D*10 + Q122]);
+  div_qx[4] = calc_sym_gradx_3D(dx, q[LLL_3D][UUU_3D*10 + Q123], q[LLU_3D][UUL_3D*10 + Q123],
+    q[LUL_3D][ULU_3D*10 + Q123], q[LUU_3D][ULL_3D*10 + Q123], q[ULL_3D][LUU_3D*10 + Q123],
+    q[ULU_3D][LUL_3D*10 + Q123], q[UUL_3D][LLU_3D*10 + Q123], q[UUU_3D][LLL_3D*10 + Q123]);
+  div_qx[5] = calc_sym_gradx_3D(dx, q[LLL_3D][UUU_3D*10 + Q133], q[LLU_3D][UUL_3D*10 + Q133],
+    q[LUL_3D][ULU_3D*10 + Q133], q[LUU_3D][ULL_3D*10 + Q133], q[ULL_3D][LUU_3D*10 + Q133],
+    q[ULU_3D][LUL_3D*10 + Q133], q[UUL_3D][LLU_3D*10 + Q133], q[UUU_3D][LLL_3D*10 + Q133]);
+
+  div_qy[0] = calc_sym_grady_3D(dy, q[LLL_3D][UUU_3D*10 + Q112], q[LLU_3D][UUL_3D*10 + Q112],
+    q[LUL_3D][ULU_3D*10 + Q112], q[LUU_3D][ULL_3D*10 + Q112], q[ULL_3D][LUU_3D*10 + Q112],
+    q[ULU_3D][LUL_3D*10 + Q112], q[UUL_3D][LLU_3D*10 + Q112], q[UUU_3D][LLL_3D*10 + Q112]);
+  div_qy[1] = calc_sym_grady_3D(dy, q[LLL_3D][UUU_3D*10 + Q122], q[LLU_3D][UUL_3D*10 + Q122],
+    q[LUL_3D][ULU_3D*10 + Q122], q[LUU_3D][ULL_3D*10 + Q122], q[ULL_3D][LUU_3D*10 + Q122],
+    q[ULU_3D][LUL_3D*10 + Q122], q[UUL_3D][LLU_3D*10 + Q122], q[UUU_3D][LLL_3D*10 + Q122]);
+  div_qy[2] = calc_sym_grady_3D(dy, q[LLL_3D][UUU_3D*10 + Q123], q[LLU_3D][UUL_3D*10 + Q123],
+    q[LUL_3D][ULU_3D*10 + Q123], q[LUU_3D][ULL_3D*10 + Q123], q[ULL_3D][LUU_3D*10 + Q123],
+    q[ULU_3D][LUL_3D*10 + Q123], q[UUL_3D][LLU_3D*10 + Q123], q[UUU_3D][LLL_3D*10 + Q123]);
+  div_qy[3] = calc_sym_grady_3D(dy, q[LLL_3D][UUU_3D*10 + Q222], q[LLU_3D][UUL_3D*10 + Q222],
+    q[LUL_3D][ULU_3D*10 + Q222], q[LUU_3D][ULL_3D*10 + Q222], q[ULL_3D][LUU_3D*10 + Q222],
+    q[ULU_3D][LUL_3D*10 + Q222], q[UUL_3D][LLU_3D*10 + Q222], q[UUU_3D][LLL_3D*10 + Q222]);
+  div_qy[4] = calc_sym_grady_3D(dy, q[LLL_3D][UUU_3D*10 + Q223], q[LLU_3D][UUL_3D*10 + Q223],
+    q[LUL_3D][ULU_3D*10 + Q223], q[LUU_3D][ULL_3D*10 + Q223], q[ULL_3D][LUU_3D*10 + Q223],
+    q[ULU_3D][LUL_3D*10 + Q223], q[UUL_3D][LLU_3D*10 + Q223], q[UUU_3D][LLL_3D*10 + Q223]);
+  div_qy[5] = calc_sym_grady_3D(dy, q[LLL_3D][UUU_3D*10 + Q233], q[LLU_3D][UUL_3D*10 + Q233],
+    q[LUL_3D][ULU_3D*10 + Q233], q[LUU_3D][ULL_3D*10 + Q233], q[ULL_3D][LUU_3D*10 + Q233],
+    q[ULU_3D][LUL_3D*10 + Q233], q[UUL_3D][LLU_3D*10 + Q233], q[UUU_3D][LLL_3D*10 + Q233]);
+
+  div_qz[0] = calc_sym_gradz_3D(dz, q[LLL_3D][UUU_3D*10 + Q113], q[LLU_3D][UUL_3D*10 + Q113],
+    q[LUL_3D][ULU_3D*10 + Q113], q[LUU_3D][ULL_3D*10 + Q113], q[ULL_3D][LUU_3D*10 + Q113],
+    q[ULU_3D][LUL_3D*10 + Q113], q[UUL_3D][LLU_3D*10 + Q113], q[UUU_3D][LLL_3D*10 + Q113]);
+  div_qz[1] = calc_sym_gradz_3D(dz, q[LLL_3D][UUU_3D*10 + Q123], q[LLU_3D][UUL_3D*10 + Q123],
+    q[LUL_3D][ULU_3D*10 + Q123], q[LUU_3D][ULL_3D*10 + Q123], q[ULL_3D][LUU_3D*10 + Q123],
+    q[ULU_3D][LUL_3D*10 + Q123], q[UUL_3D][LLU_3D*10 + Q123], q[UUU_3D][LLL_3D*10 + Q123]);
+  div_qz[2] = calc_sym_gradz_3D(dz, q[LLL_3D][UUU_3D*10 + Q133], q[LLU_3D][UUL_3D*10 + Q133],
+    q[LUL_3D][ULU_3D*10 + Q133], q[LUU_3D][ULL_3D*10 + Q133], q[ULL_3D][LUU_3D*10 + Q133],
+    q[ULU_3D][LUL_3D*10 + Q133], q[UUL_3D][LLU_3D*10 + Q133], q[UUU_3D][LLL_3D*10 + Q133]);
+  div_qz[3] = calc_sym_gradz_3D(dz, q[LLL_3D][UUU_3D*10 + Q223], q[LLU_3D][UUL_3D*10 + Q223],
+    q[LUL_3D][ULU_3D*10 + Q223], q[LUU_3D][ULL_3D*10 + Q223], q[ULL_3D][LUU_3D*10 + Q223],
+    q[ULU_3D][LUL_3D*10 + Q223], q[UUL_3D][LLU_3D*10 + Q223], q[UUU_3D][LLL_3D*10 + Q223]);
+  div_qz[4] = calc_sym_gradz_3D(dz, q[LLL_3D][UUU_3D*10 + Q233], q[LLU_3D][UUL_3D*10 + Q233],
+    q[LUL_3D][ULU_3D*10 + Q233], q[LUU_3D][ULL_3D*10 + Q233], q[ULL_3D][LUU_3D*10 + Q233],
+    q[ULU_3D][LUL_3D*10 + Q233], q[UUL_3D][LLU_3D*10 + Q233], q[UUU_3D][LLL_3D*10 + Q233]);
+  div_qz[5] = calc_sym_gradz_3D(dz, q[LLL_3D][UUU_3D*10 + Q333], q[LLU_3D][UUL_3D*10 + Q333],
+    q[LUL_3D][ULU_3D*10 + Q333], q[LUU_3D][ULL_3D*10 + Q333], q[ULL_3D][LUU_3D*10 + Q333],
+    q[ULU_3D][LUL_3D*10 + Q333], q[UUL_3D][LLU_3D*10 + Q333], q[UUU_3D][LLL_3D*10 + Q333]);
+
+  rhs[RHO] = 0.0;
+  rhs[MX] = 0.0;
+  rhs[MY] = 0.0;
+  rhs[MZ] = 0.0;
+  rhs[P11] = div_qx[0] + div_qy[0] + div_qz[0];
+  rhs[P12] = div_qx[1] + div_qy[1] + div_qz[1];
+  rhs[P13] = div_qx[2] + div_qy[2] + div_qz[2];
+  rhs[P22] = div_qx[3] + div_qy[3] + div_qz[3];
+  rhs[P23] = div_qx[4] + div_qy[4] + div_qz[4];
+  rhs[P33] = div_qx[5] + div_qy[5] + div_qz[5];
+}
+
 static const heat_flux_calc_t grad_closure_unmag_funcs[3] = { calc_unmag_heat_flux_1d,
   calc_unmag_heat_flux_2d, calc_unmag_heat_flux_3d };
+
+static const heat_flux_update_t grad_closure_update_funcs[3] = { grad_closure_update_1d,
+  grad_closure_update_2d, grad_closure_update_3d };
 
 void
 grad_closure_calc_q_choose(struct gkyl_ten_moment_grad_closure *gces)
 {
   gces->calc_q = grad_closure_unmag_funcs[gces->ndim - 1];
+}
+
+void
+grad_closure_update_q_choose(struct gkyl_ten_moment_grad_closure *gces)
+{
+  gces->update_q = grad_closure_update_funcs[gces->ndim - 1];
 }
