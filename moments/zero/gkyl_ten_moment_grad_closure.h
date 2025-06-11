@@ -9,11 +9,12 @@
 #include <gkyl_util.h>
 
 struct gkyl_ten_moment_grad_closure_inp {
-    const struct gkyl_rect_grid *grid; // grid on which to solve equations
-    double k0; // inversedamping coefficient
-    double cfl; // CFL number to use
+  const struct gkyl_rect_grid *grid; // grid on which to solve equations
+  double k0; // inversedamping coefficient
+  double cfl; // CFL number to use
+  bool use_gpu; // Boolean to determine whether wave equation object is on host or device
 
-    struct gkyl_comm *comm;
+  struct gkyl_comm *comm;
 };
 
 struct gkyl_ten_moment_grad_closure_status {

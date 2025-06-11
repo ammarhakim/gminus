@@ -8,6 +8,8 @@ struct gkyl_ten_moment_grad_closure {
   int ndim; // number of dimensions
   double k0; // damping coefficient
   double cfl; // CFL number to use
+  double *cfla;
+  
   struct gkyl_comm *comm;
 
   heat_flux_calc_t calc_q;

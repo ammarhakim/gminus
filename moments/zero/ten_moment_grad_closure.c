@@ -49,6 +49,8 @@ gkyl_ten_moment_grad_closure_new(struct gkyl_ten_moment_grad_closure_inp inp)
   up->k0 = inp.k0;
   up->cfl = inp.cfl;
 
+  up->cfla = gkyl_malloc(sizeof(double));
+  
   if (inp.comm)
     up->comm = gkyl_comm_acquire(inp.comm);
   else
@@ -69,7 +71,7 @@ gkyl_ten_moment_grad_closure_advance(const gkyl_ten_moment_grad_closure *gces,
   int ndim = update_range->ndim;
   long sz[] = { 2, 4, 8 };
 
-  double cfla[1] = { 0.0 };
+  double *cfla = gces->cfla;
   double cfl = gces->cfl, cflm = 1.1*cfl;
   double is_cfl_violated = 0.0; // deliberately a double
 
@@ -109,7 +111,8 @@ gkyl_ten_moment_grad_closure_advance(const gkyl_ten_moment_grad_closure *gces,
   // compute actual CFL, status & max-speed across all domains
   double red_vars[2] = { cfla[0], is_cfl_violated };
   double red_vars_global[2] = { 0.0, 0.0 };
-  gkyl_comm_allreduce(gces->comm, GKYL_DOUBLE, GKYL_MAX, 2, &red_vars, &red_vars_global);
+  gkyl_comm_allreduce(gces->comm, GKYL_DOUBLE, GKYL_MAX, 2, red_vars,
+    red_vars_global);
 
   cfla[0] = red_vars_global[0];
   is_cfl_violated = red_vars_global[1];
@@ -137,5 +140,6 @@ void
 gkyl_ten_moment_grad_closure_release(gkyl_ten_moment_grad_closure* up)
 {
   gkyl_comm_release(up->comm);
+  gkyl_free(up->cfla);
   free(up);
 }
