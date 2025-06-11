@@ -97,6 +97,15 @@ gkyl_tensor_field_elem_set(struct gkyl_tensor_field *ten, long loc, int idx[GKYL
 }
 
 /**
+ * Acquire pointer to tensor field. The pointer must be released using
+ * gkyl_tensor_field_release method.
+ *
+ * @param tfld Array to which a pointer is needed
+ * @return Pointer to acquired array
+ */
+struct gkyl_tensor_field* gkyl_tensor_field_acquire(const struct gkyl_tensor_field* tfld);
+
+/**
  * Release pointer to tensor field
  *
  * @param tensor_field Tensor field to release.
