@@ -13,7 +13,7 @@ tensor_field_free(const struct gkyl_ref_count *ref)
 }
 
 struct gkyl_tensor_field *
-gkyl_tensor_field_new(size_t ndim, size_t rank, size_t size, int *iloc)
+gkyl_tensor_field_new(size_t ndim, size_t rank, size_t size, const enum gkyl_tensor_index_loc *iloc)
 {
   struct gkyl_tensor_field *tfld = gkyl_malloc(sizeof *tfld);
 
@@ -31,7 +31,7 @@ gkyl_tensor_field_new(size_t ndim, size_t rank, size_t size, int *iloc)
   gkyl_range_init_from_shape(&tfld->trange, ndim, shape);
 
   for (int i=0; i<GKYL_MAX_DIM; ++i) {
-    tfld->iloc[i] = iloc[i]; // covariant index 0, contravariant index 1
+    tfld->iloc[i] = iloc[i]; // either upper or lower indices
   }
 
   tfld->ref_count = gkyl_ref_count_init(tensor_field_free);

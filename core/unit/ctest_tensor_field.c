@@ -19,7 +19,9 @@ void test_tensor_field_0()
   int size = 10;
 
   // All covaraint indices
-  int iloc[GKYL_MAX_DIM] = {0.0};
+  enum gkyl_tensor_index_loc iloc[GKYL_MAX_DIM];
+  for (int i=0; i<rank; ++i)  
+    iloc[i] = GKYL_TENSOR_INDEX_LOWER;
 
   // Build and release the tensor
   struct gkyl_tensor_field *tfld = gkyl_tensor_field_new(rank,ndim,size,iloc);

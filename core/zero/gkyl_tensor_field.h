@@ -27,11 +27,10 @@ struct gkyl_tensor_field {
  * @param rank Rank of the tensor field
  * @param ndim Number of dimensions
  * @param size Number of indices 
- * @param iloc Integer index array of size GKYL_MAX_DIM which is either
- *             0 or 1, for covaraint or contravaraint elements respectively
+ * @param iloc Enum array of size GKYL_MAX_DIM which for lower or upper indices
  * @return Pointer to newly allocated tensor field.
  */
-struct gkyl_tensor_field *gkyl_tensor_field_new(size_t rank, size_t ndim, size_t size, int *iloc);
+struct gkyl_tensor_field *gkyl_tensor_field_new(size_t rank, size_t ndim, size_t size, const enum gkyl_tensor_index_loc *iloc);
 
 /**
  * Fetches a pointer to the tensor stored at the index 'loc'.
