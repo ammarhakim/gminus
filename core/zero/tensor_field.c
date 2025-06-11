@@ -29,7 +29,7 @@ gkyl_tensor_field_new(size_t rank, size_t ndim, size_t size, const enum gkyl_ten
   }
   
   tfld->tdata = gkyl_array_new(GKYL_DOUBLE, ncomp, size);
-  gkyl_range_init_from_shape(&tfld->trange, ndim, shape);
+  gkyl_range_init_from_shape(&tfld->trange, rank, shape);
 
   for (int i=0; i<GKYL_MAX_DIM; ++i) {
     tfld->iloc[i] = iloc[i]; // either upper or lower indices
