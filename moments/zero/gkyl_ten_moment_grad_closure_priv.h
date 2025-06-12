@@ -17,6 +17,8 @@ struct gkyl_ten_moment_grad_closure {
 
   heat_flux_calc_t calc_q;
   heat_flux_update_t update_q;
+
+  struct gkyl_ten_moment_grad_closure *on_dev;
 };
 
 // Makes indexing cleaner
@@ -57,6 +59,7 @@ enum loc_3d {
   UUL_3D, UUU_3D
 };
 
+GKYL_CU_D
 static void
 var_setup(const gkyl_ten_moment_grad_closure *gces,
   int start, int end,
@@ -77,6 +80,7 @@ var_setup(const gkyl_ten_moment_grad_closure *gces,
   }
 }
 
+GKYL_CU_D
 static inline double
 calc_sym_grad_limiter_2D(double alpha, double a, double b)
 {
@@ -92,6 +96,7 @@ calc_sym_grad_limiter_2D(double alpha, double a, double b)
   }
 }
 
+GKYL_CU_D
 static inline double
 calc_sym_grad_limiter_3D(double alpha, double a, double b, double c, double d)
 {
@@ -107,7 +112,8 @@ calc_sym_grad_limiter_3D(double alpha, double a, double b, double c, double d)
   }
 }
 
-void
+GKYL_CU_D
+static void
 calc_unmag_heat_flux_1d(const gkyl_ten_moment_grad_closure *gces,
   const double *fluid_d[], double *cflrate, double dt, double *q)
 {
@@ -152,7 +158,8 @@ calc_unmag_heat_flux_1d(const gkyl_ten_moment_grad_closure *gces,
   cflrate[0] = alpha*vth_avg*cfla;
 }
 
-void
+GKYL_CU_D
+static void
 grad_closure_update_1d(const gkyl_ten_moment_grad_closure *gces,
   const double *q[], double *rhs)
 {
@@ -179,7 +186,8 @@ grad_closure_update_1d(const gkyl_ten_moment_grad_closure *gces,
   rhs[P33] = div_qx[5];
 }
 
-void
+GKYL_CU_D
+static void
 calc_unmag_heat_flux_2d(const gkyl_ten_moment_grad_closure *gces,
   const double *fluid_d[], double *cflrate, double dt, double *q)
 {
@@ -325,7 +333,8 @@ calc_unmag_heat_flux_2d(const gkyl_ten_moment_grad_closure *gces,
   cflrate[0] = alpha*vth_avg*cfla;
 }
 
-void
+GKYL_CU_D
+static void
 grad_closure_update_2d(const gkyl_ten_moment_grad_closure *gces,
   const double *q[], double *rhs)
 {
@@ -373,7 +382,8 @@ grad_closure_update_2d(const gkyl_ten_moment_grad_closure *gces,
   rhs[P33] = div_qx[5] + div_qy[5];
 }
 
-void
+GKYL_CU_D
+static void
 calc_unmag_heat_flux_3d(const gkyl_ten_moment_grad_closure *gces,
   const double *fluid_d[], double *cflrate, double dt, double *q)
 {
@@ -802,7 +812,8 @@ calc_unmag_heat_flux_3d(const gkyl_ten_moment_grad_closure *gces,
   cflrate[0] = alpha*vth_avg*cfla;
 }
 
-void
+GKYL_CU_D
+static void
 grad_closure_update_3d(const gkyl_ten_moment_grad_closure *gces,
   const double *q[], double *rhs)
 {
@@ -885,20 +896,24 @@ grad_closure_update_3d(const gkyl_ten_moment_grad_closure *gces,
   rhs[P33] = div_qx[5] + div_qy[5] + div_qz[5];
 }
 
+GKYL_CU_D
 static const heat_flux_calc_t grad_closure_unmag_funcs[3] = { calc_unmag_heat_flux_1d,
   calc_unmag_heat_flux_2d, calc_unmag_heat_flux_3d };
 
+GKYL_CU_D
 static const heat_flux_update_t grad_closure_update_funcs[3] = { grad_closure_update_1d,
   grad_closure_update_2d, grad_closure_update_3d };
 
-void
-grad_closure_calc_q_choose(struct gkyl_ten_moment_grad_closure *gces)
+GKYL_CU_D
+static void
+grad_closure_calc_q_choose(gkyl_ten_moment_grad_closure *gces)
 {
   gces->calc_q = grad_closure_unmag_funcs[gces->ndim - 1];
 }
 
-void
-grad_closure_update_q_choose(struct gkyl_ten_moment_grad_closure *gces)
+GKYL_CU_D
+static void
+grad_closure_update_q_choose(gkyl_ten_moment_grad_closure *gces)
 {
   gces->update_q = grad_closure_update_funcs[gces->ndim - 1];
 }
