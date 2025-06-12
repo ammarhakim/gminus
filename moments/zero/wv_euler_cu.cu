@@ -19,6 +19,7 @@ wv_euler_set_cu_dev_ptrs(enum gkyl_wv_euler_rp rp_type, struct wv_euler *euler)
       euler->eqn.num_waves = 3;  
       euler->eqn.waves_func = wave_roe_l;
       euler->eqn.qfluct_func = qfluct_roe_l;
+      euler->eqn.fuse_waves_qfluct_func = fused_rotate_waves_qfluct_roe_l;
       break;
 
     case WV_EULER_RP_HLLC:
@@ -42,6 +43,7 @@ wv_euler_set_cu_dev_ptrs(enum gkyl_wv_euler_rp rp_type, struct wv_euler *euler)
 
   euler->eqn.flux_jump = flux_jump;
   euler->eqn.check_inv_func = check_inv;
+  euler->eqn.fuse_check_inv_func = fuse_check_inv;
   euler->eqn.max_speed_func = max_speed;
   euler->eqn.rotate_to_local_func = rot_to_local;
   euler->eqn.rotate_to_global_func = rot_to_global;

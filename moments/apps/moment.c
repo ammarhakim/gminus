@@ -72,6 +72,12 @@ gkyl_moment_app_new(struct gkyl_moment *mom)
   
   struct gkyl_moment_app *app = gkyl_calloc(1, sizeof(*app));
 
+#ifdef GKYL_HAVE_CUDA
+  app->use_gpu = mom->parallelism.use_gpu;
+#else
+  app->use_gpu = false; // can't use GPUs if we don't have them!
+#endif
+
   int ndim = app->ndim = mom->ndim;
   strcpy(app->name, mom->name);
   app->tcurr = 0.0; // reset on init
