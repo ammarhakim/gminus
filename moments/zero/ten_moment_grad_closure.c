@@ -171,7 +171,7 @@ gkyl_ten_moment_grad_closure_release(gkyl_ten_moment_grad_closure* up)
   gkyl_comm_release(up->comm);
   gkyl_free(up->cfla);
   if (up->use_gpu) {
-    gkyl_cu_free(up->on_dev.cfla);
+    gkyl_cu_free(up->on_dev->cfla);
     gkyl_free(up->on_dev);
   }
   gkyl_free(up);
