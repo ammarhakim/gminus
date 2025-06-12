@@ -354,14 +354,20 @@ gkyl_moment_app_write_field(const gkyl_moment_app* app, double tm, int frame)
   );
 
   cstr fileNm = cstr_from_fmt("%s-%s_%d.gkyl", app->name, "field", frame);
-  gkyl_comm_array_write(app->comm, &app->grid, &app->local, mt, app->field.fcurr, fileNm.str);
+  if (app->use_gpu) {
+    gkyl_array_copy(app->field.f_host, app->field.fcurr); 
+  }
+  gkyl_comm_array_write(app->comm, &app->grid, &app->local, mt, app->field.f_host, fileNm.str);
   cstr_drop(&fileNm);
 
   // write external EM field if it is present
   if (app->field.ext_em_proj) {
     if (app->field.ext_em_evolve || frame == 0) {
       cstr fileNm = cstr_from_fmt("%s-%s_%d.gkyl", app->name, "ext_em", frame);
-      gkyl_comm_array_write(app->comm, &app->grid, &app->local, mt, app->field.ext_em, fileNm.str);
+      if (app->use_gpu) {
+        gkyl_array_copy(app->field.ext_em_host, app->field.ext_em); 
+      }
+      gkyl_comm_array_write(app->comm, &app->grid, &app->local, mt, app->field.ext_em_host, fileNm.str);
       cstr_drop(&fileNm);
     }
   }
@@ -370,7 +376,10 @@ gkyl_moment_app_write_field(const gkyl_moment_app* app, double tm, int frame)
   if (app->field.app_current_proj) {
     if (app->field.app_current_evolve || frame == 0) {
       cstr fileNm = cstr_from_fmt("%s-%s_%d.gkyl", app->name, "app_current", frame);
-      gkyl_comm_array_write(app->comm, &app->grid, &app->local, mt, app->field.app_current, fileNm.str);
+      if (app->use_gpu) {
+        gkyl_array_copy(app->field.app_current_host, app->field.app_current); 
+      }
+      gkyl_comm_array_write(app->comm, &app->grid, &app->local, mt, app->field.app_current_host, fileNm.str);
       cstr_drop(&fileNm);
     }
   }
@@ -437,7 +446,10 @@ gkyl_moment_app_write_species(const gkyl_moment_app* app, int sidx, double tm, i
   );
   
   cstr fileNm = cstr_from_fmt("%s-%s_%d.gkyl", app->name, app->species[sidx].name, frame);
-  gkyl_comm_array_write(app->comm, &app->grid, &app->local, mt, app->species[sidx].fcurr, fileNm.str);
+  if (app->use_gpu) {
+    gkyl_array_copy(app->species[sidx].f_host, app->species[sidx].fcurr); 
+  }
+  gkyl_comm_array_write(app->comm, &app->grid, &app->local, mt, app->species[sidx].f_host, fileNm.str);
   cstr_drop(&fileNm);
 
   if (app->scheme_type == GKYL_MOMENT_KEP) {
@@ -449,7 +461,10 @@ gkyl_moment_app_write_species(const gkyl_moment_app* app, int sidx, double tm, i
   if (app->species[sidx].has_app_accel) {
     if (app->species[sidx].app_accel_evolve || frame == 0) {
       cstr fileNm = cstr_from_fmt("%s-%s-app_accel_%d.gkyl", app->name, app->species[sidx].name, frame);
-      gkyl_comm_array_write(app->comm, &app->grid, &app->local, mt, app->species[sidx].app_accel, fileNm.str);
+      if (app->use_gpu) {
+        gkyl_array_copy(app->species[sidx].app_accel_host, app->species[sidx].app_accel); 
+      }
+      gkyl_comm_array_write(app->comm, &app->grid, &app->local, mt, app->species[sidx].app_accel_host, fileNm.str);
       cstr_drop(&fileNm);      
     }
   }
