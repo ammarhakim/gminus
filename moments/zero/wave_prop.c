@@ -480,7 +480,7 @@ gkyl_wave_prop_release(gkyl_wave_prop* up)
   gkyl_comm_release(up->comm);
   if (up->use_gpu) {
     gkyl_array_release(up->cfla);
-    gkyl_array_release(up->is_cfl_violated);    
+    gkyl_array_release(up->is_cfl_violated);   
     gkyl_cu_free(up->cfla_ptr); 
     gkyl_cu_free(up->is_cfl_violated_ptr); 
   }
