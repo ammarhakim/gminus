@@ -22,7 +22,7 @@ typedef void (*wv_qfluct_t)(const struct gkyl_wv_eqn *eqn, enum gkyl_wv_flux_typ
   double *amdq, double *apdq);
 
 // Function pointer to compute wave, q-fluctuations from waves, and necessary rotations in fused function.
-typedef void (*wv_fuse_waves_qfluct_t)(const struct gkyl_wv_eqn *eqn, enum gkyl_wv_flux_type type,
+typedef double (*wv_fuse_waves_qfluct_t)(const struct gkyl_wv_eqn *eqn, enum gkyl_wv_flux_type type,
   const double* tau1, const double* tau2, const double* norm, double lenr, 
   const double *ql, const double *qr, 
   double *waves, double *s, double *amdq, double *apdq);
@@ -227,13 +227,13 @@ gkyl_wv_eqn_ffluct(const struct gkyl_wv_eqn *eqn, enum gkyl_wv_flux_type type,
  * @param apdq On output, the right-going fluctuations.
  */
 GKYL_CU_DH
-static inline void
+static inline double
 gkyl_wv_eqn_fused_rotate_waves_qfluct(const struct gkyl_wv_eqn *eqn, enum gkyl_wv_flux_type type,
   const double* tau1, const double* tau2, const double* norm, double lenr, 
   const double *ql, const double *qr, 
   double *waves, double *s, double *amdq, double *apdq)
 {
-  eqn->fuse_waves_qfluct_func(eqn, type, tau1, tau2, norm, lenr, 
+  return eqn->fuse_waves_qfluct_func(eqn, type, tau1, tau2, norm, lenr, 
     ql, qr, waves, s, amdq, apdq);
 }
 

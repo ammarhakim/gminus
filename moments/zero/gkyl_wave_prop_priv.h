@@ -39,6 +39,8 @@ struct gkyl_wave_prop {
   // CFL arrays
   struct gkyl_array *cfla, *is_cfl_violated; 
 
+  bool use_gpu; // are we using GPUs?
+
   // some stats
   long n_calls; // number of calls to updater
   long n_bad_advance_calls; // number of calls in which positivity had to be fixed
@@ -192,3 +194,24 @@ calc_second_order_update(int meqn, double dtdx, double * GKYL_RESTRICT qout,
   for (int i=0; i<meqn; ++i)
     qout[i] += -dtdx*(fr[i]-fl[i]);
 }
+
+#ifdef GKYL_HAVE_CUDA
+
+/**
+ * Compute wave-propagation update on the device. The update_rng MUST be a sub-range
+ * of the range on which the array is defined. That is, it must be
+ * either the same range as the array range, or one created using the
+ * gkyl_sub_range_init method.
+ *
+ * @param wv Updater object
+ * @param tm Current time
+ * @param dt time-step
+ * @param update_rng Range on which to compute.
+ * @param qin Input to updater
+ * @param qout Solution at tm+dt
+ */
+struct gkyl_wave_prop_status gkyl_wave_prop_advance(gkyl_wave_prop *wv,
+  double tm, double dt, const struct gkyl_range *update_range,
+  const struct gkyl_array *qin, struct gkyl_array *qout);
+
+#endif
