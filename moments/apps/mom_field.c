@@ -33,6 +33,7 @@ moment_field_init(const struct gkyl_moment *mom, const struct gkyl_moment_field 
       fld->slvr[d] = gkyl_wave_prop_new( &(struct gkyl_wave_prop_inp) {
           .grid = &app->grid,
           .equation = maxwell,
+          .update_range = &app->local, 
           .split_type = GKYL_WAVE_QWAVE, // q-waves is fine for linear systems
           .limiter = limiter,
           .num_up_dirs = app->is_dir_skipped[d] ? 0 : 1,
@@ -40,7 +41,8 @@ moment_field_init(const struct gkyl_moment *mom, const struct gkyl_moment_field 
           .check_inv_domain = false,
           .cfl = app->cfl,
           .geom = app->geom,
-          .comm = app->comm
+          .comm = app->comm, 
+          .use_gpu = app->use_gpu
         }
       );
 
