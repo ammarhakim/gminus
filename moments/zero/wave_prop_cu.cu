@@ -193,7 +193,7 @@ gkyl_wave_prop_update_state_cu_kern(double dtdx,
   const struct gkyl_array *amdq, const struct gkyl_array *apdq, const struct gkyl_array *flux2, 
   struct gkyl_array *qout)
 {
-  int idxl[GKYL_MAX_DIM], idxc[GKYL_MAX_DIM], idxr[GKYL_MAX_DIM];
+  int idxc[GKYL_MAX_DIM], idxr[GKYL_MAX_DIM];
   // 2D thread grid
   // linc2 goes from loidx to upidx (total size of linc2 set by upidx-loidx)
   long linc2 = threadIdx.y + blockIdx.y*blockDim.y + loidx_c;
