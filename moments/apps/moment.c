@@ -145,7 +145,7 @@ gkyl_moment_app_new(struct gkyl_moment *mom)
     gkyl_cart_modal_tensor(&basis, ndim, 1);
 
     // initialize DG field representing mapping
-    struct gkyl_array *c2p = mkarr(false, ndim*basis.num_basis, app->local_ext.volume);
+    struct gkyl_array *c2p = mkarr(app->use_gpu, ndim*basis.num_basis, app->local_ext.volume);
     gkyl_eval_on_nodes *ev_c2p = gkyl_eval_on_nodes_new(&app->grid, &basis, ndim, mom->mapc2p, mom->c2p_ctx);
     gkyl_eval_on_nodes_advance(ev_c2p, 0.0, &app->local_ext, c2p);
 
@@ -238,11 +238,11 @@ gkyl_moment_app_new(struct gkyl_moment *mom)
       max_eqn = int_max(max_eqn, app->species[i].num_equations);
     if (app->has_field)
       max_eqn = int_max(max_eqn, 8); // maxwell equations have 8 components
-    app->ql = mkarr(false, max_eqn, app->local_ext.volume);
-    app->qr = mkarr(false, max_eqn, app->local_ext.volume);
+    app->ql = mkarr(app->use_gpu, max_eqn, app->local_ext.volume);
+    app->qr = mkarr(app->use_gpu, max_eqn, app->local_ext.volume);
 
-    app->amdq = mkarr(false, max_eqn, app->local_ext.volume);
-    app->apdq = mkarr(false, max_eqn, app->local_ext.volume);
+    app->amdq = mkarr(app->use_gpu, max_eqn, app->local_ext.volume);
+    app->apdq = mkarr(app->use_gpu, max_eqn, app->local_ext.volume);
   }
 
   // initialize stat object to all zeros

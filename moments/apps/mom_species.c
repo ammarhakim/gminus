@@ -117,10 +117,10 @@ moment_species_init(const struct gkyl_moment *mom, const struct gkyl_moment_spec
         }
       );
       
-    sp->fdup = mkarr(false, meqn, app->local_ext.volume);
+    sp->fdup = mkarr(app->use_gpu, meqn, app->local_ext.volume);
     // allocate arrays
     for (int d=0; d<ndim+1; ++d)
-      sp->f[d] = mkarr(false, meqn, app->local_ext.volume);
+      sp->f[d] = mkarr(app->use_gpu, meqn, app->local_ext.volume);
   
     // set current solution so ICs and IO work properly
     sp->fcurr = sp->f[0];
@@ -161,11 +161,11 @@ moment_species_init(const struct gkyl_moment *mom, const struct gkyl_moment_spec
       );
     
     // allocate arrays
-    sp->f0 = mkarr(false, meqn, app->local_ext.volume);
-    sp->f1 = mkarr(false, meqn, app->local_ext.volume);
-    sp->fnew = mkarr(false, meqn, app->local_ext.volume);
-    sp->cflrate = mkarr(false, 1, app->local_ext.volume);
-    sp->alpha = mkarr(false, 1, app->local_ext.volume);
+    sp->f0 = mkarr(app->use_gpu, meqn, app->local_ext.volume);
+    sp->f1 = mkarr(app->use_gpu, meqn, app->local_ext.volume);
+    sp->fnew = mkarr(app->use_gpu, meqn, app->local_ext.volume);
+    sp->cflrate = mkarr(app->use_gpu, 1, app->local_ext.volume);
+    sp->alpha = mkarr(app->use_gpu, 1, app->local_ext.volume);
     
     // set current solution so ICs and IO work properly
     sp->fcurr = sp->f0;
@@ -290,7 +290,7 @@ moment_species_init(const struct gkyl_moment *mom, const struct gkyl_moment_spec
   }
 
   // allocate array for applied acceleration/forces for each species
-  sp->app_accel = mkarr(false, 3, app->local_ext.volume);
+  sp->app_accel = mkarr(app->use_gpu, 3, app->local_ext.volume);
   gkyl_array_clear(sp->app_accel, 0.0);
   sp->has_app_accel = false;
   sp->app_accel_evolve = false;
@@ -304,7 +304,7 @@ moment_species_init(const struct gkyl_moment *mom, const struct gkyl_moment_spec
       mom_sp->app_accel, mom_sp->app_accel_ctx);  
   }
 
-  sp->nT_source = mkarr(false, 2, app->local_ext.volume);
+  sp->nT_source = mkarr(app->use_gpu, 2, app->local_ext.volume);
   sp->nT_source_is_set = false;
   sp->proj_nT_source = 0;
   if (mom_sp->nT_source_func) {
@@ -325,7 +325,7 @@ moment_species_init(const struct gkyl_moment *mom, const struct gkyl_moment_spec
     long vol = app->skin_ghost.lower_skin[d].volume;
     buff_sz = buff_sz > vol ? buff_sz : vol;
   }
-  sp->bc_buffer = mkarr(false, meqn, buff_sz);
+  sp->bc_buffer = mkarr(app->use_gpu, meqn, buff_sz);
 
   if (mom_sp->equation->type == GKYL_EQN_EULER)
     sp->integ_q = gkyl_dynvec_new(GKYL_DOUBLE, 6); // KE and PE are stored independently
