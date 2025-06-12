@@ -256,6 +256,22 @@ gkyl_wv_eqn_flux_jump(const struct gkyl_wv_eqn *eqn,
 
 /**
  * Check invariant domain of equation system (e.g., pressure > 0.0)
+ * by checking cell values on either side of an interface
+ *
+ * @param eqn Equation object
+ * @param ql Conserved variables to the left (lower) of interface
+ * @param qr Conserved variables to the right (upper) of interface
+ * @return boolean (true if invariant domain is satisfied, false if not)
+ */
+GKYL_CU_DH
+static inline bool
+gkyl_wv_eqn_fuse_check_inv(const struct gkyl_wv_eqn *eqn, const double *ql, const double *qr)
+{
+  return eqn->fuse_check_inv_func(eqn, ql, qr);
+}
+
+/**
+ * Check invariant domain of equation system (e.g., pressure > 0.0)
  *
  * @param eqn Equation object
  * @param q Conserved variables
