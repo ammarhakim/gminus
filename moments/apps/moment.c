@@ -145,7 +145,7 @@ gkyl_moment_app_new(struct gkyl_moment *mom)
     gkyl_cart_modal_tensor(&basis, ndim, 1);
 
     // initialize DG field representing mapping
-    struct gkyl_array *c2p = mkarr(app->use_gpu, ndim*basis.num_basis, app->local_ext.volume);
+    struct gkyl_array *c2p = mkarr(false, ndim*basis.num_basis, app->local_ext.volume);
     gkyl_eval_on_nodes *ev_c2p = gkyl_eval_on_nodes_new(&app->grid, &basis, ndim, mom->mapc2p, mom->c2p_ctx);
     gkyl_eval_on_nodes_advance(ev_c2p, 0.0, &app->local_ext, c2p);
 
@@ -158,9 +158,9 @@ gkyl_moment_app_new(struct gkyl_moment *mom)
     gkyl_eval_on_nodes_release(ev_c2p);
   }
 
-  // create geometry object (no GPU support in fluids right now JJ: 11/26/23)
+  // create geometry object 
   app->geom = gkyl_wave_geom_new(&app->grid, &app->local_ext,
-    app->mapc2p, app->c2p_ctx, false);
+    app->mapc2p, app->c2p_ctx, app->use_gpu);
 
   double cfl_frac = mom->cfl_frac == 0 ? 0.95 : mom->cfl_frac;
   app->cfl = 1.0*cfl_frac;
@@ -286,14 +286,23 @@ gkyl_moment_app_apply_ic_field(gkyl_moment_app* app, double t0)
   int num_quad = app->scheme_type == GKYL_MOMENT_MP ? 4 : 2;
   gkyl_fv_proj *proj = gkyl_fv_proj_new(&app->grid, num_quad, 8, app->field.init, app->field.ctx);
   
-  gkyl_fv_proj_advance(proj, t0, &app->local, app->field.fcurr);
+  gkyl_fv_proj_advance(proj, t0, &app->local, app->field.f_host);
   gkyl_fv_proj_release(proj);
+  if (app->use_gpu) {
+    gkyl_array_copy(app->field.fcurr, app->field.f_host); 
+  }
 
   if (app->field.has_ext_em) {
-    gkyl_fv_proj_advance(app->field.ext_em_proj, t0, &app->local, app->field.ext_em);
+    gkyl_fv_proj_advance(app->field.ext_em_proj, t0, &app->local, app->field.ext_em_host);
+    if (app->use_gpu) {
+      gkyl_array_copy(app->field.ext_em, app->field.ext_em_host); 
+    }
   }
   if (app->field.has_app_current) {
-    gkyl_fv_proj_advance(app->field.app_current_proj, t0, &app->local, app->field.ext_em);
+    gkyl_fv_proj_advance(app->field.app_current_proj, t0, &app->local, app->field.app_current_host);
+    if (app->use_gpu) {
+      gkyl_array_copy(app->field.app_current, app->field.app_current_host); 
+    }
   }
 
   moment_field_apply_bc(app, t0, &app->field, app->field.fcurr);
@@ -308,12 +317,18 @@ gkyl_moment_app_apply_ic_species(gkyl_moment_app* app, int sidx, double t0)
   int num_quad = app->scheme_type == GKYL_MOMENT_MP ? 4 : 2;  
   gkyl_fv_proj *proj = gkyl_fv_proj_new(&app->grid, num_quad, app->species[sidx].num_equations,
     app->species[sidx].init, app->species[sidx].ctx);
-  
-  gkyl_fv_proj_advance(proj, t0, &app->local, app->species[sidx].fcurr);
+
+  gkyl_fv_proj_advance(proj, t0, &app->local, app->species[sidx].f_host);
   gkyl_fv_proj_release(proj);
+  if (app->use_gpu) {
+    gkyl_array_copy(app->species[sidx].fcurr, app->species[sidx].f_host); 
+  }
 
   if (app->species[sidx].has_app_accel) {
-    gkyl_fv_proj_advance(app->species[sidx].app_accel_proj, t0, &app->local, app->species[sidx].app_accel);
+    gkyl_fv_proj_advance(app->species[sidx].app_accel_proj, t0, &app->local, app->species[sidx].app_accel_host);
+    if (app->use_gpu) {
+      gkyl_array_copy(app->species[sidx].app_accel, app->species[sidx].app_accel_host); 
+    }
   }
 
   moment_species_apply_bc(app, t0, &app->species[sidx], app->species[sidx].fcurr);
@@ -886,10 +901,10 @@ gkyl_moment_app_release(gkyl_moment_app* app)
   gkyl_rect_decomp_release(app->decomp);
   
   for (int i=0; i<app->num_species; ++i)
-    moment_species_release(&app->species[i]);
+    moment_species_release(app, &app->species[i]);
   gkyl_free(app->species);
 
-  moment_field_release(&app->field);
+  moment_field_release(app, &app->field);
 
   if (app->update_mhd_source)
     mhd_src_release(&app->mhd_source);

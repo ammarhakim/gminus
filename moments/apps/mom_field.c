@@ -51,8 +51,12 @@ moment_field_init(const struct gkyl_moment *mom, const struct gkyl_moment_field 
     for (int d=0; d<ndim+1; ++d)
       fld->f[d] = mkarr(app->use_gpu, 8, app->local_ext.volume);
 
-    // set current solution so ICs and IO work properly
+    // set current solution so ICs and IO work properly 
     fld->fcurr = fld->f[0];
+    fld->f_host = fld->f[0];
+    if (app->use_gpu) {
+      fld->f_host = mkarr(false, 8, app->local_ext.volume);
+    }
   }
   else if (fld->scheme_type == GKYL_MOMENT_MP || fld->scheme_type == GKYL_MOMENT_KEP) {
     // NOTE: there is no KEP scheme for Maxwell, and we simply use MP scheme instead
@@ -198,6 +202,10 @@ moment_field_init(const struct gkyl_moment *mom, const struct gkyl_moment_field 
   fld->use_explicit_em_coupling = mom_fld->use_explicit_em_coupling;
 
   fld->ext_em = mkarr(app->use_gpu, 6, app->local_ext.volume);
+  fld->ext_em_host = fld->ext_em; 
+  if (app->use_gpu) {
+    fld->ext_em_host = mkarr(false, 6, app->local_ext.volume);
+  }
   gkyl_array_clear(fld->ext_em, 0.0);
   fld->has_ext_em = false;
   fld->ext_em_evolve = false;
@@ -217,6 +225,10 @@ moment_field_init(const struct gkyl_moment *mom, const struct gkyl_moment_field 
   }  
 
   fld->app_current = mkarr(app->use_gpu, 3, app->local_ext.volume);
+  fld->app_current_host = fld->app_current; 
+  if (app->use_gpu) {
+    fld->app_current_host = mkarr(false, 3, app->local_ext.volume);
+  }
   gkyl_array_clear(fld->app_current, 0.0);
   if(mom_fld->use_explicit_em_coupling){
     fld->app_current1 = mkarr(app->use_gpu, 3, app->local_ext.volume);
@@ -362,7 +374,7 @@ moment_field_rhs(gkyl_moment_app *app, struct moment_field *fld,
 
 // free field
 void
-moment_field_release(const struct moment_field *fld)
+moment_field_release(const gkyl_moment_app *app, const struct moment_field *fld)
 {
   gkyl_wv_eqn_release(fld->maxwell);
   
@@ -378,8 +390,12 @@ moment_field_release(const struct moment_field *fld)
       gkyl_wave_prop_release(fld->slvr[d]);
     
     gkyl_array_release(fld->fdup);
-    for (int d=0; d<fld->ndim+1; ++d)
+    for (int d=0; d<fld->ndim+1; ++d) {
       gkyl_array_release(fld->f[d]);
+    }
+    if (app->use_gpu) {
+      gkyl_array_release(fld->f_host);
+    }
   }
   else if (fld->scheme_type == GKYL_MOMENT_MP || fld->scheme_type == GKYL_MOMENT_KEP) {
     gkyl_mp_scheme_release(fld->mp_slvr);
@@ -401,6 +417,10 @@ moment_field_release(const struct moment_field *fld)
   }
   if (fld->has_app_current) {
     gkyl_fv_proj_release(fld->app_current_proj);
+  }
+  if (app->use_gpu) {
+    gkyl_array_release(fld->ext_em_host);
+    gkyl_array_release(fld->app_current_host);
   }
 
   gkyl_dynvec_release(fld->integ_energy);

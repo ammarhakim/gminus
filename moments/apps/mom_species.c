@@ -122,8 +122,12 @@ moment_species_init(const struct gkyl_moment *mom, const struct gkyl_moment_spec
     for (int d=0; d<ndim+1; ++d)
       sp->f[d] = mkarr(app->use_gpu, meqn, app->local_ext.volume);
   
-    // set current solution so ICs and IO work properly
+    // set current solution so ICs and IO work properly 
     sp->fcurr = sp->f[0];
+    sp->f_host = sp->f[0];
+    if (app->use_gpu) {
+      sp->f_host = mkarr(false, meqn, app->local_ext.volume);
+    }
   }
   else if ( sp->scheme_type == GKYL_MOMENT_MP || sp->scheme_type == GKYL_MOMENT_KEP ) {
     // determine directions to update
@@ -291,6 +295,10 @@ moment_species_init(const struct gkyl_moment *mom, const struct gkyl_moment_spec
 
   // allocate array for applied acceleration/forces for each species
   sp->app_accel = mkarr(app->use_gpu, 3, app->local_ext.volume);
+  sp->app_accel_host = sp->app_accel; 
+  if (app->use_gpu) {
+    sp->app_accel_host = mkarr(false, 3, app->local_ext.volume);
+  }
   gkyl_array_clear(sp->app_accel, 0.0);
   sp->has_app_accel = false;
   sp->app_accel_evolve = false;
@@ -462,7 +470,7 @@ moment_species_rhs(gkyl_moment_app *app, struct moment_species *species,
 
 // free species
 void
-moment_species_release(const struct moment_species *sp)
+moment_species_release(const gkyl_moment_app *app, const struct moment_species *sp)
 {
   gkyl_wv_eqn_release(sp->equation);
   
@@ -478,8 +486,12 @@ moment_species_release(const struct moment_species *sp)
       gkyl_wave_prop_release(sp->slvr[d]);
     
     gkyl_array_release(sp->fdup);
-    for (int d=0; d<sp->ndim+1; ++d)
+    for (int d=0; d<sp->ndim+1; ++d) {
       gkyl_array_release(sp->f[d]);
+    }
+    if (app->use_gpu) {
+      gkyl_array_release(sp->f_host);
+    }
   }
   else if (sp->scheme_type == GKYL_MOMENT_MP || sp->scheme_type == GKYL_MOMENT_KEP) {
 
@@ -498,6 +510,9 @@ moment_species_release(const struct moment_species *sp)
   gkyl_array_release(sp->app_accel);
   if (sp->has_app_accel) {
     gkyl_fv_proj_release(sp->app_accel_proj);
+  }
+  if (app->use_gpu) {
+    gkyl_array_release(sp->app_accel_host);
   }
 
   gkyl_array_release(sp->nT_source);
