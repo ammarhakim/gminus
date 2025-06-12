@@ -38,6 +38,7 @@ struct gkyl_wave_prop {
   struct gkyl_array *redo_fluct;
   // CFL arrays
   struct gkyl_array *cfla, *is_cfl_violated; 
+  double *cfla_ptr, *is_cfl_violated_ptr; 
 
   bool use_gpu; // are we using GPUs?
 

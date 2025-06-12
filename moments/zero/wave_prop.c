@@ -73,6 +73,8 @@ gkyl_wave_prop_new(const struct gkyl_wave_prop_inp *winp)
     up->redo_fluct = gkyl_array_cu_dev_new(GKYL_DOUBLE, 1, tot_vol);
     up->cfla = gkyl_array_cu_dev_new(GKYL_DOUBLE, 1, tot_vol);
     up->is_cfl_violated = gkyl_array_cu_dev_new(GKYL_DOUBLE, 1, tot_vol);
+    up->cfla_ptr = gkyl_cu_malloc(sizeof(double));
+    up->is_cfl_violated_ptr = gkyl_cu_malloc(sizeof(double));
   }
   else {
     up->waves = gkyl_array_new(GKYL_DOUBLE, meqn*mwaves, max_1d);
@@ -472,6 +474,8 @@ gkyl_wave_prop_release(gkyl_wave_prop* up)
   if (up->use_gpu) {
     gkyl_array_release(up->cfla);
     gkyl_array_release(up->is_cfl_violated);    
+    gkyl_cu_free(up->cfla_ptr); 
+    gkyl_cu_free(up->is_cfl_violated_ptr); 
   }
   
   gkyl_wave_geom_release(up->geom);
