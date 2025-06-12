@@ -382,22 +382,22 @@ fused_rotate_waves_qfluct_roe_l(const struct gkyl_wv_eqn *eqn, enum gkyl_wv_flux
   double my_max_speed = 0.0; 
   if (type == GKYL_WV_HIGH_ORDER_FLUX) {
     double waves_local[15];
-    my_max_speed = wave_roe(eqn, delta, ql, qr, waves_local, s);
+    my_max_speed = wave_roe(eqn, delta, ql_local, qr_local, waves_local, s);
     // Rescale speeds (3 waves)
     s[0] *= lenr;
     s[1] *= lenr;
     s[2] *= lenr;
-    qfluct_roe(eqn, ql, qr, waves_local, s, amdq_local, apdq_local);
+    qfluct_roe(eqn, ql_local, qr_local, waves_local, s, amdq_local, apdq_local);
     // Rotate the waves back to global coordinates. 
     rot_to_global(eqn, tau1, tau2, norm, waves_local, waves); 
   }
   else {
     double waves_local[10];
-    my_max_speed = wave_lax(eqn, delta, ql, qr, waves_local, s);
+    my_max_speed = wave_lax(eqn, delta, ql_local, qr_local, waves_local, s);
     // Rescale speeds (2 waves)
     s[0] *= lenr;
     s[1] *= lenr;
-    qfluct_lax(eqn, ql, qr, waves_local, s, amdq_local, apdq_local);
+    qfluct_lax(eqn, ql_local, qr_local, waves_local, s, amdq_local, apdq_local);
     // Rotate the waves back to global coordinates. 
     rot_to_global(eqn, tau1, tau2, norm, waves_local, waves); 
   }
