@@ -53,17 +53,8 @@ gkyl_wave_prop_new(const struct gkyl_wave_prop_inp *winp)
   // second-order correction flux
   int meqn = winp->equation->num_equations, mwaves = winp->equation->num_waves;
   if (up->use_gpu) {
-    // Assume for now a dimensionally split algorithm so num_up_dirs = 1
-    int dir = up->update_dirs[0];
-    // upper/lower bounds in direction 'd'. These are edge indices
-    int loidx = winp->update_range->lower[dir]-1;
-    int upidx = winp->update_range->upper[dir]+2;
-    struct gkyl_range perp_range;
-    gkyl_range_shorten_from_above(&perp_range, winp->update_range, dir, 1);
-    struct gkyl_range_iter iter;
-    gkyl_range_iter_init(&iter, &perp_range);
     // total volume of temporary arrays
-    long tot_vol = perp_range.volume*(upidx - loidx); 
+    long tot_vol = winp->update_range_ext->volume; 
 
     up->waves = gkyl_array_cu_dev_new(GKYL_DOUBLE, meqn*mwaves, tot_vol);
     up->apdq = gkyl_array_cu_dev_new(GKYL_DOUBLE, meqn, tot_vol);
