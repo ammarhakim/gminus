@@ -393,7 +393,7 @@ gkyl_wave_prop_max_dt_cu(gkyl_wave_prop *wv,
     gkyl_wave_prop_max_dt_cu_ker<<<update_range->nblocks, update_range->nthreads>>>(wv->equation->on_dev, 
       dx, cfl, *update_range, wv->geom->on_dev, qin->on_dev, wv->cfla->on_dev);
     // Reduce over the domain to find maximum time step
-    gkyl_array_reduce_range(wv->cfla_ptr, wv->cfla, GKYL_MAX, update_range);  
+    gkyl_array_reduce_range(wv->cfla_ptr, wv->cfla, GKYL_MIN, update_range);  
     gkyl_cu_memcpy(red_cfla, wv->cfla_ptr, sizeof(double), GKYL_CU_MEMCPY_D2H);
     gkyl_comm_allreduce_host(wv->comm, GKYL_DOUBLE, GKYL_MIN, 1, &red_cfla, &red_cfla_global);
     max_dt = fmin(max_dt, red_cfla_global[0]);
