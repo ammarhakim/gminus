@@ -431,6 +431,11 @@ double
 gkyl_wave_prop_max_dt(const gkyl_wave_prop *wv, const struct gkyl_range *update_range,
   const struct gkyl_array *qin)
 {
+#ifdef GKYL_HAVE_CUDA  
+  if (wv->use_gpu) {
+    return gkyl_wave_prop_max_dt_cu(wv, update_range, qin); 
+  }
+#endif  
   double max_dt = DBL_MAX;
   
   struct gkyl_range_iter iter;
