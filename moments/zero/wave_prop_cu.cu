@@ -7,6 +7,7 @@ extern "C" {
 
 #include <gkyl_alloc.h>
 #include <gkyl_array.h>
+#include <gkyl_array_reduce.h>
 #include <gkyl_array_ops.h>
 #include <gkyl_null_comm.h>
 #include <gkyl_rect_decomp.h>
@@ -82,8 +83,7 @@ gkyl_wave_prop_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn,
 
 __global__ static void
 gkyl_wave_prop_redo_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn, 
-  int ndim, int dir,  int loidx, int upidx, int meqn, double cflm, 
-  enum gkyl_wv_flux_type ftype, 
+  int ndim, int dir,  int loidx, int upidx, int meqn, 
   struct gkyl_range update_range, struct gkyl_range perp_range, 
   const struct gkyl_wave_geom *wg, const struct gkyl_array *qin, 
   struct gkyl_array *waves, struct gkyl_array *speeds, struct gkyl_array *amdq, struct gkyl_array *apdq, 
@@ -121,8 +121,7 @@ gkyl_wave_prop_redo_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn,
       double *apdq_d = (double*) gkyl_array_fetch(apdq, ridx);
       double my_max_speed = gkyl_wv_eqn_fused_rotate_waves_qfluct(eqn, GKYL_WV_LOW_ORDER_FLUX, 
         cg->tau1[dir], cg->tau2[dir], cg->norm[dir], cg->lenr[dir], 
-        qinl, qinr, 
-        waves_d, speeds_d, amdq_d, apdq_d); 
+        ql, qr, waves_d, speeds_d, amdq_d, apdq_d); 
 
       // Reset second order flux correction to zero if invariant domain violated 
       // so that no second order fluxes are used if we have to redo any fluctuation
