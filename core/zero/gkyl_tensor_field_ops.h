@@ -4,19 +4,41 @@
 
 
 /**
- * Lowers the index of tensor using the associated metric
+ * Lowers the index of tensor using the associated metric in place (in ten)
  * 
  * @param metric Metric written as a tensor field
  * @param lowered_idx Index to lower of ten
  * @param ten Tensor field
  */
-void gkyl_tensor_field_lower_idx(struct gkyl_tensor_field *metric, int lowered_idx, struct gkyl_tensor_field *ten);
+void gkyl_tensor_field_lower_idx_in_place(struct gkyl_tensor_field *metric, int lowered_idx, struct gkyl_tensor_field *ten);
 
 /**
- * Raises the index of tensor using the associated metric
+ * Raises the index of tensor using the associated metric in place (in ten)
  * 
  * @param metric Metric written as a tensor field
  * @param raised_idx Index to raise of ten
  * @param ten Tensor field
  */
-void gkyl_tensor_field_raise_idx(struct gkyl_tensor_field *metric, int raised_idx, struct gkyl_tensor_field *ten);
+void gkyl_tensor_field_raise_idx_in_place(struct gkyl_tensor_field *metric, int raised_idx, struct gkyl_tensor_field *ten);
+
+/**
+ * Lowers the index of tensor using the associated metric in place (in ten)
+ * 
+ * @param metric Metric written as a tensor field
+ * @param lowered_idx Index to lower of ten
+ * @param ten Tensor field
+ * @param ten_out (output) Tensor field
+ */
+void gkyl_tensor_field_lower_idx_set(const struct gkyl_tensor_field *metric, int lowered_idx, 
+  const struct gkyl_tensor_field *ten, struct gkyl_tensor_field *ten_out);
+
+/**
+ * Raises the index of tensor using the associated metric in place (in ten)
+ * 
+ * @param metric Metric written as a tensor field
+ * @param raised_idx Index to raise of ten
+ * @param ten Tensor field
+ * @param ten_out (output) Tensor field
+ */
+void gkyl_tensor_field_raise_idx_set(const struct gkyl_tensor_field *metric, int raised_idx, 
+  const struct gkyl_tensor_field *ten, struct gkyl_tensor_field *ten_out);
