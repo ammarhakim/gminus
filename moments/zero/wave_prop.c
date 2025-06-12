@@ -131,9 +131,11 @@ gkyl_wave_prop_advance(gkyl_wave_prop *wv,
   double tm, double dt, const struct gkyl_range *update_range,
   const struct gkyl_array *qin, struct gkyl_array *qout)
 {
+#ifdef GKYL_HAVE_CUDA  
   if (wv->use_gpu) {
     return gkyl_wave_prop_advance_cu(wv, tm, dt, update_range, qin, qout); 
   }
+#endif
   wv->n_calls += 1;
   
   int ndim = update_range->ndim;
@@ -429,6 +431,11 @@ double
 gkyl_wave_prop_max_dt(const gkyl_wave_prop *wv, const struct gkyl_range *update_range,
   const struct gkyl_array *qin)
 {
+#ifdef GKYL_HAVE_CUDA  
+  if (wv->use_gpu) {
+    return gkyl_wave_prop_max_dt_cu(wv, update_range, qin); 
+  }
+#endif  
   double max_dt = DBL_MAX;
   
   struct gkyl_range_iter iter;
@@ -473,7 +480,7 @@ gkyl_wave_prop_release(gkyl_wave_prop* up)
   gkyl_comm_release(up->comm);
   if (up->use_gpu) {
     gkyl_array_release(up->cfla);
-    gkyl_array_release(up->is_cfl_violated);    
+    gkyl_array_release(up->is_cfl_violated);   
     gkyl_cu_free(up->cfla_ptr); 
     gkyl_cu_free(up->is_cfl_violated_ptr); 
   }

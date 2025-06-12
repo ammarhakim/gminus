@@ -215,4 +215,15 @@ struct gkyl_wave_prop_status gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
   double tm, double dt, const struct gkyl_range *update_range,
   const struct gkyl_array *qin, struct gkyl_array *qout);
 
+/**
+ * Compute an estimate of maximum stable time-step for given input
+ * state 'qin' on device. 
+ *
+ * @param wv Updater object
+ * @param qin Input to compute dt for
+ * @return maximum stable time-step
+ */
+double gkyl_wave_prop_max_dt_cu(gkyl_wave_prop *wv, const struct gkyl_range *update_range,
+  const struct gkyl_array *qin);
+
 #endif

@@ -193,7 +193,7 @@ gkyl_wave_prop_update_state_cu_kern(double dtdx,
   const struct gkyl_array *amdq, const struct gkyl_array *apdq, const struct gkyl_array *flux2, 
   struct gkyl_array *qout)
 {
-  int idxl[GKYL_MAX_DIM], idxc[GKYL_MAX_DIM], idxr[GKYL_MAX_DIM];
+  int idxc[GKYL_MAX_DIM], idxr[GKYL_MAX_DIM];
   // 2D thread grid
   // linc2 goes from loidx to upidx (total size of linc2 set by upidx-loidx)
   long linc2 = threadIdx.y + blockIdx.y*blockDim.y + loidx_c;
@@ -353,4 +353,50 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
     .dt_suggested = dt_suggested > dt ? dt_suggested : dt,
     .max_speed = 0.0, // Not currently used by GPUs
   }; 
+}
+
+__global__ static void
+gkyl_wave_prop_max_dt_cu_ker(gkyl_wv_eqn *eqn, double dx, double cfl,  
+  struct gkyl_range update_range, const struct gkyl_wave_geom *wg, const struct gkyl_array *qin, 
+  struct gkyl_array *cfla)
+{
+  int idxc[GKYL_MAX_DIM];
+  for (unsigned long tid = threadIdx.x + blockIdx.x*blockDim.x;
+    tid < update_range.volume; tid += blockDim.x*gridDim.x) { 
+
+    gkyl_sub_range_inv_idx(&update_range, tid, idxc);
+    long linc = gkyl_range_idx(&update_range, idxc); 
+    const struct gkyl_wave_cell_geom *cg = gkyl_wave_geom_get(wg, idxc);
+    const double *qc = (const double*) gkyl_array_cfetch(qin, linc);
+    double *cfla_d = (double*) gkyl_array_fetch(cfla, linc);  
+    double my_max_speed = gkyl_wv_eqn_max_speed(eqn, qc);
+    cfla_d[0] = (cfl*dx*cg->kappa)/my_max_speed; 
+  }  
+}
+
+// max dt method
+double 
+gkyl_wave_prop_max_dt_cu(gkyl_wave_prop *wv,
+  const struct gkyl_range *update_range, const struct gkyl_array *qin)
+{
+  double max_dt = DBL_MAX;
+  double cfl = wv->cfl;
+  gkyl_array_clear(wv->cfla, 0.0); 
+  // Small arrays for reducing actual cfl value over the whole domain. 
+  double red_cfla[1];
+  double red_cfla_global[1];
+
+  // Loop over update directions
+  for (int d=0; d<wv->num_up_dirs; ++d) {
+    int dir = wv->update_dirs[d];
+    double dx = wv->grid.dx[dir];
+    gkyl_wave_prop_max_dt_cu_ker<<<update_range->nblocks, update_range->nthreads>>>(wv->equation->on_dev, 
+      dx, cfl, *update_range, wv->geom->on_dev, qin->on_dev, wv->cfla->on_dev);
+    // Reduce over the domain to find maximum time step
+    gkyl_array_reduce_range(wv->cfla_ptr, wv->cfla, GKYL_MIN, update_range);  
+    gkyl_cu_memcpy(red_cfla, wv->cfla_ptr, sizeof(double), GKYL_CU_MEMCPY_D2H);
+    gkyl_comm_allreduce_host(wv->comm, GKYL_DOUBLE, GKYL_MIN, 1, &red_cfla, &red_cfla_global);
+    max_dt = fmin(max_dt, red_cfla_global[0]);
+  }  
+  return max_dt;      
 }
