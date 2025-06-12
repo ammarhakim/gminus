@@ -131,9 +131,11 @@ gkyl_wave_prop_advance(gkyl_wave_prop *wv,
   double tm, double dt, const struct gkyl_range *update_range,
   const struct gkyl_array *qin, struct gkyl_array *qout)
 {
+#ifdef GKYL_HAVE_CUDA  
   if (wv->use_gpu) {
     return gkyl_wave_prop_advance_cu(wv, tm, dt, update_range, qin, qout); 
   }
+#endif
   wv->n_calls += 1;
   
   int ndim = update_range->ndim;
