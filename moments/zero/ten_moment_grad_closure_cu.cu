@@ -47,14 +47,8 @@ create_offsets_centers(const struct gkyl_range *range, long offsets[])
 }
 
 __global__ static void 
-gkyl_ten_moment_grad_closure_set_cu_dev_ptrs(gkyl_ten_moment_grad_closure *gces,
-  struct gkyl_rect_grid grid, double k0, double cfl)
+gkyl_ten_moment_grad_closure_set_cu_dev_ptrs(gkyl_ten_moment_grad_closure *gces)
 {
-  gces->grid = grid;
-  gces->ndim = grid.ndim;
-  gces->k0 = k0;
-  gces->cfl = cfl;
-
   grad_closure_calc_q_choose(gces);
   grad_closure_update_q_choose(gces);
 }
@@ -123,31 +117,17 @@ gkyl_ten_moment_grad_closure_update_cu_ker(const gkyl_ten_moment_grad_closure *g
 }
 
 gkyl_ten_moment_grad_closure*
-gkyl_ten_moment_grad_closure_cu_dev_new(struct gkyl_ten_moment_grad_closure_inp inp)
+gkyl_ten_moment_grad_closure_cu_dev_new(gkyl_ten_moment_grad_closure *gces)
 {
-  gkyl_ten_moment_grad_closure *gces = (gkyl_ten_moment_grad_closure*)
-    gkyl_malloc(sizeof(gkyl_ten_moment_grad_closure));
-
-  gces->cfla = (double*) gkyl_cu_malloc(sizeof(double));
-
-  struct gkyl_null_comm_inp null = { };
-  
-  if (inp.comm)
-    gces->comm = gkyl_comm_acquire(inp.comm);
-  else
-    gces->comm = gkyl_null_comm_inew( &null );
-
   // copy the host struct to device struct
   gkyl_ten_moment_grad_closure *gces_cu = (gkyl_ten_moment_grad_closure*)
     gkyl_cu_malloc(sizeof(gkyl_ten_moment_grad_closure));
   gkyl_cu_memcpy(gces_cu, gces, sizeof(gkyl_ten_moment_grad_closure),
     GKYL_CU_MEMCPY_H2D);
 
-  gkyl_ten_moment_grad_closure_set_cu_dev_ptrs<<<1,1>>>(gces_cu, *(inp.grid),
-    inp.k0, inp.cfl);
+  gkyl_ten_moment_grad_closure_set_cu_dev_ptrs<<<1,1>>>(gces_cu);
   
-  gces->on_dev = gces_cu; // CPU obj points to itself
-  return gces;
+  return gces_cu;
 }
 
 struct gkyl_ten_moment_grad_closure_status
@@ -193,7 +173,8 @@ gkyl_ten_moment_grad_closure_advance_cu(const gkyl_ten_moment_grad_closure *gces
   // compute actual CFL, status & max-speed across all domains
   double red_vars[2] = { cfla[0], is_cfl_violated };
   double red_vars_global[2] = { 0.0, 0.0 };
-  gkyl_comm_allreduce(gces->comm, GKYL_DOUBLE, GKYL_MAX, 2, &red_vars, &red_vars_global);
+  gkyl_comm_allreduce_host(gces->comm, GKYL_DOUBLE, GKYL_MAX, 2, &red_vars,
+    &red_vars_global);
 
   cfla[0] = red_vars_global[0];
   is_cfl_violated = red_vars_global[1];

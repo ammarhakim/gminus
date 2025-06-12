@@ -12,6 +12,7 @@ struct gkyl_ten_moment_grad_closure {
   double k0; // damping coefficient
   double cfl; // CFL number to use
   double *cfla;
+  bool use_gpu; // Boolean to determine whether wave equation object is on host or device
   
   struct gkyl_comm *comm;
 
@@ -917,3 +918,35 @@ grad_closure_update_q_choose(gkyl_ten_moment_grad_closure *gces)
 {
   gces->update_q = grad_closure_update_funcs[gces->ndim - 1];
 }
+
+/**
+ * Create new updater to update pressure tensor in 10 moment equations
+ * using a symmetrized gradient-based closure, q_ijk ~ \partial_i [_i T_{jk}]
+ * Returns RHS for accumulation in a forward Euler method.
+ *
+ * @param gces Host side updater
+ */
+gkyl_ten_moment_grad_closure* gkyl_ten_moment_grad_closure_cu_dev_new(gkyl_ten_moment_grad_closure *gces);
+
+/**
+ * Compute RHS contribution from symmetrized gradient-based closure
+ * in 10 moment system.  The update_rng MUST be a sub-range of the
+ * range on which the array is defined.  That is, it must be either
+ * the same range as the array range, or one created using the
+ * gkyl_sub_range_init method.
+ *
+ * @param gces Gradient closure updater object.
+ * @param heat_flux_rng Range on which to compute heat flux tensor (cell nodes)
+ * @param update_rng Range on which to compute update.
+ * @param fluid Input array of fluid variables 
+ * @param em Total EM variables (plasma + external)
+ * @param cflrate CFL scalar rate (frequency: units of 1/[T]) 
+ * @param heat_flux Array for storing intermediate computation of heat flux tensor (cell nodes)
+ * @param rhs RHS output (NOTE: Returns RHS output of all nfluids)
+ */
+
+struct gkyl_ten_moment_grad_closure_status gkyl_ten_moment_grad_closure_advance_cu(
+  const gkyl_ten_moment_grad_closure *gces, const struct gkyl_range *heat_flux_range,
+  const struct gkyl_range *update_range, const struct gkyl_array *fluid,
+  const struct gkyl_array *em_tot, struct gkyl_array *cflrate, double dt,
+  struct gkyl_array *heat_flux, struct gkyl_array *rhs);

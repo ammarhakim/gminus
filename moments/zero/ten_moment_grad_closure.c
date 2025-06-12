@@ -48,8 +48,7 @@ gkyl_ten_moment_grad_closure_new(struct gkyl_ten_moment_grad_closure_inp inp)
   up->ndim = up->grid.ndim;
   up->k0 = inp.k0;
   up->cfl = inp.cfl;
-
-  up->cfla = gkyl_malloc(sizeof(double));
+  up->use_gpu = inp.use_gpu;
   
   if (inp.comm)
     up->comm = gkyl_comm_acquire(inp.comm);
@@ -58,6 +57,14 @@ gkyl_ten_moment_grad_closure_new(struct gkyl_ten_moment_grad_closure_inp inp)
 
   grad_closure_calc_q_choose(up);
   grad_closure_update_q_choose(up);
+
+  if(inp.use_gpu) {
+    up->cfla = gkyl_cu_malloc(sizeof(double));
+    up->on_dev = gkyl_ten_moment_grad_closure_cu_dev_new(up);
+  }
+  else {
+    up->cfla = gkyl_malloc(sizeof(double));
+  }
   
   return up;
 }
@@ -69,6 +76,11 @@ gkyl_ten_moment_grad_closure_advance(const gkyl_ten_moment_grad_closure *gces,
   struct gkyl_array *cflrate, double dt, struct gkyl_array *heat_flux,
   struct gkyl_array *rhs)
 {
+  if (gces->use_gpu) {
+    return gkyl_ten_moment_grad_closure_advance_cu(gces, heat_flux_range, update_range,
+      fluid, em_tot, cflrate, dt, heat_flux, rhs); 
+  }
+
   int ndim = update_range->ndim;
   long sz[] = { 2, 4, 8 };
 
@@ -158,5 +170,9 @@ gkyl_ten_moment_grad_closure_release(gkyl_ten_moment_grad_closure* up)
 {
   gkyl_comm_release(up->comm);
   gkyl_free(up->cfla);
-  free(up);
+  if (up->use_gpu) {
+    gkyl_cu_free(up->on_dev.cfla);
+    gkyl_free(up->on_dev);
+  }
+  gkyl_free(up);
 }
