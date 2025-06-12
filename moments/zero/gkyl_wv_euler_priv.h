@@ -389,7 +389,9 @@ fused_rotate_waves_qfluct_roe_l(const struct gkyl_wv_eqn *eqn, enum gkyl_wv_flux
     s[2] *= lenr;
     qfluct_roe(eqn, ql_local, qr_local, waves_local, s, amdq_local, apdq_local);
     // Rotate the waves back to global coordinates. 
-    rot_to_global(eqn, tau1, tau2, norm, waves_local, waves); 
+    rot_to_global(eqn, tau1, tau2, norm, &waves_local[0], &waves[0]); 
+    rot_to_global(eqn, tau1, tau2, norm, &waves_local[5], &waves[5]); 
+    rot_to_global(eqn, tau1, tau2, norm, &waves_local[10], &waves[10]); 
   }
   else {
     double waves_local[10];
@@ -399,7 +401,8 @@ fused_rotate_waves_qfluct_roe_l(const struct gkyl_wv_eqn *eqn, enum gkyl_wv_flux
     s[1] *= lenr;
     qfluct_lax(eqn, ql_local, qr_local, waves_local, s, amdq_local, apdq_local);
     // Rotate the waves back to global coordinates. 
-    rot_to_global(eqn, tau1, tau2, norm, waves_local, waves); 
+    rot_to_global(eqn, tau1, tau2, norm, &waves_local[0], &waves[0]); 
+    rot_to_global(eqn, tau1, tau2, norm, &waves_local[5], &waves[5]); 
   }
   rot_to_global(eqn, tau1, tau2, norm, amdq_local, amdq); 
   rot_to_global(eqn, tau1, tau2, norm, apdq_local, apdq); 
