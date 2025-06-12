@@ -330,7 +330,7 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
         *update_range, perp_range, 
         wv->geom->on_dev, wv->redo_fluct->on_dev, qin->on_dev, 
         wv->amdq->on_dev, wv->apdq->on_dev,  wv->flux2->on_dev, 
-        wv->redo_fluct->on_dev, qout->on_dev); 
+        qout->on_dev); 
     }
   }  
 
