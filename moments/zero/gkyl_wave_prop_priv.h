@@ -223,7 +223,7 @@ struct gkyl_wave_prop_status gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
  * @param qin Input to compute dt for
  * @return maximum stable time-step
  */
-double gkyl_wave_prop_max_dt_cu(const gkyl_wave_prop *wv, const struct gkyl_range *update_range,
+double gkyl_wave_prop_max_dt_cu(gkyl_wave_prop *wv, const struct gkyl_range *update_range,
   const struct gkyl_array *qin);
 
 #endif
