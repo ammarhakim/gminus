@@ -47,9 +47,9 @@ moment_field_init(const struct gkyl_moment *mom, const struct gkyl_moment_field 
       );
 
     // allocate arrays
-    fld->fdup = mkarr(false, 8, app->local_ext.volume);
+    fld->fdup = mkarr(app->use_gpu, 8, app->local_ext.volume);
     for (int d=0; d<ndim+1; ++d)
-      fld->f[d] = mkarr(false, 8, app->local_ext.volume);
+      fld->f[d] = mkarr(app->use_gpu, 8, app->local_ext.volume);
 
     // set current solution so ICs and IO work properly
     fld->fcurr = fld->f[0];
@@ -83,10 +83,10 @@ moment_field_init(const struct gkyl_moment *mom, const struct gkyl_moment_field 
     );
 
     // allocate arrays
-    fld->f0 = mkarr(false, 8, app->local_ext.volume);
-    fld->f1 = mkarr(false, 8, app->local_ext.volume);
-    fld->fnew = mkarr(false, 8, app->local_ext.volume);
-    fld->cflrate = mkarr(false, 1, app->local_ext.volume);
+    fld->f0 = mkarr(app->use_gpu, 8, app->local_ext.volume);
+    fld->f1 = mkarr(app->use_gpu, 8, app->local_ext.volume);
+    fld->fnew = mkarr(app->use_gpu, 8, app->local_ext.volume);
+    fld->cflrate = mkarr(app->use_gpu, 1, app->local_ext.volume);
 
     // set current solution so ICs and IO work properly
     fld->fcurr = fld->f0;
@@ -197,7 +197,7 @@ moment_field_init(const struct gkyl_moment *mom, const struct gkyl_moment_field 
 
   fld->use_explicit_em_coupling = mom_fld->use_explicit_em_coupling;
 
-  fld->ext_em = mkarr(false, 6, app->local_ext.volume);
+  fld->ext_em = mkarr(app->use_gpu, 6, app->local_ext.volume);
   gkyl_array_clear(fld->ext_em, 0.0);
   fld->has_ext_em = false;
   fld->ext_em_evolve = false;
@@ -216,12 +216,12 @@ moment_field_init(const struct gkyl_moment *mom, const struct gkyl_moment_field 
       mom_fld->ext_em, mom_fld->ext_em_ctx);    
   }  
 
-  fld->app_current = mkarr(false, 3, app->local_ext.volume);
+  fld->app_current = mkarr(app->use_gpu, 3, app->local_ext.volume);
   gkyl_array_clear(fld->app_current, 0.0);
   if(mom_fld->use_explicit_em_coupling){
-    fld->app_current1 = mkarr(false, 3, app->local_ext.volume);
+    fld->app_current1 = mkarr(app->use_gpu, 3, app->local_ext.volume);
     gkyl_array_clear(fld->app_current1, 0.0);
-    fld->app_current2 = mkarr(false, 3, app->local_ext.volume);
+    fld->app_current2 = mkarr(app->use_gpu, 3, app->local_ext.volume);
     gkyl_array_clear(fld->app_current2, 0.0);
   }
   fld->has_app_current = false;
@@ -251,7 +251,7 @@ moment_field_init(const struct gkyl_moment *mom, const struct gkyl_moment_field 
     long vol = app->skin_ghost.lower_skin[d].volume;
     buff_sz = buff_sz > vol ? buff_sz : vol;
   }
-  fld->bc_buffer = mkarr(false, 8, buff_sz);
+  fld->bc_buffer = mkarr(app->use_gpu, 8, buff_sz);
 
   gkyl_wv_eqn_release(maxwell);
 

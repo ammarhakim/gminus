@@ -125,8 +125,8 @@ moment_coupling_init(const struct gkyl_moment_app *app, struct moment_coupling *
 
   for (int n=0; n<app->num_species; ++n) {
     int meqn = app->species[n].num_equations;
-    src->pr_rhs[n] = mkarr(false, meqn, app->local_ext.volume);
-    src->non_ideal_cflrate[n] = mkarr(false, 1, app->local_ext.volume);
+    src->pr_rhs[n] = mkarr(app->use_gpu, meqn, app->local_ext.volume);
+    src->non_ideal_cflrate[n] = mkarr(app->use_gpu, 1, app->local_ext.volume);
   }
 
   int ghost[3] = { 1, 1, 1 };
@@ -139,7 +139,7 @@ moment_coupling_init(const struct gkyl_moment_app *app, struct moment_coupling *
   for (int i=0; i<app->num_species; ++i) {
     if (app->species[i].eqn_type == GKYL_EQN_TEN_MOMENT && app->species[i].has_grad_closure) {
       int nadj[3] = { 1, 4, 8 }; // cells adjacent to a vertex
-      src->non_ideal_vars[i] = mkarr(false, nadj[app->ndim - 1]*10, src->non_ideal_local_ext.volume);
+      src->non_ideal_vars[i] = mkarr(app->use_gpu, nadj[app->ndim - 1]*10, src->non_ideal_local_ext.volume);
       struct gkyl_ten_moment_grad_closure_inp grad_closure_inp = {
         .grid = &app->grid,
         .k0 = app->species[i].k0,
@@ -160,7 +160,7 @@ moment_coupling_init(const struct gkyl_moment_app *app, struct moment_coupling *
       .coll_fac = app->coll_fac == 0 ? 1.0 : app->coll_fac,
     };
     for (int i=0; i<app->num_species; ++i) {
-      src->non_ideal_vars[i] = mkarr(false, 10, src->non_ideal_local_ext.volume);
+      src->non_ideal_vars[i] = mkarr(app->use_gpu, 10, src->non_ideal_local_ext.volume);
       // Braginskii coefficients depend on pressure and coefficient to obtain
       // pressure is different for different equation systems (gasGamma, vt, Tr(P))
       double p_fac = 1.0;
