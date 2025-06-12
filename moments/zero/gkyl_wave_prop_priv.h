@@ -210,7 +210,7 @@ calc_second_order_update(int meqn, double dtdx, double * GKYL_RESTRICT qout,
  * @param qin Input to updater
  * @param qout Solution at tm+dt
  */
-struct gkyl_wave_prop_status gkyl_wave_prop_advance(gkyl_wave_prop *wv,
+struct gkyl_wave_prop_status gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
   double tm, double dt, const struct gkyl_range *update_range,
   const struct gkyl_array *qin, struct gkyl_array *qout);
 
