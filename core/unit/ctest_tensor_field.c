@@ -1,12 +1,7 @@
 #include <acutest.h>
 #include <mpack.h>
 
-#include <gkyl_alloc.h>
 #include <gkyl_tensor_field.h>
-#include <gkyl_elem_type_priv.h>
-#include <gkyl_range.h>
-#include <gkyl_rect_decomp.h>
-#include <gkyl_rect_grid.h>
 #include <gkyl_util.h>
 
 
