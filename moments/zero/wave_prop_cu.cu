@@ -105,10 +105,12 @@ gkyl_wave_prop_redo_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn,
       long ridx = gkyl_range_idx(&update_range, idxr);
       const double *ql = (const double*) gkyl_array_cfetch(qin, lidx);
       const double *qr = (const double*) gkyl_array_cfetch(qin, ridx);
+      // Zero out redo fluctuation flag so no time steps are redone by default. 
+      double *redo_fluct_c = (double*) gkyl_array_fetch(redo_fluct, ridx);
+      redo_fluct_c[0] = 0.0; 
       // Check the solution on both sides of the interface
       if (!gkyl_wv_eqn_fuse_check_inv(eqn, ql, qr)) {
         // Set redo_fluct flag to be true for re-doing update with re-computed fluctuations
-        double *redo_fluct_c = (double*) gkyl_array_fetch(redo_fluct, ridx);
         redo_fluct_c[0] = 1.0; 
         // Fetch the geometry, waves, speeds, and A^-/+ Delta Q fluctuations arrays
         // Every cell owns its lower interface values, so we fetch using ridx since idxr[dir] = linc2 is
