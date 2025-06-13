@@ -207,8 +207,8 @@ void test_cu_tensor_field_base()
 
    TEST_CHECK( gkyl_tensor_field_is_cu_dev(tfld_cu) == true );
 
-  TEST_CHECK( tfld->tdata->size == size );
-  TEST_CHECK( tfld->tdata->ncomp == pow(ndim,rank) );
+  TEST_CHECK( tfld_cu->tdata->size == size );
+  TEST_CHECK( tfld_cu->tdata->ncomp == pow(ndim,rank) );
 
   // create host array and initialize it
   struct gkyl_tensor_field *tfld = gkyl_tensor_field_new(rank,ndim,size,iloc);
