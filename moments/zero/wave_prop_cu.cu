@@ -256,9 +256,11 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
 
   // To avoid race conditions on the wave limiting, split the second order flux
   // computation into a separate kernel after waves and fluctuations computed
+  int nblocks_f = (perp_range.volume*(upidx - loidx - 1))/nthreads + 1;
+  long size_f = perp_range.volume*(upidx - loidx);
   gkyl_array_clear(wv->flux2, 0.0);
-  gkyl_wave_prop_second_order_flux_cu_ker<<<nblocks_e, nthreads>>>(wv->limiter, dtdx, 
-    ndim, dir, size, meqn, mwaves, *update_range, 
+  gkyl_wave_prop_second_order_flux_cu_ker<<<nblocks_f, nthreads>>>(wv->limiter, dtdx, 
+    ndim, dir, size_f, meqn, mwaves, *update_range, 
     wv->geom->on_dev, wv->waves->on_dev, wv->speeds->on_dev, wv->flux2->on_dev);
 
   // Before updating the state, determine if the CFL was violated anywhere in the domain
