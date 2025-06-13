@@ -205,7 +205,7 @@ void test_cu_tensor_field_base()
   TEST_CHECK( tfld_cu->size == 10 );
   TEST_CHECK( tfld_cu->ref_count.count == 1 );
 
-   TEST_CHECK( gkyl_tensor_field_is_cu_dev(arr_cu) == true );
+   TEST_CHECK( gkyl_tensor_field_is_cu_dev(tfld_cu) == true );
 
   TEST_CHECK( tfld->tdata->size == size );
   TEST_CHECK( tfld->tdata->ncomp == pow(ndim,rank) );
