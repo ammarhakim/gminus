@@ -245,7 +245,7 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
   // Extend the local range by 1 in each direction for indexing ghost cells
   struct gkyl_range gpu_ext_range;
   int extend[] = {1, 1, 1};
-  gkyl_range_extend(&gpu_ext_range, &update_range, extend, extend)
+  gkyl_range_extend(&gpu_ext_range, update_range, extend, extend)
 
   // Copy previous time step solution 
   gkyl_array_set_range(qout, 1.0, qin, update_range); 
