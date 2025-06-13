@@ -71,7 +71,7 @@ gkyl_tensor_field_release(const struct gkyl_tensor_field* ten)
 #ifdef GKYL_HAVE_CUDA
 
 struct gkyl_tensor_field*
-gkyl_tensor_field_cu_dev_new(enum gkyl_elem_type type, size_t ncomp, size_t size)
+gkyl_tensor_field_cu_dev_new(size_t rank, size_t ndim, size_t size, const enum gkyl_tensor_index_loc *iloc)
 {
   struct gkyl_tensor_field* tfld = gkyl_malloc(sizeof(struct gkyl_tensor_field));
 
@@ -116,7 +116,7 @@ gkyl_tensor_field_cu_dev_new(enum gkyl_elem_type type, size_t ncomp, size_t size
 }
 
 struct gkyl_tensor_field*
-gkyl_tensor_field_cu_host_new(enum gkyl_elem_type type, size_t ncomp, size_t size)
+gkyl_tensor_field_cu_host_new(size_t rank, size_t ndim, size_t size, const enum gkyl_tensor_index_loc *iloc)
 {
   struct gkyl_tensor_field* tfld = gkyl_cu_malloc_host(sizeof(struct gkyl_tensor_field));
 

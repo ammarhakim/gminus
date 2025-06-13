@@ -2,6 +2,7 @@
 
 extern "C" {
 #include <gkyl_alloc.h>
+#include <gkyl_tensor_field.h>
 #include <gkyl_tensor_field_ops.h>
 #include <gkyl_util.h>
 }
