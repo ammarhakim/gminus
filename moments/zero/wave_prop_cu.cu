@@ -39,45 +39,45 @@ gkyl_wave_prop_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn,
   struct gkyl_array *cfla, struct gkyl_array *is_cfl_violated)
 {
   int idxl[GKYL_MAX_DIM], idxr[GKYL_MAX_DIM];
-  // 2D thread grid
-  // linc2 goes from loidx to upidx (total size of linc2 set by upidx-loidx)
-  long linc2 = threadIdx.y + blockIdx.y*blockDim.y + loidx;
-  for (unsigned long tid = threadIdx.x + blockIdx.x*blockDim.x;
-    tid < perp_range.volume; tid += blockDim.x*gridDim.x) {
+  for (unsigned long tid_x = threadIdx.x + blockIdx.x*blockDim.x;
+    tid_x < perp_range.volume; tid_x += blockDim.x*gridDim.x) {
 
-    gkyl_sub_range_inv_idx(&perp_range, tid, idxl);
+    gkyl_sub_range_inv_idx(&perp_range, tid_x, idxl);
     gkyl_copy_int_arr(ndim, idxl, idxr);
+    for (unsigned long tid_y = threadIdx.y + blockIdx.y*blockDim.y + loidx;
+      tid_y < upidx-loidx; tid_y += blockDim.y*gridDim.y) {
 
-    // perform 1D sweeps handled by second dimension of thread grid
-    idxl[dir] = linc2-1; idxr[dir] = linc2;
+      // perform 1D sweeps handled by second dimension of thread grid
+      idxl[dir] = tid_y-1; idxr[dir] = tid_y;
 
-    long lidx = gkyl_range_idx(&update_range, idxl);
-    long ridx = gkyl_range_idx(&update_range, idxr);
+      long lidx = gkyl_range_idx(&update_range, idxl);
+      long ridx = gkyl_range_idx(&update_range, idxr);
 
-    // Fetch the geometry, waves, speeds, and A^-/+ Delta Q fluctuations arrays
-    // Every cell owns its lower interface values, so we fetch using ridx since idxr[dir] = linc2 is
-    // the current cell. 
-    const struct gkyl_wave_cell_geom *cg = gkyl_wave_geom_get(wg, idxr);
-    double *waves_d = (double*) gkyl_array_fetch(waves, ridx);
-    double *speeds_d = (double*) gkyl_array_fetch(speeds, ridx);
-    double *amdq_d = (double*) gkyl_array_fetch(amdq, ridx);
-    double *apdq_d = (double*) gkyl_array_fetch(apdq, ridx);
+      // Fetch the geometry, waves, speeds, and A^-/+ Delta Q fluctuations arrays
+      // Every cell owns its lower interface values, so we fetch using ridx since idxr[dir] = tid_y is
+      // the current cell. 
+      const struct gkyl_wave_cell_geom *cg = gkyl_wave_geom_get(wg, idxr);
+      double *waves_d = (double*) gkyl_array_fetch(waves, ridx);
+      double *speeds_d = (double*) gkyl_array_fetch(speeds, ridx);
+      double *amdq_d = (double*) gkyl_array_fetch(amdq, ridx);
+      double *apdq_d = (double*) gkyl_array_fetch(apdq, ridx);
 
-    const double *qinl = (const double*) gkyl_array_cfetch(qin, lidx);
-    const double *qinr = (const double*) gkyl_array_cfetch(qin, ridx);
+      const double *qinl = (const double*) gkyl_array_cfetch(qin, lidx);
+      const double *qinr = (const double*) gkyl_array_cfetch(qin, ridx);
 
-    double my_max_speed = gkyl_wv_eqn_fused_rotate_waves_qfluct(eqn, ftype, 
-      cg->tau1[dir], cg->tau2[dir], cg->norm[dir], cg->lenr[dir], 
-      qinl, qinr, 
-      waves_d, speeds_d, amdq_d, apdq_d); 
+      double my_max_speed = gkyl_wv_eqn_fused_rotate_waves_qfluct(eqn, ftype, 
+        cg->tau1[dir], cg->tau2[dir], cg->norm[dir], cg->lenr[dir], 
+        qinl, qinr, 
+        waves_d, speeds_d, amdq_d, apdq_d); 
 
-    double *cfla_d = (double*) gkyl_array_fetch(cfla, ridx);  
-    cfla_d[0] = dtdx/cg->kappa*my_max_speed; 
-    // check time-step before any updates are performed
-    if (cfla_d[0] > cflm) {
-      double *is_cfl_violated_d = (double*) gkyl_array_fetch(is_cfl_violated, ridx);  
-      is_cfl_violated_d[0] = 1.0;
-    }       
+      double *cfla_d = (double*) gkyl_array_fetch(cfla, ridx);  
+      cfla_d[0] = dtdx/cg->kappa*my_max_speed; 
+      // check time-step before any updates are performed
+      if (cfla_d[0] > cflm) {
+        double *is_cfl_violated_d = (double*) gkyl_array_fetch(is_cfl_violated, ridx);  
+        is_cfl_violated_d[0] = 1.0;
+      }   
+    }    
   }
 }
 
@@ -90,45 +90,45 @@ gkyl_wave_prop_redo_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn,
   struct gkyl_array *flux2, struct gkyl_array *redo_fluct)
 {
   int idxl[GKYL_MAX_DIM], idxr[GKYL_MAX_DIM];
-  // 2D thread grid
-  // linc2 goes from loidx to upidx (total size of linc2 set by upidx-loidx)
-  long linc2 = threadIdx.y + blockIdx.y*blockDim.y + loidx;
-  for (unsigned long tid = threadIdx.x + blockIdx.x*blockDim.x;
-    tid < perp_range.volume; tid += blockDim.x*gridDim.x) {
+  for (unsigned long tid_x = threadIdx.x + blockIdx.x*blockDim.x;
+    tid_x < perp_range.volume; tid_x += blockDim.x*gridDim.x) {
 
-    gkyl_sub_range_inv_idx(&perp_range, tid, idxl);
+    gkyl_sub_range_inv_idx(&perp_range, tid_x, idxl);
     gkyl_copy_int_arr(ndim, idxl, idxr);
+    for (unsigned long tid_y = threadIdx.y + blockIdx.y*blockDim.y + loidx;
+      tid_y < upidx-loidx; tid_y += blockDim.y*gridDim.y) {   
 
-    // perform 1D sweeps handled by second dimension of thread grid
-    idxl[dir] = linc2-1; idxr[dir] = linc2;
+      // perform 1D sweeps handled by second dimension of thread grid
+      idxl[dir] = tid_y-1; idxr[dir] = tid_y;
 
-    long lidx = gkyl_range_idx(&update_range, idxl);
-    long ridx = gkyl_range_idx(&update_range, idxr);
-    const double *ql = (const double*) gkyl_array_cfetch(qin, lidx);
-    const double *qr = (const double*) gkyl_array_cfetch(qin, ridx);
-    // Check the solution on both sides of the interface
-    if (!gkyl_wv_eqn_fuse_check_inv(eqn, ql, qr)) {
-      // Set redo_fluct flag to be true for re-doing update with re-computed fluctuations
-      double *redo_fluct_c = (double*) gkyl_array_fetch(redo_fluct, ridx);
-      redo_fluct_c[0] = 1.0; 
-      // Fetch the geometry, waves, speeds, and A^-/+ Delta Q fluctuations arrays
-      // Every cell owns its lower interface values, so we fetch using ridx since idxr[dir] = linc2 is
-      // the current cell. 
-      const struct gkyl_wave_cell_geom *cg = gkyl_wave_geom_get(wg, idxr);
-      double *waves_d = (double*) gkyl_array_fetch(waves, ridx);
-      double *speeds_d = (double*) gkyl_array_fetch(speeds, ridx);
-      double *amdq_d = (double*) gkyl_array_fetch(amdq, ridx);
-      double *apdq_d = (double*) gkyl_array_fetch(apdq, ridx);
-      double my_max_speed = gkyl_wv_eqn_fused_rotate_waves_qfluct(eqn, GKYL_WV_LOW_ORDER_FLUX, 
-        cg->tau1[dir], cg->tau2[dir], cg->norm[dir], cg->lenr[dir], 
-        ql, qr, waves_d, speeds_d, amdq_d, apdq_d); 
+      long lidx = gkyl_range_idx(&update_range, idxl);
+      long ridx = gkyl_range_idx(&update_range, idxr);
+      const double *ql = (const double*) gkyl_array_cfetch(qin, lidx);
+      const double *qr = (const double*) gkyl_array_cfetch(qin, ridx);
+      // Check the solution on both sides of the interface
+      if (!gkyl_wv_eqn_fuse_check_inv(eqn, ql, qr)) {
+        // Set redo_fluct flag to be true for re-doing update with re-computed fluctuations
+        double *redo_fluct_c = (double*) gkyl_array_fetch(redo_fluct, ridx);
+        redo_fluct_c[0] = 1.0; 
+        // Fetch the geometry, waves, speeds, and A^-/+ Delta Q fluctuations arrays
+        // Every cell owns its lower interface values, so we fetch using ridx since idxr[dir] = linc2 is
+        // the current cell. 
+        const struct gkyl_wave_cell_geom *cg = gkyl_wave_geom_get(wg, idxr);
+        double *waves_d = (double*) gkyl_array_fetch(waves, ridx);
+        double *speeds_d = (double*) gkyl_array_fetch(speeds, ridx);
+        double *amdq_d = (double*) gkyl_array_fetch(amdq, ridx);
+        double *apdq_d = (double*) gkyl_array_fetch(apdq, ridx);
+        double my_max_speed = gkyl_wv_eqn_fused_rotate_waves_qfluct(eqn, GKYL_WV_LOW_ORDER_FLUX, 
+            cg->tau1[dir], cg->tau2[dir], cg->norm[dir], cg->lenr[dir], 
+            ql, qr, waves_d, speeds_d, amdq_d, apdq_d); 
 
-      // Reset second order flux correction to zero if invariant domain violated 
-      // so that no second order fluxes are used if we have to redo any fluctuation
-      // computation.
-      double *flux2_d = (double*) gkyl_array_fetch(flux2, ridx);
-      for (int i=0; i<meqn; ++i) {
-        flux2_d[i] = 0.0; 
+        // Reset second order flux correction to zero if invariant domain violated 
+        // so that no second order fluxes are used if we have to redo any fluctuation
+        // computation.
+        double *flux2_d = (double*) gkyl_array_fetch(flux2, ridx);
+        for (int i=0; i<meqn; ++i) {
+          flux2_d[i] = 0.0; 
+        }
       }
     }
   }
@@ -142,45 +142,45 @@ gkyl_wave_prop_second_order_flux_cu_ker(enum gkyl_wave_limiter limiter, double d
   struct gkyl_array *flux2)
 {
   int idxl[GKYL_MAX_DIM], idxc[GKYL_MAX_DIM], idxr[GKYL_MAX_DIM];
-  // 2D thread grid
-  // linc2 goes from loidx to upidx (total size of linc2 set by upidx-loidx)
-  long linc2 = threadIdx.y + blockIdx.y*blockDim.y + loidx;
-  for (unsigned long tid = threadIdx.x + blockIdx.x*blockDim.x;
-    tid < perp_range.volume; tid += blockDim.x*gridDim.x) {
+  for (unsigned long tid_x = threadIdx.x + blockIdx.x*blockDim.x;
+    tid_x < perp_range.volume; tid_x += blockDim.x*gridDim.x) {
 
-    gkyl_sub_range_inv_idx(&perp_range, tid, idxc);
+    gkyl_sub_range_inv_idx(&perp_range, tid_x, idxc);
     gkyl_copy_int_arr(ndim, idxc, idxl);
     gkyl_copy_int_arr(ndim, idxl, idxr);
+    for (unsigned long tid_y = threadIdx.y + blockIdx.y*blockDim.y + loidx;
+      tid_y < upidx-loidx; tid_y += blockDim.y*gridDim.y) { 
 
-    // perform 1D sweeps handled by second dimension of thread grid
-    idxl[dir] = linc2-1; idxc[dir] = linc2; idxr[dir] = linc2+1; 
-    long linl = gkyl_range_idx(&update_range, idxl); 
-    long linc = gkyl_range_idx(&update_range, idxc); 
-    long linr = gkyl_range_idx(&update_range, idxr);
-    const double *s = (const double*) gkyl_array_cfetch(speeds, linc);
-    double *wc = (double*) gkyl_array_cfetch(waves, linc);
-    for (int mw=0; mw<mwaves; ++mw) {
-      const double *wl = (const double*) gkyl_array_cfetch(waves, linl);
-      const double *wr = (const double*) gkyl_array_cfetch(waves, linr);
+      // perform 1D sweeps handled by second dimension of thread grid
+      idxl[dir] = tid_y-1; idxc[dir] = tid_y; idxr[dir] = tid_y+1; 
+      long linl = gkyl_range_idx(&update_range, idxl); 
+      long linc = gkyl_range_idx(&update_range, idxc); 
+      long linr = gkyl_range_idx(&update_range, idxr);
+      const double *s = (const double*) gkyl_array_cfetch(speeds, linc);
+      double *wc = (double*) gkyl_array_cfetch(waves, linc);
+      for (int mw=0; mw<mwaves; ++mw) {
+        const double *wl = (const double*) gkyl_array_cfetch(waves, linl);
+        const double *wr = (const double*) gkyl_array_cfetch(waves, linr);
 
-      double dotl = wave_dot_prod(meqn, &wl[mw*meqn], &wc[mw*meqn]);
-      double wnorm2 = wave_dot_prod(meqn, &wc[mw*meqn], &wc[mw*meqn]);
-      double dotr = wave_dot_prod(meqn, &wc[mw*meqn], &wr[mw*meqn]);
-      if (wnorm2 > 0) {
-        double r = s[mw] > 0 ? dotl/wnorm2 : dotr/wnorm2;
-        double theta = limiter_function(r, limiter);
-        wave_rescale(meqn, theta, &wc[mw*meqn]);
+        double dotl = wave_dot_prod(meqn, &wl[mw*meqn], &wc[mw*meqn]);
+        double wnorm2 = wave_dot_prod(meqn, &wc[mw*meqn], &wc[mw*meqn]);
+        double dotr = wave_dot_prod(meqn, &wc[mw*meqn], &wr[mw*meqn]);
+        if (wnorm2 > 0) {
+          double r = s[mw] > 0 ? dotl/wnorm2 : dotr/wnorm2;
+          double theta = limiter_function(r, limiter);
+          wave_rescale(meqn, theta, &wc[mw*meqn]);
+        }
       }
-    }
-    // Each cell owns its flux at the lower interface, so fetch the 
-    // lower and center geometry to get kappa on either side of the interface
-    const struct gkyl_wave_cell_geom *cgl = gkyl_wave_geom_get(wg, idxl);
-    const struct gkyl_wave_cell_geom *cgc = gkyl_wave_geom_get(wg, idxc);
-    double kappal = cgl->kappa;
-    double kappac = cgc->kappa;
-    double *flux2_d = (double*) gkyl_array_fetch(flux2, linc);
-    for (int mw=0; mw<mwaves; ++mw) {
-      calc_second_order_qflux(meqn, dtdx/(0.5*(kappal+kappac)), s[mw], &wc[mw*meqn], flux2_d);
+      // Each cell owns its flux at the lower interface, so fetch the 
+      // lower and center geometry to get kappa on either side of the interface
+      const struct gkyl_wave_cell_geom *cgl = gkyl_wave_geom_get(wg, idxl);
+      const struct gkyl_wave_cell_geom *cgc = gkyl_wave_geom_get(wg, idxc);
+      double kappal = cgl->kappa;
+      double kappac = cgc->kappa;
+      double *flux2_d = (double*) gkyl_array_fetch(flux2, linc);
+      for (int mw=0; mw<mwaves; ++mw) {
+        calc_second_order_qflux(meqn, dtdx/(0.5*(kappal+kappac)), s[mw], &wc[mw*meqn], flux2_d);
+      }
     }
   }
 }
@@ -194,33 +194,34 @@ gkyl_wave_prop_update_state_cu_kern(double dtdx,
   struct gkyl_array *qout)
 {
   int idxc[GKYL_MAX_DIM], idxr[GKYL_MAX_DIM];
-  // 2D thread grid
-  // linc2 goes from loidx to upidx (total size of linc2 set by upidx-loidx)
-  long linc2 = threadIdx.y + blockIdx.y*blockDim.y + loidx_c;
-  for (unsigned long tid = threadIdx.x + blockIdx.x*blockDim.x;
-    tid < perp_range.volume; tid += blockDim.x*gridDim.x) { 
+  for (unsigned long tid_x = threadIdx.x + blockIdx.x*blockDim.x;
+    tid_x < perp_range.volume; tid_x += blockDim.x*gridDim.x) { 
 
-    gkyl_sub_range_inv_idx(&update_range, tid, idxc);
+    gkyl_sub_range_inv_idx(&update_range, tid_x, idxc);
     gkyl_copy_int_arr(ndim, idxc, idxr);
-    idxr[dir] = linc2+1; 
-    long linc = gkyl_range_idx(&update_range, idxc); 
-    long linr = gkyl_range_idx(&update_range, idxr);
-    const double *redo_fluct_c = (const double*) gkyl_array_cfetch(redo_fluct, linc);
-    if (redo_fluct_c[0] > 0.0) {
-      // Each cell owns its flux at the lower interface, so fetch the 
-      // lower geometry to get kappa in the cell and the right-going fluctuations 
-      // and second order fluxes on the lower interface and left-going fluctuations
-      // and second order fluxes on the upper interface
-      const struct gkyl_wave_cell_geom *cg = gkyl_wave_geom_get(wg, idxc);
-      const double *apdq_l = (const double*) gkyl_array_cfetch(apdq, linc);
-      const double *amdq_r = (const double*) gkyl_array_cfetch(amdq, linr);
-      const double *flux2_l = (const double*) gkyl_array_cfetch(flux2, linc);
-      const double *flux2_r = (const double*) gkyl_array_cfetch(flux2, linr);
-      const double *qin_c = (const double*) gkyl_array_cfetch(qin, linc);
-      double *qout_c = (double*) gkyl_array_fetch(qout, linc);
-      for (int i=0; i<meqn; ++i) {
-        qout_c[i] = qin_c[i] 
-          - dtdx/cg->kappa*(apdq_l[i] + amdq_r[i] + flux2_r[i] - flux2_l[i]);
+    for (unsigned long tid_y = threadIdx.y + blockIdx.y*blockDim.y + loidx_c;
+      tid_y < upidx_c-loidx_c; tid_y += blockDim.y*gridDim.y) { 
+
+      idxr[dir] = tid_y+1; 
+      long linc = gkyl_range_idx(&update_range, idxc); 
+      long linr = gkyl_range_idx(&update_range, idxr);
+      const double *redo_fluct_c = (const double*) gkyl_array_cfetch(redo_fluct, linc);
+      if (redo_fluct_c[0] > 0.0) {
+        // Each cell owns its flux at the lower interface, so fetch the 
+        // lower geometry to get kappa in the cell and the right-going fluctuations 
+        // and second order fluxes on the lower interface and left-going fluctuations
+        // and second order fluxes on the upper interface
+        const struct gkyl_wave_cell_geom *cg = gkyl_wave_geom_get(wg, idxc);
+        const double *apdq_l = (const double*) gkyl_array_cfetch(apdq, linc);
+        const double *amdq_r = (const double*) gkyl_array_cfetch(amdq, linr);
+        const double *flux2_l = (const double*) gkyl_array_cfetch(flux2, linc);
+        const double *flux2_r = (const double*) gkyl_array_cfetch(flux2, linr);
+        const double *qin_c = (const double*) gkyl_array_cfetch(qin, linc);
+        double *qout_c = (double*) gkyl_array_fetch(qout, linc);
+        for (int i=0; i<meqn; ++i) {
+          qout_c[i] = qin_c[i] 
+            - dtdx/cg->kappa*(apdq_l[i] + amdq_r[i] + flux2_r[i] - flux2_l[i]);
+        }
       }
     }
   }
@@ -265,8 +266,6 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
 
     struct gkyl_range perp_range;
     gkyl_range_shorten_from_above(&perp_range, update_range, dir, 1);
-    struct gkyl_range_iter iter;
-    gkyl_range_iter_init(&iter, &perp_range);
 
     // Copy previous time step solution 
     gkyl_array_set_range(qout, 1.0, qin, update_range); 
@@ -305,7 +304,6 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
     }
 
     // Update the solution with both the first order update and the second order corrections. 
-    gkyl_array_clear(wv->redo_fluct, 0.0); // Clear redo fluctuation flag before update. 
     gkyl_parallelize_1D_kernel_launch_dims(&dimGrid, &dimBlock, perp_range, upidx_c-loidx_c);
     gkyl_wave_prop_update_state_cu_kern<<<dimGrid, dimBlock>>>(dtdx, ndim, dir, loidx_c, upidx_c, meqn, 
       *update_range, perp_range, 
