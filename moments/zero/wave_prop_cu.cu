@@ -199,8 +199,8 @@ gkyl_wave_prop_update_state_cu_kern(double dtdx,
 
     gkyl_sub_range_inv_idx(&update_range, tid_x, idxc);
     gkyl_copy_int_arr(ndim, idxc, idxr);
-    for (unsigned long tid_y = threadIdx.y + blockIdx.y*blockDim.y + loidx;
-      tid_y < upidx-loidx; tid_y += blockDim.y*gridDim.y) { 
+    for (unsigned long tid_y = threadIdx.y + blockIdx.y*blockDim.y + loidx_c;
+      tid_y < upidx_c-loidx_c; tid_y += blockDim.y*gridDim.y) { 
 
       idxr[dir] = tid_y+1; 
       long linc = gkyl_range_idx(&update_range, idxc); 
