@@ -20,7 +20,8 @@ extern "C" {
 __global__ static void
 gkyl_wave_prop_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn, 
   int ndim, int dir, long size, double cflm, double dtdx, 
-  enum gkyl_wv_flux_type ftype, struct gkyl_range update_range, 
+  enum gkyl_wv_flux_type ftype, 
+  struct gkyl_range update_range, struct gkyl_range gpu_ext_range, 
   const struct gkyl_wave_geom *wg, const struct gkyl_array *qin, 
   struct gkyl_array *waves, struct gkyl_array *speeds, struct gkyl_array *amdq, struct gkyl_array *apdq, 
   struct gkyl_array *cfla, struct gkyl_array *is_cfl_violated)
@@ -29,7 +30,7 @@ gkyl_wave_prop_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn,
   for (unsigned long tid_x = threadIdx.x + blockIdx.x*blockDim.x;
     tid_x < size; tid_x += blockDim.x*gridDim.x) {
 
-    gkyl_sub_range_inv_idx(&update_range, tid_x, idxl);
+    gkyl_sub_range_inv_idx(&gpu_ext_range, tid_x, idxl);
     gkyl_copy_int_arr(ndim, idxl, idxr);
 
     // perform 1D sweeps handled by second dimension of thread grid
@@ -67,7 +68,8 @@ gkyl_wave_prop_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn,
 
 __global__ static void
 gkyl_wave_prop_redo_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn, 
-  int ndim, int dir, long size, int meqn, struct gkyl_range update_range, 
+  int ndim, int dir, long size, int meqn, 
+  struct gkyl_range update_range, struct gkyl_range gpu_ext_range, 
   const struct gkyl_wave_geom *wg, const struct gkyl_array *qin, 
   struct gkyl_array *waves, struct gkyl_array *speeds, struct gkyl_array *amdq, struct gkyl_array *apdq, 
   struct gkyl_array *flux2, struct gkyl_array *redo_fluct)
@@ -76,7 +78,7 @@ gkyl_wave_prop_redo_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn,
   for (unsigned long tid_x = threadIdx.x + blockIdx.x*blockDim.x;
     tid_x < size; tid_x += blockDim.x*gridDim.x) {
 
-    gkyl_sub_range_inv_idx(&update_range, tid_x, idxl);
+    gkyl_sub_range_inv_idx(&gpu_ext_range, tid_x, idxl);
     gkyl_copy_int_arr(ndim, idxl, idxr);
 
     // perform 1D sweeps handled by second dimension of thread grid
@@ -240,6 +242,11 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
   int nblocks_e = (perp_range.volume*(upidx - loidx))/nthreads + 1;
   long size = perp_range.volume*(upidx - loidx);
 
+  // Extend the local range by 1 in each direction for indexing ghost cells
+  struct gkyl_range gpu_ext_range;
+  int extend[] = {1, 1, 1};
+  gkyl_range_extend(&gpu_ext_range, &update_range, extend, extend)
+
   // Copy previous time step solution 
   gkyl_array_set_range(qout, 1.0, qin, update_range); 
   // Set the redo_fluct array so in the first sweep, we compute fluxes at every interface
@@ -249,14 +256,14 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
     GKYL_WV_LOW_ORDER_FLUX : GKYL_WV_HIGH_ORDER_FLUX;
 
   gkyl_wave_prop_waves_qfluct_cu_ker<<<nblocks_e, nthreads>>>(wv->equation->on_dev, 
-    ndim, dir, size, cflm, dtdx, ftype, *update_range, 
+    ndim, dir, size, cflm, dtdx, ftype, *update_range, gpu_ext_range, 
     wv->geom->on_dev, qin->on_dev, 
     wv->waves->on_dev, wv->speeds->on_dev, wv->amdq->on_dev, wv->apdq->on_dev, 
     wv->cfla->on_dev, wv->is_cfl_violated->on_dev);
 
   // To avoid race conditions on the wave limiting, split the second order flux
   // computation into a separate kernel after waves and fluctuations computed
-  int nblocks_f = (perp_range.volume*(upidx - loidx - 1))/nthreads + 1;
+  int nblocks_f = (perp_range.volume*(upidx - loidx - 2))/nthreads + 1;
   long size_f = perp_range.volume*(upidx - loidx);
   gkyl_array_clear(wv->flux2, 0.0);
   gkyl_wave_prop_second_order_flux_cu_ker<<<nblocks_f, nthreads>>>(wv->limiter, dtdx, 
@@ -291,7 +298,7 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
   // Determine if we need to redo any flux computations 
   if (wv->check_inv_domain) {
     gkyl_wave_prop_redo_waves_qfluct_cu_ker<<<update_range->nblocks, update_range->nthreads>>>(wv->equation->on_dev, 
-      ndim, dir, size, meqn, *update_range, 
+      ndim, dir, size, meqn, *update_range, gpu_ext_range, 
       wv->geom->on_dev, qout->on_dev, 
       wv->waves->on_dev, wv->speeds->on_dev, wv->amdq->on_dev, wv->apdq->on_dev, 
       wv->flux2->on_dev, wv->redo_fluct->on_dev); 
