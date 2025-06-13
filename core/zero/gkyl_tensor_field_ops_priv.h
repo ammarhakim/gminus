@@ -38,14 +38,14 @@ gkyl_tensor_field_raise_or_lower_idx_in_place(struct gkyl_tensor_field *met, int
       }
 
       // set the resulting sum in the temporary tensor
-      gkyl_tensor_field_elem_set(tensor_out, i, iter_tf_out.idx, ten_out_elem);
+      gkyl_tensor_field_elem_set(tensor_out, 1, iter_tf_out.idx, ten_out_elem);
     }
 
     // Set the old tensor to the new tensor values
     struct gkyl_range_iter iter_tf;
     gkyl_range_iter_init(&iter_tf, &ten->trange);
     while (gkyl_range_iter_next(&iter_tf)) {
-      const double ten_out_elem = gkyl_tensor_field_elem_fetch(tensor_out, i, iter_tf.idx);
+      const double ten_out_elem = gkyl_tensor_field_elem_fetch(tensor_out, 1, iter_tf.idx);
       gkyl_tensor_field_elem_set(ten, i, iter_tf.idx, ten_out_elem);
     }
   }
