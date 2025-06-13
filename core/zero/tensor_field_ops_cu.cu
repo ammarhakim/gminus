@@ -63,8 +63,8 @@ tensor_field_raise_or_lower_idx_set_cu(const struct gkyl_tensor_field *met, int 
   const struct gkyl_tensor_field *ten, struct gkyl_tensor_field *tensor_out)
 {
   dim3 dimGrid, dimBlock;
-  gkyl_get_tensor_field_range_kernel_launch_dims(&dimGrid, &dimBlock, *ten->trange, ten->size);
+  gkyl_get_tensor_field_range_kernel_launch_dims(&dimGrid, &dimBlock, ten->trange, ten->size);
 
   // ?? There is no met/tensor_out->on_dev at present
-  tensor_field_raise_or_lower_idx_set_cu_kernel<<<dimGrid, dimBlock>>>(met->on_dev, raised_ind, ten->on_dev, tensor_out->on_dev);
+  tensor_field_raise_or_lower_idx_set_cu_kernel<<<dimGrid, dimBlock>>>(met->on_dev, raised_idx, ten->on_dev, tensor_out->on_dev);
 }
