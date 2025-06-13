@@ -66,6 +66,12 @@ gkyl_tensor_field_release(const struct gkyl_tensor_field* ten)
     gkyl_ref_count_dec(&ten->ref_count);
 }
 
+bool
+gkyl_tensor_field_is_cu_dev(const struct gkyl_tensor_field *tfld)
+{
+  return GKYL_IS_CU_ALLOC(tfld->flags);  
+}
+
 
 // CUDA specific code
 

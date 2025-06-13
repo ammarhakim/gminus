@@ -70,7 +70,7 @@ GKYL_CU_DH
 static inline double *
 gkyl_tensor_field_fetch(struct gkyl_tensor_field *ten, long loc)
 {
-  return gkyl_array_fetch(ten->tdata, loc);
+  return (double*) gkyl_array_fetch(ten->tdata, loc);
 }
 
 /** Same as above, except fetches a constant pointer */
@@ -78,7 +78,7 @@ GKYL_CU_DH
 static inline const double *
 gkyl_tensor_field_cfetch(const struct gkyl_tensor_field *ten, long loc)
 {
-  return gkyl_array_cfetch(ten->tdata, loc);
+  return (const double*) gkyl_array_cfetch(ten->tdata, loc);
 }
 
 /**
@@ -88,6 +88,7 @@ gkyl_tensor_field_cfetch(const struct gkyl_tensor_field *ten, long loc)
  * @param idx Element of the tensor
  * @return Index to the array storing the tensor field data
  */
+GKYL_CU_DH
 static inline long
 gkyl_tensor_field_idx(const struct gkyl_tensor_field *ten, int idx[GKYL_MAX_DIM])
 {
@@ -102,6 +103,7 @@ gkyl_tensor_field_idx(const struct gkyl_tensor_field *ten, int idx[GKYL_MAX_DIM]
  * @param idx Element to fetch
  * @return Tensor at loc and element at idx
  */
+GKYL_CU_DH
 static inline double
 gkyl_tensor_field_elem_fetch(const struct gkyl_tensor_field *ten, long loc, int idx[GKYL_MAX_DIM])
 {
@@ -117,6 +119,7 @@ gkyl_tensor_field_elem_fetch(const struct gkyl_tensor_field *ten, long loc, int 
  * @param idx Element to set
  * @param ev Double to set
  */
+GKYL_CU_DH
 static inline void
 gkyl_tensor_field_elem_set(struct gkyl_tensor_field *ten, long loc, int idx[GKYL_MAX_DIM], double ev)
 {
@@ -144,6 +147,13 @@ struct gkyl_tensor_field* gkyl_tensor_field_acquire(const struct gkyl_tensor_fie
 struct gkyl_tensor_field*
 gkyl_tensor_field_copy(struct gkyl_tensor_field* dest, const struct gkyl_tensor_field* src);
 
+/**
+ * Returns true if tensor field lives on NV-GPU.
+ *
+ * @param tfld Tensor field to check
+ * @return true of tensor field lives on NV-GPU, false otherwise
+ */
+bool gkyl_array_is_cu_dev(const struct gkyl_tensor_field *tfld);
 
 /**
  * Release pointer to tensor field
