@@ -225,85 +225,50 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
   double red_cfl[2];
   double red_cfl_global[2];
 
-  // Loop over update directions
-  for (int d=0; d<wv->num_up_dirs; ++d) {
-    int dir = wv->update_dirs[d];
+  // Assume GPU simulation is genuinely dimensionally split and num_update_dirs = 1
+  int dir = wv->update_dirs[0];
+  double dtdx = dt/wv->grid.dx[dir];
+  // Determine number of threads based on extended one-dimensional range 
+  // and volume of perpendicular range    
+  // upper/lower bounds in direction 'd'. These are edge indices
+  int loidx = update_range->lower[dir]-1;
+  int upidx = update_range->upper[dir]+2;
 
-    double dtdx = dt/wv->grid.dx[dir];
+  struct gkyl_range perp_range;
+  gkyl_range_shorten_from_above(&perp_range, update_range, dir, 1);
+  int nthreads = GKYL_DEFAULT_NUM_THREADS;
+  int nblocks_e = (perp_range.volume*(upidx - loidx))/nthreads + 1;
+  long size = perp_range.volume*(upidx - loidx);
 
-    // Determine number of threads based on extended one-dimensional range 
-    // and volume of perpendicular range    
-    // upper/lower bounds in direction 'd'. These are edge indices
-    int loidx = update_range->lower[dir]-1;
-    int upidx = update_range->upper[dir]+2;
+  // Copy previous time step solution 
+  gkyl_array_set_range(qout, 1.0, qin, update_range); 
+  // Set the redo_fluct array so in the first sweep, we compute fluxes at every interface
+  gkyl_array_clear(wv->redo_fluct, 1.0); 
 
-    struct gkyl_range perp_range;
-    gkyl_range_shorten_from_above(&perp_range, update_range, dir, 1);
-    int nthreads = GKYL_DEFAULT_NUM_THREADS;
-    int nblocks_e = (perp_range.volume*(upidx - loidx))/nthreads + 1;
-    long size = perp_range.volume*(upidx - loidx);
+  enum gkyl_wv_flux_type ftype = wv->force_low_order_flux ?
+    GKYL_WV_LOW_ORDER_FLUX : GKYL_WV_HIGH_ORDER_FLUX;
 
-    // Copy previous time step solution 
-    gkyl_array_set_range(qout, 1.0, qin, update_range); 
-    // Set the redo_fluct array so in the first sweep, we compute fluxes at every interface
-    gkyl_array_clear(wv->redo_fluct, 1.0); 
+  gkyl_wave_prop_waves_qfluct_cu_ker<<<nblocks_e, nthreads>>>(wv->equation->on_dev, 
+    ndim, dir, size, cflm, dtdx, ftype, *update_range, 
+    wv->geom->on_dev, qin->on_dev, 
+    wv->waves->on_dev, wv->speeds->on_dev, wv->amdq->on_dev, wv->apdq->on_dev, 
+    wv->cfla->on_dev, wv->is_cfl_violated->on_dev);
 
-    enum gkyl_wv_flux_type ftype = wv->force_low_order_flux ?
-      GKYL_WV_LOW_ORDER_FLUX : GKYL_WV_HIGH_ORDER_FLUX;
+  // To avoid race conditions on the wave limiting, split the second order flux
+  // computation into a separate kernel after waves and fluctuations computed
+  gkyl_array_clear(wv->flux2, 0.0);
+  gkyl_wave_prop_second_order_flux_cu_ker<<<nblocks_e, nthreads>>>(wv->limiter, dtdx, 
+    ndim, dir, size, meqn, mwaves, *update_range, 
+    wv->geom->on_dev, wv->waves->on_dev, wv->speeds->on_dev, wv->flux2->on_dev);
 
-    gkyl_wave_prop_waves_qfluct_cu_ker<<<nblocks_e, nthreads>>>(wv->equation->on_dev, 
-      ndim, dir, size, cflm, dtdx, ftype, *update_range, 
-      wv->geom->on_dev, qin->on_dev, 
-      wv->waves->on_dev, wv->speeds->on_dev, wv->amdq->on_dev, wv->apdq->on_dev, 
-      wv->cfla->on_dev, wv->is_cfl_violated->on_dev);
-
-    // To avoid race conditions on the wave limiting, split the second order flux
-    // computation into a separate kernel after waves and fluctuations computed
-    gkyl_array_clear(wv->flux2, 0.0);
-    gkyl_wave_prop_second_order_flux_cu_ker<<<nblocks_e, nthreads>>>(wv->limiter, dtdx, 
-      ndim, dir, size, meqn, mwaves, *update_range, 
-      wv->geom->on_dev, wv->waves->on_dev, wv->speeds->on_dev, wv->flux2->on_dev);
-
-    // Before updating the state, determine if the CFL was violated anywhere in the domain
-    gkyl_array_reduce_range(wv->cfla_ptr, wv->cfla, GKYL_MAX, update_range);  
-    gkyl_array_reduce_range(wv->is_cfl_violated_ptr, wv->is_cfl_violated, GKYL_MAX, update_range);
-    gkyl_cu_memcpy(red_cfla, wv->cfla_ptr, sizeof(double), GKYL_CU_MEMCPY_D2H);
-    gkyl_cu_memcpy(red_is_cfl_violated, wv->is_cfl_violated_ptr, sizeof(double), GKYL_CU_MEMCPY_D2H);
-    red_cfl[0] = red_cfla[0]; 
-    red_cfl[1] = red_is_cfl_violated[0]; 
-    gkyl_comm_allreduce_host(wv->comm, GKYL_DOUBLE, GKYL_MAX, 2, &red_cfl, &red_cfl_global);
-    if (red_cfl_global[1] > 0.0) {
-      goto outsideloop;
-    }
-
-    // Update the solution with both the first order update and the second order corrections. 
-    gkyl_wave_prop_update_state_cu_kern<<<update_range->nblocks, update_range->nthreads>>>(dtdx, 
-      ndim, dir, meqn, *update_range, 
-      wv->geom->on_dev, wv->redo_fluct->on_dev, qin->on_dev, 
-      wv->amdq->on_dev, wv->apdq->on_dev,  wv->flux2->on_dev, 
-      qout->on_dev); 
-
-    // Determine if we need to redo any flux computations 
-    if (wv->check_inv_domain) {
-      gkyl_wave_prop_redo_waves_qfluct_cu_ker<<<update_range->nblocks, update_range->nthreads>>>(wv->equation->on_dev, 
-        ndim, dir, size, meqn, *update_range, 
-        wv->geom->on_dev, qout->on_dev, 
-        wv->waves->on_dev, wv->speeds->on_dev, wv->amdq->on_dev, wv->apdq->on_dev, 
-        wv->flux2->on_dev, wv->redo_fluct->on_dev); 
-      
-      // Update state with re-computed first order fluxes. 
-      // Note that the second order fluxes are zeroed out at re-done interfaces
-      // so no second order corrections are included when re-doing the update. 
-      gkyl_wave_prop_update_state_cu_kern<<<update_range->nblocks, update_range->nthreads>>>(dtdx, 
-        ndim, dir, meqn, *update_range, 
-        wv->geom->on_dev, wv->redo_fluct->on_dev, qin->on_dev, 
-        wv->amdq->on_dev, wv->apdq->on_dev,  wv->flux2->on_dev, 
-        qout->on_dev); 
-    }
-  }  
-
-  outsideloop:
-  ;
+  // Before updating the state, determine if the CFL was violated anywhere in the domain
+  gkyl_array_reduce_range(wv->cfla_ptr, wv->cfla, GKYL_MAX, update_range);  
+  gkyl_array_reduce_range(wv->is_cfl_violated_ptr, wv->is_cfl_violated, GKYL_MAX, update_range);
+  gkyl_cu_memcpy(red_cfla, wv->cfla_ptr, sizeof(double), GKYL_CU_MEMCPY_D2H);
+  gkyl_cu_memcpy(red_is_cfl_violated, wv->is_cfl_violated_ptr, sizeof(double), GKYL_CU_MEMCPY_D2H);
+  red_cfl[0] = red_cfla[0]; 
+  red_cfl[1] = red_is_cfl_violated[0]; 
+  gkyl_comm_allreduce_host(wv->comm, GKYL_DOUBLE, GKYL_MAX, 2, &red_cfl, &red_cfl_global);
   double dt_suggested = dt*cfl/fmax(red_cfl_global[0], DBL_MIN);
   if (red_cfl_global[1] > 0.0) {
     // indicate failure, and return smaller stable time-step
@@ -311,8 +276,34 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
       .success = 0,
       .dt_suggested = dt_suggested,
       .max_speed = 0.0, // Not currently used by GPUs
-    };
+    };    
   }
+
+  // Update the solution with both the first order update and the second order corrections. 
+  gkyl_wave_prop_update_state_cu_kern<<<update_range->nblocks, update_range->nthreads>>>(dtdx, 
+    ndim, dir, meqn, *update_range, 
+    wv->geom->on_dev, wv->redo_fluct->on_dev, qin->on_dev, 
+    wv->amdq->on_dev, wv->apdq->on_dev,  wv->flux2->on_dev, 
+    qout->on_dev); 
+
+  // Determine if we need to redo any flux computations 
+  if (wv->check_inv_domain) {
+    gkyl_wave_prop_redo_waves_qfluct_cu_ker<<<update_range->nblocks, update_range->nthreads>>>(wv->equation->on_dev, 
+      ndim, dir, size, meqn, *update_range, 
+      wv->geom->on_dev, qout->on_dev, 
+      wv->waves->on_dev, wv->speeds->on_dev, wv->amdq->on_dev, wv->apdq->on_dev, 
+      wv->flux2->on_dev, wv->redo_fluct->on_dev); 
+    
+    // Update state with re-computed first order fluxes. 
+    // Note that the second order fluxes are zeroed out at re-done interfaces
+    // so no second order corrections are included when re-doing the update. 
+    gkyl_wave_prop_update_state_cu_kern<<<update_range->nblocks, update_range->nthreads>>>(dtdx, 
+      ndim, dir, meqn, *update_range, 
+      wv->geom->on_dev, wv->redo_fluct->on_dev, qin->on_dev, 
+      wv->amdq->on_dev, wv->apdq->on_dev,  wv->flux2->on_dev, 
+      qout->on_dev); 
+  }
+
   // on success, suggest only bigger time-step; (Only way dt can
   // reduce is if the update fails. If the code comes here the update
   // succeeded and so we should not allow dt to reduce).
