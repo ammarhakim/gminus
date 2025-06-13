@@ -15,27 +15,23 @@ __global__ static void
 wv_euler_set_cu_dev_ptrs(enum gkyl_wv_euler_rp rp_type, struct wv_euler *euler)
 {
   switch (rp_type) {
-    case WV_EULER_RP_ROE:
-      euler->eqn.num_waves = 3;  
+    case WV_EULER_RP_ROE: 
       euler->eqn.waves_func = wave_roe_l;
       euler->eqn.qfluct_func = qfluct_roe_l;
       euler->eqn.fuse_waves_qfluct_func = fused_rotate_waves_qfluct_roe_l;
       break;
 
     case WV_EULER_RP_HLLC:
-      euler->eqn.num_waves = 3;  
       euler->eqn.waves_func = wave_hllc_l;
       euler->eqn.qfluct_func = qfluct_hllc_l;
       break;
       
     case WV_EULER_RP_LAX:
-      euler->eqn.num_waves = 2;
       euler->eqn.waves_func = wave_lax_l;
       euler->eqn.qfluct_func = qfluct_lax_l;
       break;   
 
     case WV_EULER_RP_HLL:
-      euler->eqn.num_waves = 2;  
       euler->eqn.waves_func = wave_hll_l;
       euler->eqn.qfluct_func = qfluct_hll_l;
       break;
@@ -69,6 +65,25 @@ gkyl_wv_euler_cu_dev_inew(const struct gkyl_wv_euler_inp *inp)
   euler->eqn.num_diag = 6; // KE and PE stored separate
   
   euler->gas_gamma = inp->gas_gamma;
+
+  // Set the number of waves on host so we can allocate memory correctly
+  switch (inp->rp_type) {
+    case WV_EULER_RP_ROE:
+      euler->eqn.num_waves = 3;  
+      break;
+
+    case WV_EULER_RP_HLLC:
+      euler->eqn.num_waves = 3;  
+      break;
+      
+    case WV_EULER_RP_LAX:
+      euler->eqn.num_waves = 2;
+      break;   
+
+    case WV_EULER_RP_HLL:
+      euler->eqn.num_waves = 2;  
+      break;
+  }
 
   euler->eqn.flags = 0;
   GKYL_SET_CU_ALLOC(euler->eqn.flags);

@@ -305,7 +305,7 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
     }
 
     // Update the solution with both the first order update and the second order corrections. 
-    gkyl_array_clear(wv->redo_fluct, 0.0); // Clear redo fluctuation flag before update. 
+    gkyl_array_clear(wv->redo_fluct, 1.0); // Clear redo fluctuation flag before update. 
     gkyl_parallelize_1D_kernel_launch_dims(&dimGrid, &dimBlock, perp_range, upidx_c-loidx_c);
     gkyl_wave_prop_update_state_cu_kern<<<dimGrid, dimBlock>>>(dtdx, ndim, dir, loidx_c, upidx_c, meqn, 
       *update_range, perp_range, 
