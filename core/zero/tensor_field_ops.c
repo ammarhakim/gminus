@@ -8,6 +8,10 @@ static void
 tensor_field_raise_or_lower_idx_in_place(struct gkyl_tensor_field *met, int raised_idx, struct gkyl_tensor_field *ten)
 {
 
+#ifdef GKYL_HAVE_CUDA
+  if (gkyl_array_is_cu_dev(ten->tdata)) { tensor_field_raise_or_lower_idx_in_place_cu(met, raised_idx, ten); return; }
+#endif
+
   // temporary tensor at a single point 
   enum gkyl_tensor_index_loc iloc = { GKYL_TENSOR_INDEX_LOWER };
   struct gkyl_tensor_field *tensor_out = gkyl_tensor_field_new(ten->rank,ten->ndim,1,&iloc);
@@ -58,6 +62,10 @@ static void
 tensor_field_raise_or_lower_idx_set(const struct gkyl_tensor_field *met, int raised_idx, 
   const struct gkyl_tensor_field *ten, struct gkyl_tensor_field *tensor_out)
 {
+
+#ifdef GKYL_HAVE_CUDA
+  if (gkyl_array_is_cu_dev(ten->tdata)) { tensor_field_raise_or_lower_idx_set_cu(met, raised_idx, ten, tensor_out); return; }
+#endif
 
   // iterate over the field of tensors
   for (long i=0; i<ten->size; ++i){

@@ -28,6 +28,10 @@ gkyl_tensor_field_new(size_t rank, size_t ndim, size_t size, const enum gkyl_ten
     shape[i] = ndim;
   }
   
+  tfld->flags = 0;
+  tfld->nthreads = 1;
+  tfld->nblocks = 1;
+
   tfld->tdata = gkyl_array_new(GKYL_DOUBLE, ncomp, size);
   gkyl_range_init_from_shape(&tfld->trange, rank, shape);
 
@@ -47,9 +51,119 @@ gkyl_tensor_field_acquire(const struct gkyl_tensor_field* tfld)
   return (struct gkyl_tensor_field*) tfld;
 }
 
+struct gkyl_tensor_field*
+gkyl_tensor_field_copy(struct gkyl_tensor_field* dest, const struct gkyl_tensor_field* src)
+{
+  gkyl_array_copy(dest->tdata, src->tdata);
+  return dest;
+}
+
 void
 gkyl_tensor_field_release(const struct gkyl_tensor_field* ten)
 {
   if (ten) 
     gkyl_ref_count_dec(&ten->ref_count);
 }
+
+
+// CUDA specific code
+
+#ifdef GKYL_HAVE_CUDA
+
+struct gkyl_tensor_field*
+gkyl_tensor_field_cu_dev_new(enum gkyl_elem_type type, size_t ncomp, size_t size)
+{
+  struct gkyl_tensor_field* tfld = gkyl_malloc(sizeof(struct gkyl_tensor_field));
+
+  tfld->rank = rank;
+  tfld->ndim = ndim;
+  tfld->size = size;
+
+  size_t ncomp = 1;
+  int shape[rank];
+  for (int i=0; i<rank; ++i) {
+    ncomp *= ndim;
+    shape[i] = ndim;
+  }
+
+  tfld->tdata = gkyl_array_cu_dev_new(GKYL_DOUBLE, ncomp, size); 
+  gkyl_range_init_from_shape(&tfld->trange, rank, shape);
+  tfld->ref_count = gkyl_ref_count_init(tensor_field_free);
+
+  GKYL_SET_CU_ALLOC(tfld->flags);
+  
+  for (int i=0; i<GKYL_MAX_DIM; ++i) {
+    tfld->iloc[i] = iloc[i]; // either upper or lower indices
+  }
+
+  // Break up tensor calculations into over components (y) and over
+  // indices x (size)
+  tfld->nblocks->y = tfld->trange.volume; // ncomp *must* be less than 256
+  tfld->nthreads->y = 1;
+  tfld->nblocks->x = GKYL_DEFAULT_NUM_THREADS/trange.volume;
+  tfld->nthreads->x = gkyl_int_div_up(size, dimBlock->x);
+
+
+  // create a clone of the struct tfld->on_dev that lives on the device,
+  // so that the whole tfld->on_dev struct can be passed to a device kernel
+  tfld->on_dev = gkyl_cu_malloc(sizeof(struct gkyl_tensor_field));
+  gkyl_cu_memcpy(tfld->on_dev, tfld, sizeof(struct gkyl_tensor_field), GKYL_CU_MEMCPY_H2D);
+  // set device-side data pointer in tfld->on_dev to tfld->data 
+  // (which is the host-side pointer to the device data)
+  gkyl_cu_memcpy(&((tfld->on_dev)->tdata), &tfld->tdata, sizeof(void*), GKYL_CU_MEMCPY_H2D);
+
+  return tfld;
+}
+
+struct gkyl_tensor_field*
+gkyl_tensor_field_cu_host_new(enum gkyl_elem_type type, size_t ncomp, size_t size)
+{
+  struct gkyl_tensor_field* tfld = gkyl_cu_malloc_host(sizeof(struct gkyl_tensor_field));
+
+  tfld->rank = rank;
+  tfld->ndim = ndim;
+  tfld->size = size;
+
+  size_t ncomp = 1;
+  int shape[rank];
+  for (int i=0; i<rank; ++i) {
+    ncomp *= ndim;
+    shape[i] = ndim;
+  }
+
+  tfld->tdata = gkyl_array_cu_host_new(GKYL_DOUBLE, ncomp, size); // gkyl_cu_malloc_host(tfld->size*tfld->esznc);
+  gkyl_range_init_from_shape(&tfld->trange, rank, shape);
+  tfld->ref_count = gkyl_ref_count_init(tensor_field_free);
+
+  tfld->flags = 0;
+
+  for (int i=0; i<GKYL_MAX_DIM; ++i) {
+    tfld->iloc[i] = iloc[i]; // either upper or lower indices
+  }
+
+  tfld->nthreads = 1;
+  tfld->nblocks = 1;
+
+  tfld->on_dev = tfld; // on_dev reference
+  
+  return tfld;
+}
+
+
+#else
+
+struct gkyl_tensor_field*
+gkyl_tensor_field_cu_dev_new(size_t rank, size_t ndim, size_t size, const enum gkyl_tensor_index_loc *iloc)
+{
+  assert(false);
+  return 0;
+}
+
+struct gkyl_tensor_field*
+gkyl_tensor_field_cu_host_new(size_t rank, size_t ndim, size_t size, const enum gkyl_tensor_index_loc *iloc)
+{
+  assert(false);
+  return 0;
+}
+
+#endif // CUDA specific code

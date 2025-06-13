@@ -19,6 +19,11 @@ struct gkyl_tensor_field {
   // note: maximum number of indices is fixed
 
   struct gkyl_ref_count ref_count;  
+  
+  uint32_t flags;
+
+  int nthreads, nblocks; // threads per block, number of blocks
+  struct gkyl_tensor_field *on_dev; // pointer to itself or device data
 };
 
 /**
@@ -31,6 +36,29 @@ struct gkyl_tensor_field {
  * @return Pointer to newly allocated tensor field.
  */
 struct gkyl_tensor_field *gkyl_tensor_field_new(size_t rank, size_t ndim, size_t size, const enum gkyl_tensor_index_loc *iloc);
+
+/**
+ * Create new tensor field with tdata on NV-GPU. Delete using gkyl_tensor_field_release method.
+ * 
+ * @param rank Rank of the tensor field
+ * @param ndim Number of dimensions
+ * @param size Number of indices 
+ * @param iloc Enum array of size GKYL_MAX_DIM which for lower or upper indices
+ * @return Pointer to newly allocated tensor field.
+ */
+struct gkyl_tensor_field *gkyl_tensor_field_cu_dev_new(size_t rank, size_t ndim, size_t size, const enum gkyl_tensor_index_loc *iloc);
+
+/**
+ * Create new tensor field with host-pinned tdata for use with NV-GPU. 
+ * Delete using gkyl_tensor_field_release method.
+ * 
+ * @param rank Rank of the tensor field
+ * @param ndim Number of dimensions
+ * @param size Number of indices 
+ * @param iloc Enum array of size GKYL_MAX_DIM which for lower or upper indices
+ * @return Pointer to newly allocated tensor field.
+ */
+struct gkyl_tensor_field *gkyl_tensor_field_cu_host_new(size_t rank, size_t ndim, size_t size, const enum gkyl_tensor_index_loc *iloc);
 
 /**
  * Fetches a pointer to the tensor stored at the index 'loc'.
@@ -101,10 +129,22 @@ gkyl_tensor_field_elem_set(struct gkyl_tensor_field *ten, long loc, int idx[GKYL
  * Acquire pointer to tensor field. The pointer must be released using
  * gkyl_tensor_field_release method.
  *
- * @param tfld Array to which a pointer is needed
- * @return Pointer to acquired array
+ * @param tfld Tensor field to which a pointer is needed
+ * @return Pointer to acquired Tensor field
  */
 struct gkyl_tensor_field* gkyl_tensor_field_acquire(const struct gkyl_tensor_field* tfld);
+
+
+/**
+ * Acquire pointer to tensor field. The pointer must be released using
+ * gkyl_tensor_field_release method.
+ *
+ * @param dest Tensor field to which a pointer is needed
+ * @return Pointer to acquired Tensor field
+ */
+struct gkyl_tensor_field*
+gkyl_tensor_field_copy(struct gkyl_tensor_field* dest, const struct gkyl_tensor_field* src);
+
 
 /**
  * Release pointer to tensor field
