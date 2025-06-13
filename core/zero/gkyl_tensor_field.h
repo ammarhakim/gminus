@@ -22,7 +22,6 @@ struct gkyl_tensor_field {
   
   uint32_t flags;
 
-  int nthreads, nblocks; // threads per block, number of blocks
   struct gkyl_tensor_field *on_dev; // pointer to itself or device data
 };
 

@@ -30,8 +30,6 @@ gkyl_tensor_field_new(size_t rank, size_t ndim, size_t size, const enum gkyl_ten
   }
   
   tfld->flags = 0;
-  tfld->nthreads = 1;
-  tfld->nblocks = 1;
 
   tfld->tdata = gkyl_array_new(GKYL_DOUBLE, ncomp, size);
   gkyl_range_init_from_shape(&tfld->trange, rank, shape);
@@ -97,14 +95,6 @@ gkyl_tensor_field_cu_dev_new(size_t rank, size_t ndim, size_t size, const enum g
     tfld->iloc[i] = iloc[i]; // either upper or lower indices
   }
 
-  // Break up tensor calculations into over components (y) and over
-  // indices x (size)
-  tfld->nblocks->y = tfld->trange.volume; // ncomp *must* be less than 256
-  tfld->nthreads->y = 1;
-  tfld->nblocks->x = GKYL_DEFAULT_NUM_THREADS/trange.volume;
-  tfld->nthreads->x = gkyl_int_div_up(size, dimBlock->x);
-
-
   // create a clone of the struct tfld->on_dev that lives on the device,
   // so that the whole tfld->on_dev struct can be passed to a device kernel
   tfld->on_dev = gkyl_cu_malloc(sizeof(struct gkyl_tensor_field));
@@ -141,9 +131,6 @@ gkyl_tensor_field_cu_host_new(size_t rank, size_t ndim, size_t size, const enum 
   for (int i=0; i<GKYL_MAX_DIM; ++i) {
     tfld->iloc[i] = iloc[i]; // either upper or lower indices
   }
-
-  tfld->nthreads = 1;
-  tfld->nblocks = 1;
 
   tfld->on_dev = tfld; // on_dev reference
   
