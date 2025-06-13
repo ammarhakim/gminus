@@ -28,11 +28,11 @@ tensor_field_raise_or_lower_idx_set_cu_kernel(const struct gkyl_tensor_field *me
   // iterate over the components of the tensor
   long linc2 = threadIdx.y + blockIdx.y*blockDim.y;
   int iter_tf_out_idx[GKYL_MAX_DIM];
-  gkyl_range_inv_idx(tensor_out->trange, linc2, iter_tf_out_idx); 
+  gkyl_range_inv_idx(&tensor_out->trange, linc2, iter_tf_out_idx); 
 
   // iterate over the indices of the tensor
   for(unsigned long tid = threadIdx.x + blockIdx.x*blockDim.x;
-      tid < phase_range.volume; tid += blockDim.x*gridDim.x) {
+      tid < tensor_out->size; tid += blockDim.x*gridDim.x) {
     const double *metric = gkyl_tensor_field_cfetch(met, tid);
 
     // loop over the output tensor indices
