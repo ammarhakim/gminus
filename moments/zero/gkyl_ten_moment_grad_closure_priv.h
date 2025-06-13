@@ -15,6 +15,8 @@ struct gkyl_ten_moment_grad_closure {
   bool use_gpu; // Boolean to determine whether wave equation object is on host or device
   
   struct gkyl_comm *comm;
+  long *offsets_centers;
+  long *offsets_vertices;
 
   heat_flux_calc_t calc_q;
   heat_flux_update_t update_q;
@@ -59,6 +61,40 @@ enum loc_3d {
   ULL_3D, ULU_3D,
   UUL_3D, UUU_3D
 };
+
+static void
+create_offsets_vertices(const struct gkyl_range *range, long offsets[])
+{
+  int arr1[3] = { -1, -1, -1 }, arr2[3] = { 0, 0, 0 };
+  // box spanning stencil
+  struct gkyl_range box3;
+  gkyl_range_init(&box3, range->ndim, arr1, arr2);
+
+  struct gkyl_range_iter iter3;
+  gkyl_range_iter_init(&iter3, &box3);
+
+  // construct list of offsets
+  int count = 0;
+  while (gkyl_range_iter_next(&iter3))
+    offsets[count++] = gkyl_range_offset(range, iter3.idx);
+}
+
+static void
+create_offsets_centers(const struct gkyl_range *range, long offsets[])
+{
+  int arr1[3] = { 0, 0, 0 }, arr2[3] = { 1, 1, 1 };
+  // box spanning stencil
+  struct gkyl_range box3;
+  gkyl_range_init(&box3, range->ndim, arr1, arr2);
+
+  struct gkyl_range_iter iter3;
+  gkyl_range_iter_init(&iter3, &box3);
+
+  // construct list of offsets
+  int count = 0;
+  while (gkyl_range_iter_next(&iter3))
+    offsets[count++] = gkyl_range_offset(range, iter3.idx);
+}
 
 GKYL_CU_D
 static void

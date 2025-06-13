@@ -408,8 +408,8 @@ moment_species_update(gkyl_moment_app *app,
   double max_speed = 0.0;
   struct gkyl_wave_prop_status stat;
 
-  if (!sp->is_static) {
-    for (int d=0; d<ndim; ++d) {
+  for (int d=0; d<ndim; ++d) {
+    if (!sp->is_static) {
       stat = gkyl_wave_prop_advance(sp->slvr[d], tcurr, dt, &app->local, sp->f[d], sp->f[d+1]);
 
       double my_max_speed = stat.max_speed;
@@ -422,8 +422,11 @@ moment_species_update(gkyl_moment_app *app,
         };
     
       dt_suggested = fmin(dt_suggested, stat.dt_suggested);
-      moment_species_apply_bc(app, tcurr, sp, sp->f[d+1]);
     }
+    else {
+      gkyl_array_copy(sp->f[d+1], sp->f[d]);
+    }
+    moment_species_apply_bc(app, tcurr, sp, sp->f[d+1]);
   }
 
   for (int d=0; d<ndim; ++d) {

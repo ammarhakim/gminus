@@ -7,38 +7,6 @@
 #include <gkyl_ten_moment_grad_closure.h>
 #include <gkyl_ten_moment_grad_closure_priv.h>
 
-static void
-create_offsets_vertices(const struct gkyl_range *range, long offsets[])
-{
-  // box spanning stencil
-  struct gkyl_range box3;
-  gkyl_range_init(&box3, range->ndim, (int[]) { -1, -1, -1 }, (int[]) { 0, 0, 0 });
-
-  struct gkyl_range_iter iter3;
-  gkyl_range_iter_init(&iter3, &box3);
-
-  // construct list of offsets
-  int count = 0;
-  while (gkyl_range_iter_next(&iter3))
-    offsets[count++] = gkyl_range_offset(range, iter3.idx);
-}
-
-static void
-create_offsets_centers(const struct gkyl_range *range, long offsets[])
-{
-  // box spanning stencil
-  struct gkyl_range box3;
-  gkyl_range_init(&box3, range->ndim, (int[]) { 0, 0, 0 }, (int[]) { 1, 1, 1 });
-
-  struct gkyl_range_iter iter3;
-  gkyl_range_iter_init(&iter3, &box3);
-
-  // construct list of offsets
-  int count = 0;
-  while (gkyl_range_iter_next(&iter3))
-    offsets[count++] = gkyl_range_offset(range, iter3.idx);
-}
-
 gkyl_ten_moment_grad_closure*
 gkyl_ten_moment_grad_closure_new(struct gkyl_ten_moment_grad_closure_inp inp)
 {
@@ -60,6 +28,8 @@ gkyl_ten_moment_grad_closure_new(struct gkyl_ten_moment_grad_closure_inp inp)
 
   if(inp.use_gpu) {
     up->cfla = gkyl_cu_malloc(sizeof(double));
+    up->offsets_vertices = gkyl_cu_malloc(sizeof(long)*8);
+    up->offsets_centers = gkyl_cu_malloc(sizeof(long)*8);
     up->on_dev = gkyl_ten_moment_grad_closure_cu_dev_new(up);
   }
   else {

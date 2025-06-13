@@ -10,42 +10,6 @@ extern "C" {
 #include <gkyl_ten_moment_grad_closure_priv.h>
 }
 
-static void
-create_offsets_vertices(const struct gkyl_range *range, long offsets[])
-{
-  int arr1[3] = { -1, -1, -1 }, arr2[3] = { 0, 0, 0 };
-
-  // box spanning stencil
-  struct gkyl_range box3;
-  gkyl_range_init(&box3, range->ndim, arr1, arr2);
-
-  struct gkyl_range_iter iter3;
-  gkyl_range_iter_init(&iter3, &box3);
-
-  // construct list of offsets
-  int count = 0;
-  while (gkyl_range_iter_next(&iter3))
-    offsets[count++] = gkyl_range_offset(range, iter3.idx);
-}
-
-static void
-create_offsets_centers(const struct gkyl_range *range, long offsets[])
-{
-  int arr1[3] = { -1, -1, -1 }, arr2[3] = { 0, 0, 0 };
-
-  // box spanning stencil
-  struct gkyl_range box3;
-  gkyl_range_init(&box3, range->ndim, arr1, arr2);
-
-  struct gkyl_range_iter iter3;
-  gkyl_range_iter_init(&iter3, &box3);
-
-  // construct list of offsets
-  int count = 0;
-  while (gkyl_range_iter_next(&iter3))
-    offsets[count++] = gkyl_range_offset(range, iter3.idx);
-}
-
 __global__ static void 
 gkyl_ten_moment_grad_closure_set_cu_dev_ptrs(gkyl_ten_moment_grad_closure *gces)
 {
@@ -155,13 +119,16 @@ gkyl_ten_moment_grad_closure_advance_cu(const gkyl_ten_moment_grad_closure *gces
 
   long offsets_centers[sz_idx];
   create_offsets_centers(heat_flux_range, offsets_centers);
-  
+
+  gkyl_cu_memcpy(gces->offsets_vertices, offsets_vertices, sizeof(long)*sz_idx, GKYL_CU_MEMCPY_H2D);
+  gkyl_cu_memcpy(gces->offsets_centers, offsets_centers, sizeof(long)*sz_idx, GKYL_CU_MEMCPY_H2D);
+
   gkyl_ten_moment_grad_closure_calc_cu_ker<<<nblocks, nthreads>>>(gces->on_dev,
-    *heat_flux_range, *update_range, offsets_vertices, offsets_centers, sz_idx,
+    *heat_flux_range, *update_range, gces->offsets_vertices, gces->offsets_centers, sz_idx,
     fluid->on_dev, em_tot->on_dev, cflrate->on_dev, dt, heat_flux->on_dev);
 
   gkyl_ten_moment_grad_closure_update_cu_ker<<<nblocks, nthreads>>>(gces->on_dev,
-    *heat_flux_range, *update_range, offsets_vertices, offsets_centers, sz_idx,
+    *heat_flux_range, *update_range, gces->offsets_vertices, gces->offsets_centers, sz_idx,
      heat_flux->on_dev, rhs->on_dev);
 
   gkyl_array_reduce(gces->cfla, cflrate, GKYL_MAX);
