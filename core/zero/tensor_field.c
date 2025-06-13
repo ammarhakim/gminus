@@ -1,5 +1,6 @@
-#include <gkyl_tensor_field.h>
 #include <gkyl_alloc.h>
+#include <gkyl_alloc_flags_priv.h>
+#include <gkyl_tensor_field.h>
   
 static void
 tensor_field_free(const struct gkyl_ref_count *ref)
