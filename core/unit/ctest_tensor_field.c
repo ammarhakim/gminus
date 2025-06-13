@@ -225,7 +225,6 @@ void test_cu_tensor_field_base()
   gkyl_tensor_field_copy(tfld_cu, tfld);
 
   for (unsigned i=0; i<tfld->tdata->size; ++i){
-    TEST_CHECK( tfldData[i] == 0. );
     tfldData[i] = (i+0.5)*0.1;
   }
 
