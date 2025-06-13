@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include <gkyl_alloc.h>
 #include <gkyl_alloc_flags_priv.h>
 #include <gkyl_tensor_field.h>
