@@ -241,7 +241,7 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
     gkyl_range_shorten_from_above(&perp_range, update_range, dir, 1);
     int nthreads = GKYL_DEFAULT_NUM_THREADS;
     int nblocks_e = (perp_range.volume*(upidx - loidx))/nthreads + 1;
-    long size = perp_range.volume*(upidx - loidx)
+    long size = perp_range.volume*(upidx - loidx);
 
     // Copy previous time step solution 
     gkyl_array_set_range(qout, 1.0, qin, update_range); 
@@ -286,7 +286,7 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
     // Determine if we need to redo any flux computations 
     if (wv->check_inv_domain) {
       gkyl_wave_prop_redo_waves_qfluct_cu_ker<<<update_range->nblocks, update_range->nthreads>>>(wv->equation->on_dev, 
-        ndim, dir, meqn, *update_range, 
+        ndim, dir, size, meqn, *update_range, 
         wv->geom->on_dev, qout->on_dev, 
         wv->waves->on_dev, wv->speeds->on_dev, wv->amdq->on_dev, wv->apdq->on_dev, 
         wv->flux2->on_dev, wv->redo_fluct->on_dev); 
