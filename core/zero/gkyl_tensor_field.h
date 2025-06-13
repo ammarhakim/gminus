@@ -153,7 +153,7 @@ gkyl_tensor_field_copy(struct gkyl_tensor_field* dest, const struct gkyl_tensor_
  * @param tfld Tensor field to check
  * @return true of tensor field lives on NV-GPU, false otherwise
  */
-bool gkyl_array_is_cu_dev(const struct gkyl_tensor_field *tfld);
+bool gkyl_tensor_field_is_cu_dev(const struct gkyl_tensor_field *tfld);
 
 /**
  * Release pointer to tensor field
