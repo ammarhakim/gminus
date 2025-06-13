@@ -17,30 +17,17 @@ extern "C" {
 #include <gkyl_wave_prop_priv.h>
 }
 
-static void
-gkyl_parallelize_1D_kernel_launch_dims(dim3* dimGrid, dim3* dimBlock, gkyl_range range, int shape_1d)
-{
-  // CUDA Max block size in x is 2^31 - 1, Max block size in y is 2^16-1
-  // Thus, x block size should be bigger to avoid max block size limits
-  // Create a 2D thread grid so we launch shape_1d*perp_range.volume number of threads
-  dimBlock->y = GKYL_MIN2(shape_1d, GKYL_DEFAULT_NUM_THREADS);
-  dimGrid->y = gkyl_int_div_up(shape_1d, dimBlock->y);
-  dimBlock->x = gkyl_int_div_up(GKYL_DEFAULT_NUM_THREADS, shape_1d);
-  dimGrid->x = gkyl_int_div_up(range.volume, dimBlock->x);
-}
-
 __global__ static void
 gkyl_wave_prop_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn, 
-  int ndim, int dir,  int loidx, int upidx, double cflm, double dtdx, 
-  enum gkyl_wv_flux_type ftype, 
-  struct gkyl_range update_range, struct gkyl_range perp_range, 
+  int ndim, int dir, long size, double cflm, double dtdx, 
+  enum gkyl_wv_flux_type ftype, struct gkyl_range update_range, 
   const struct gkyl_wave_geom *wg, const struct gkyl_array *qin, 
   struct gkyl_array *waves, struct gkyl_array *speeds, struct gkyl_array *amdq, struct gkyl_array *apdq, 
   struct gkyl_array *cfla, struct gkyl_array *is_cfl_violated)
 {
   int idxl[GKYL_MAX_DIM], idxr[GKYL_MAX_DIM];
   for (unsigned long tid_x = threadIdx.x + blockIdx.x*blockDim.x;
-    tid_x < update_range.volume; tid_x += blockDim.x*gridDim.x) {
+    tid_x < size; tid_x += blockDim.x*gridDim.x) {
 
     gkyl_sub_range_inv_idx(&update_range, tid_x, idxl);
     gkyl_copy_int_arr(ndim, idxl, idxr);
@@ -80,15 +67,14 @@ gkyl_wave_prop_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn,
 
 __global__ static void
 gkyl_wave_prop_redo_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn, 
-  int ndim, int dir,  int loidx, int upidx, int meqn, 
-  struct gkyl_range update_range, struct gkyl_range perp_range, 
+  int ndim, int dir, long size, int meqn, struct gkyl_range update_range, 
   const struct gkyl_wave_geom *wg, const struct gkyl_array *qin, 
   struct gkyl_array *waves, struct gkyl_array *speeds, struct gkyl_array *amdq, struct gkyl_array *apdq, 
   struct gkyl_array *flux2, struct gkyl_array *redo_fluct)
 {
   int idxl[GKYL_MAX_DIM], idxr[GKYL_MAX_DIM];
   for (unsigned long tid_x = threadIdx.x + blockIdx.x*blockDim.x;
-    tid_x < update_range.volume; tid_x += blockDim.x*gridDim.x) {
+    tid_x < size; tid_x += blockDim.x*gridDim.x) {
 
     gkyl_sub_range_inv_idx(&update_range, tid_x, idxl);
     gkyl_copy_int_arr(ndim, idxl, idxr);
@@ -116,8 +102,8 @@ gkyl_wave_prop_redo_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn,
       double *amdq_d = (double*) gkyl_array_fetch(amdq, ridx);
       double *apdq_d = (double*) gkyl_array_fetch(apdq, ridx);
       double my_max_speed = gkyl_wv_eqn_fused_rotate_waves_qfluct(eqn, GKYL_WV_LOW_ORDER_FLUX, 
-          cg->tau1[dir], cg->tau2[dir], cg->norm[dir], cg->lenr[dir], 
-          ql, qr, waves_d, speeds_d, amdq_d, apdq_d); 
+        cg->tau1[dir], cg->tau2[dir], cg->norm[dir], cg->lenr[dir], 
+        ql, qr, waves_d, speeds_d, amdq_d, apdq_d); 
 
       // Reset second order flux correction to zero if invariant domain violated 
       // so that no second order fluxes are used if we have to redo any fluctuation
@@ -132,21 +118,21 @@ gkyl_wave_prop_redo_waves_qfluct_cu_ker(gkyl_wv_eqn *eqn,
 
 __global__ static void
 gkyl_wave_prop_second_order_flux_cu_ker(enum gkyl_wave_limiter limiter, double dtdx, 
-  int ndim, int dir,  int loidx, int upidx, int meqn, int mwaves, 
-  struct gkyl_range update_range, struct gkyl_range perp_range, 
+  int ndim, int dir, long size, int meqn, int mwaves, struct gkyl_range update_range, 
   const struct gkyl_wave_geom *wg, struct gkyl_array *waves, struct gkyl_array *speeds, 
   struct gkyl_array *flux2)
 {
   int idxl[GKYL_MAX_DIM], idxc[GKYL_MAX_DIM], idxr[GKYL_MAX_DIM];
   for (unsigned long tid_x = threadIdx.x + blockIdx.x*blockDim.x;
-    tid_x < update_range.volume; tid_x += blockDim.x*gridDim.x) {
+    tid_x < size; tid_x += blockDim.x*gridDim.x) {
 
     gkyl_sub_range_inv_idx(&update_range, tid_x, idxc);
     gkyl_copy_int_arr(ndim, idxc, idxl);
     gkyl_copy_int_arr(ndim, idxl, idxr);
 
     // perform 1D sweeps handled by second dimension of thread grid
-    idxl[dir] = idxl[dir]-1; idxr[dir] = idxr[dir]+1; 
+    idxl[dir] = idxl[dir]-1; 
+    idxr[dir] = idxr[dir]+1; 
     long linl = gkyl_range_idx(&update_range, idxl); 
     long linc = gkyl_range_idx(&update_range, idxc); 
     long linr = gkyl_range_idx(&update_range, idxr);
@@ -180,8 +166,7 @@ gkyl_wave_prop_second_order_flux_cu_ker(enum gkyl_wave_limiter limiter, double d
 
 __global__ static void
 gkyl_wave_prop_update_state_cu_kern(double dtdx, 
-  int ndim, int dir,  int loidx_c, int upidx_c, int meqn, 
-  struct gkyl_range update_range, struct gkyl_range perp_range, 
+  int ndim, int dir, int meqn, struct gkyl_range update_range, 
   const struct gkyl_wave_geom *wg, const struct gkyl_array *redo_fluct, const struct gkyl_array *qin, 
   const struct gkyl_array *amdq, const struct gkyl_array *apdq, const struct gkyl_array *flux2, 
   struct gkyl_array *qout)
@@ -246,16 +231,17 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
 
     double dtdx = dt/wv->grid.dx[dir];
 
+    // Determine number of threads based on extended one-dimensional range 
+    // and volume of perpendicular range    
     // upper/lower bounds in direction 'd'. These are edge indices
     int loidx = update_range->lower[dir]-1;
     int upidx = update_range->upper[dir]+2;
 
-    // cell indices in 1D slice for interior cells
-    int loidx_c = update_range->lower[dir];
-    int upidx_c = update_range->upper[dir];
-
     struct gkyl_range perp_range;
     gkyl_range_shorten_from_above(&perp_range, update_range, dir, 1);
+    int nthreads = GKYL_DEFAULT_NUM_THREADS;
+    int nblocks_e = (perp_range.volume*(upidx - loidx))/nthreads + 1;
+    long size = perp_range.volume*(upidx - loidx)
 
     // Copy previous time step solution 
     gkyl_array_set_range(qout, 1.0, qin, update_range); 
@@ -265,9 +251,8 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
     enum gkyl_wv_flux_type ftype = wv->force_low_order_flux ?
       GKYL_WV_LOW_ORDER_FLUX : GKYL_WV_HIGH_ORDER_FLUX;
 
-    gkyl_wave_prop_waves_qfluct_cu_ker<<<update_range->nblocks, update_range->nthreads>>>(wv->equation->on_dev, 
-      ndim, dir, loidx, upidx, cflm, dtdx, 
-      ftype, *update_range, perp_range, 
+    gkyl_wave_prop_waves_qfluct_cu_ker<<<nblocks_e, nthreads>>>(wv->equation->on_dev, 
+      ndim, dir, size, cflm, dtdx, ftype, *update_range, 
       wv->geom->on_dev, qin->on_dev, 
       wv->waves->on_dev, wv->speeds->on_dev, wv->amdq->on_dev, wv->apdq->on_dev, 
       wv->cfla->on_dev, wv->is_cfl_violated->on_dev);
@@ -275,8 +260,8 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
     // To avoid race conditions on the wave limiting, split the second order flux
     // computation into a separate kernel after waves and fluctuations computed
     gkyl_array_clear(wv->flux2, 0.0);
-    gkyl_wave_prop_second_order_flux_cu_ker<<<update_range->nblocks, update_range->nthreads>>>(wv->limiter, dtdx, 
-      ndim, dir, loidx, upidx, meqn, mwaves, *update_range, perp_range, 
+    gkyl_wave_prop_second_order_flux_cu_ker<<<nblocks_e, nthreads>>>(wv->limiter, dtdx, 
+      ndim, dir, size, meqn, mwaves, *update_range, 
       wv->geom->on_dev, wv->waves->on_dev, wv->speeds->on_dev, wv->flux2->on_dev);
 
     // Before updating the state, determine if the CFL was violated anywhere in the domain
@@ -292,16 +277,16 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
     }
 
     // Update the solution with both the first order update and the second order corrections. 
-    gkyl_wave_prop_update_state_cu_kern<<<update_range->nblocks, update_range->nthreads>>>(dtdx, ndim, dir, loidx_c, upidx_c, meqn, 
-      *update_range, perp_range, 
+    gkyl_wave_prop_update_state_cu_kern<<<update_range->nblocks, update_range->nthreads>>>(dtdx, 
+      ndim, dir, meqn, *update_range, 
       wv->geom->on_dev, wv->redo_fluct->on_dev, qin->on_dev, 
       wv->amdq->on_dev, wv->apdq->on_dev,  wv->flux2->on_dev, 
       qout->on_dev); 
 
     // Determine if we need to redo any flux computations 
     if (wv->check_inv_domain) {
-      gkyl_wave_prop_redo_waves_qfluct_cu_ker<<<update_range->nblocks, update_range->nthreads>>>(wv->equation->on_dev, ndim, dir, loidx, upidx, meqn, 
-        *update_range, perp_range, 
+      gkyl_wave_prop_redo_waves_qfluct_cu_ker<<<update_range->nblocks, update_range->nthreads>>>(wv->equation->on_dev, 
+        ndim, dir, meqn, *update_range, 
         wv->geom->on_dev, qout->on_dev, 
         wv->waves->on_dev, wv->speeds->on_dev, wv->amdq->on_dev, wv->apdq->on_dev, 
         wv->flux2->on_dev, wv->redo_fluct->on_dev); 
@@ -309,8 +294,8 @@ gkyl_wave_prop_advance_cu(gkyl_wave_prop *wv,
       // Update state with re-computed first order fluxes. 
       // Note that the second order fluxes are zeroed out at re-done interfaces
       // so no second order corrections are included when re-doing the update. 
-      gkyl_wave_prop_update_state_cu_kern<<<update_range->nblocks, update_range->nthreads>>>(dtdx, ndim, dir, loidx_c, upidx_c, meqn, 
-        *update_range, perp_range, 
+      gkyl_wave_prop_update_state_cu_kern<<<update_range->nblocks, update_range->nthreads>>>(dtdx, 
+        ndim, dir, meqn, *update_range, 
         wv->geom->on_dev, wv->redo_fluct->on_dev, qin->on_dev, 
         wv->amdq->on_dev, wv->apdq->on_dev,  wv->flux2->on_dev, 
         qout->on_dev); 
