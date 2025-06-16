@@ -14,7 +14,7 @@ tensor_field_raise_or_lower_idx_in_place(struct gkyl_tensor_field *met, int rais
     // make a temporary amount of memory on device
     enum gkyl_tensor_index_loc iloc[GKYL_MAX_DIM];
     for (int i=0; i<GKYL_MAX_DIM; ++i) 
-      iloc[i] = ten->iloc[i];
+      mem->iloc[i] = ten->iloc[i];
 
     // set the input to the memory, mem
     tensor_field_raise_or_lower_idx_set_cu(met, raised_idx, ten, mem); 
