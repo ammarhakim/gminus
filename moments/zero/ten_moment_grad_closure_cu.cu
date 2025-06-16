@@ -124,12 +124,8 @@ gkyl_ten_moment_grad_closure_advance_cu(const gkyl_ten_moment_grad_closure *gces
   gkyl_cu_memcpy(gces->offsets_centers, offsets_centers, sizeof(long)*sz_idx, GKYL_CU_MEMCPY_H2D);
 
   gkyl_ten_moment_grad_closure_calc_cu_ker<<<nblocks, nthreads>>>(gces->on_dev,
-    *heat_flux_range, *update_range, gces->offsets_vertices, gces->offsets_centers, sz_idx,
-    fluid->on_dev, em_tot->on_dev, cflrate->on_dev, dt, heat_flux->on_dev);
-
-  gkyl_ten_moment_grad_closure_update_cu_ker<<<nblocks, nthreads>>>(gces->on_dev,
-    *heat_flux_range, *update_range, gces->offsets_vertices, gces->offsets_centers, sz_idx,
-     heat_flux->on_dev, rhs->on_dev);
+    *heat_flux_range, *update_range, gces->offsets_vertices, gces->offsets_centers,
+    sz_idx, fluid->on_dev, em_tot->on_dev, cflrate->on_dev, dt, heat_flux->on_dev);
 
   gkyl_array_reduce(gces->cfla, cflrate, GKYL_MAX);
   gkyl_cu_memcpy(cfla, gces->cfla, sizeof(double), GKYL_CU_MEMCPY_D2H);
@@ -155,11 +151,15 @@ gkyl_ten_moment_grad_closure_advance_cu(const gkyl_ten_moment_grad_closure *gces
       .dt_suggested = dt_suggested,
     };
 
+  gkyl_ten_moment_grad_closure_update_cu_ker<<<nblocks, nthreads>>>(gces->on_dev,
+    *heat_flux_range, *update_range, gces->offsets_vertices, gces->offsets_centers,
+     sz_idx, heat_flux->on_dev, rhs->on_dev);
+
   // on success, suggest only bigger time-step; (Only way dt can
   // reduce is if the update fails. If the code comes here the update
   // succeeded and so we should not allow dt to reduce).
   return (struct gkyl_ten_moment_grad_closure_status) {
-    .success = is_cfl_violated > 0.0 ? 0 : 1,
+    .success = 1,
     .dt_suggested = dt_suggested > dt ? dt_suggested : dt,
   };
 

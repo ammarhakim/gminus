@@ -145,7 +145,7 @@ gkyl_moment_app_new(struct gkyl_moment *mom)
     gkyl_cart_modal_tensor(&basis, ndim, 1);
 
     // initialize DG field representing mapping
-    struct gkyl_array *c2p = mkarr(app->use_gpu, ndim*basis.num_basis, app->local_ext.volume);
+    struct gkyl_array *c2p = mkarr(false, ndim*basis.num_basis, app->local_ext.volume);
     gkyl_eval_on_nodes *ev_c2p = gkyl_eval_on_nodes_new(&app->grid, &basis, ndim, mom->mapc2p, mom->c2p_ctx);
     gkyl_eval_on_nodes_advance(ev_c2p, 0.0, &app->local_ext, c2p);
 
