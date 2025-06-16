@@ -786,6 +786,11 @@ void test_cu_tensor_field_lower_idx_in_place()
   struct gkyl_tensor_field *diag_metric_cov_cu = gkyl_tensor_field_cu_dev_new(rank,ndim,size,iloc_cov);
   struct gkyl_tensor_field *diag_metric_contra_cu = gkyl_tensor_field_cu_dev_new(rank,ndim,size,iloc_contra);
 
+  TEST_CHECK( diag_metric_cov_cu->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov_cu->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
+  TEST_CHECK( diag_metric_contra_cu->iloc[0] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_contra_cu->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
+
   TEST_CHECK( diag_metric_cov_cu->rank == 2 );
   TEST_CHECK( diag_metric_cov_cu->ndim == 3 );
   TEST_CHECK( diag_metric_cov_cu->size == 10 );
@@ -800,8 +805,22 @@ void test_cu_tensor_field_lower_idx_in_place()
   struct gkyl_tensor_field *diag_metric_cov = gkyl_tensor_field_new(rank,ndim,size,iloc_cov);
   struct gkyl_tensor_field *diag_metric_contra = gkyl_tensor_field_new(rank,ndim,size,iloc_contra);
 
+  TEST_CHECK( diag_metric_cov->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
+  TEST_CHECK( diag_metric_contra->iloc[0] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_contra->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
+
   gkyl_tensor_field_copy(diag_metric_cov, diag_metric_cov_cu);
   gkyl_tensor_field_copy(diag_metric_contra, diag_metric_contra_cu);
+
+  TEST_CHECK( diag_metric_cov->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
+  TEST_CHECK( diag_metric_contra->iloc[0] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_contra->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_cov_cu->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov_cu->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
+  TEST_CHECK( diag_metric_contra_cu->iloc[0] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_contra_cu->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
 
   int idx[GKYL_MAX_DIM] = {0.0, 0.0}; 
   for (unsigned i=0; i<size; ++i){
@@ -827,9 +846,27 @@ void test_cu_tensor_field_lower_idx_in_place()
   gkyl_tensor_field_copy(diag_metric_cov_cu, diag_metric_cov);
   gkyl_tensor_field_copy(diag_metric_contra_cu, diag_metric_contra);
 
+  TEST_CHECK( diag_metric_cov->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
+  TEST_CHECK( diag_metric_contra->iloc[0] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_contra->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_cov_cu->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov_cu->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
+  TEST_CHECK( diag_metric_contra_cu->iloc[0] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_contra_cu->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
+
   // compute the lowering on device, save to ten_res
   int idx_to_raise = 0;
   gkyl_tensor_field_lower_idx_in_place(diag_metric_cov_cu, idx_to_raise, diag_metric_contra_cu); 
+
+  TEST_CHECK( diag_metric_cov->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
+  TEST_CHECK( diag_metric_contra->iloc[0] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_contra->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_cov_cu->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov_cu->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
+  TEST_CHECK( diag_metric_contra_cu->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_contra_cu->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
 
   // reset host array to zeros
   for (unsigned i=0; i<size; ++i){
@@ -846,6 +883,15 @@ void test_cu_tensor_field_lower_idx_in_place()
   // copy back to host
   gkyl_tensor_field_copy(diag_metric_contra, diag_metric_contra_cu);
 
+  TEST_CHECK( diag_metric_cov->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
+  TEST_CHECK( diag_metric_contra->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_contra->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_cov_cu->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov_cu->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
+  TEST_CHECK( diag_metric_contra_cu->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_contra_cu->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
+
  // test that the result is delta^i_j
   for (unsigned i=0; i<size; ++i){
     for (unsigned j=0; j<ndim; ++j){
@@ -859,8 +905,14 @@ void test_cu_tensor_field_lower_idx_in_place()
     }
   }
 
+  TEST_CHECK( diag_metric_cov->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
   TEST_CHECK( diag_metric_contra->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
   TEST_CHECK( diag_metric_contra->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
+  TEST_CHECK( diag_metric_cov_cu->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_cov_cu->iloc[1] == GKYL_TENSOR_INDEX_LOWER );  
+  TEST_CHECK( diag_metric_contra_cu->iloc[0] == GKYL_TENSOR_INDEX_LOWER );
+  TEST_CHECK( diag_metric_contra_cu->iloc[1] == GKYL_TENSOR_INDEX_UPPER );
 
   gkyl_tensor_field_release(diag_metric_cov);
   gkyl_tensor_field_release(diag_metric_cov_cu);
