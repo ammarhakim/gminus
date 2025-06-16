@@ -567,7 +567,7 @@ void test_cu_tensor_field_lower_idx_set()
 
   // Diagonal metric example. metric_ij = diag(0.5, 0.5, 0.5) and metric_ij_inv( 2, 2, 2 )
   struct gkyl_tensor_field *diag_metric_cov_cu = gkyl_tensor_field_cu_dev_new(rank,ndim,size,iloc_cov);
-  struct gkyl_tensor_field *ten_res_cu = gkyl_tensor_field_cu_dev_new(rank,ndim,size,iloc_cov);
+  struct gkyl_tensor_field *ten_res_cu = gkyl_tensor_field_cu_dev_new(rank,ndim,size,iloc_contra);
   struct gkyl_tensor_field *diag_metric_contra_cu = gkyl_tensor_field_cu_dev_new(rank,ndim,size,iloc_contra);
 
   TEST_CHECK( diag_metric_cov_cu->rank == 2 );
@@ -690,7 +690,7 @@ void test_cu_tensor_field_raise_idx_set()
 
   // create host array and initialize it
   struct gkyl_tensor_field *diag_metric_cov = gkyl_tensor_field_new(rank,ndim,size,iloc_cov);
-  struct gkyl_tensor_field *ten_res = gkyl_tensor_field_new(rank,ndim,size,iloc_contra);
+  struct gkyl_tensor_field *ten_res = gkyl_tensor_field_new(rank,ndim,size,iloc_cov);
   struct gkyl_tensor_field *diag_metric_contra = gkyl_tensor_field_new(rank,ndim,size,iloc_contra);
 
   gkyl_tensor_field_copy(diag_metric_cov, diag_metric_cov_cu);
