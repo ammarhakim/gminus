@@ -104,7 +104,6 @@ gkyl_ten_moment_grad_closure_advance_cu(const gkyl_ten_moment_grad_closure *gces
   int nblocks = heat_flux_range->nblocks, nthreads = heat_flux_range->nthreads;
 
   double cfla[1] = { 0.0 }, cfl = 0.0;
-  double is_cfl_violated = 0.0; // deliberately a double
 
   // gkyl_cu_memcpy(cfl, gces->cfl, sizeof(double), GKYL_CU_MEMCPY_D2H); // probably don't actually need this? Don't think there's any reason for cfl to be needed on device.
   double cflm = 1.1*gces->cfl;
@@ -130,21 +129,17 @@ gkyl_ten_moment_grad_closure_advance_cu(const gkyl_ten_moment_grad_closure *gces
   gkyl_array_reduce(gces->cfla, cflrate, GKYL_MAX);
   gkyl_cu_memcpy(cfla, gces->cfla, sizeof(double), GKYL_CU_MEMCPY_D2H);
 
-  if (cfla[0] > cflm)
-    is_cfl_violated = 1.0;
-
   // compute actual CFL, status & max-speed across all domains
-  double red_vars[2] = { cfla[0], is_cfl_violated };
-  double red_vars_global[2] = { 0.0, 0.0 };
+  double red_vars[1] = { cfla[0] };
+  double red_vars_global[1] = { 0.0 };
   gkyl_comm_allreduce_host(gces->comm, GKYL_DOUBLE, GKYL_MAX, 2, &red_vars,
     &red_vars_global);
 
   cfla[0] = red_vars_global[0];
-  is_cfl_violated = red_vars_global[1];
-
+  
   double dt_suggested = dt*cfl/fmax(cfla[0], DBL_MIN);
 
-  if (is_cfl_violated > 0.0)
+  if (cfla[0] > cflm)
     // indicate failure, and return smaller stable time-step
     return (struct gkyl_ten_moment_grad_closure_status) {
       .success = 0,
