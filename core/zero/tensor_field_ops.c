@@ -8,9 +8,24 @@ static void
 tensor_field_raise_or_lower_idx_in_place(struct gkyl_tensor_field *met, int raised_idx, struct gkyl_tensor_field *ten)
 {
 
-// #ifdef GKYL_HAVE_CUDA
-//   if (gkyl_array_is_cu_dev(ten->tdata)) { tensor_field_raise_or_lower_idx_in_place_cu(met, raised_idx, ten); return; }
-// #endif
+#ifdef GKYL_HAVE_CUDA
+  if (gkyl_array_is_cu_dev(ten->tdata)) { 
+
+    // make a temporary amount of memory on device
+    enum gkyl_tensor_index_loc iloc = { GKYL_TENSOR_INDEX_LOWER };
+    struct gkyl_tensor_field *mem = gkyl_tensor_field_cu_dev_new(ten->rank,ten->ndim,ten->size,&iloc);
+
+    // set the input to the memory, mem
+    tensor_field_raise_or_lower_idx_set_cu(met, raised_idx, ten, mem); 
+
+    // copy mem to ten
+    gkyl_tensor_field_copy(ten, mem);
+
+    // release
+    gkyl_tensor_field_release(mem);
+    return; 
+  }
+#endif
 
   // temporary tensor at a single point 
   enum gkyl_tensor_index_loc iloc = { GKYL_TENSOR_INDEX_LOWER };
