@@ -17,6 +17,17 @@ gkyl_ten_moment_grad_closure_new(struct gkyl_ten_moment_grad_closure_inp inp)
   up->k0 = inp.k0;
   up->cfl = inp.cfl;
   up->use_gpu = inp.use_gpu;
+
+  int ndim = inp.update_range->ndim;
+  long sz[] = { 2, 4, 8 };
+
+  up->sz_idx = sz[ndim-1];
+
+  long offsets_vertices[sz[ndim-1]];
+  create_offsets_vertices(inp.update_range, offsets_vertices);
+
+  long offsets_centers[sz[ndim-1]];
+  create_offsets_centers(inp.heat_flux_range, offsets_centers);
   
   if (inp.comm)
     up->comm = gkyl_comm_acquire(inp.comm);
@@ -28,9 +39,14 @@ gkyl_ten_moment_grad_closure_new(struct gkyl_ten_moment_grad_closure_inp inp)
 
   if(inp.use_gpu) {
     up->cfla = gkyl_cu_malloc(sizeof(double));
-    up->offsets_vertices = gkyl_cu_malloc(sizeof(long)*8);
-    up->offsets_centers = gkyl_cu_malloc(sizeof(long)*8);
+    up->offsets_vertices = gkyl_cu_malloc(sizeof(long)*sz[ndim-1]);
+    up->offsets_centers = gkyl_cu_malloc(sizeof(long)*sz[ndim-1]);
     up->on_dev = gkyl_ten_moment_grad_closure_cu_dev_new(up);
+
+    gkyl_cu_memcpy(up->offsets_vertices, offsets_vertices, sizeof(long)*sz[ndim-1],
+      GKYL_CU_MEMCPY_H2D);
+    gkyl_cu_memcpy(up->offsets_centers, offsets_centers, sizeof(long)*sz[ndim-1],
+      GKYL_CU_MEMCPY_H2D);
   }
   else {
     up->cfla = gkyl_malloc(sizeof(double));

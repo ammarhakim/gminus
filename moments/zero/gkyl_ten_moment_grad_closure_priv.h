@@ -12,6 +12,7 @@ struct gkyl_ten_moment_grad_closure {
   double k0; // damping coefficient
   double cfl; // CFL number to use
   double *cfla;
+  int sz_idx;
   bool use_gpu; // Boolean to determine whether wave equation object is on host or device
   
   struct gkyl_comm *comm;

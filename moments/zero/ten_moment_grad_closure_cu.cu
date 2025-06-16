@@ -20,9 +20,9 @@ gkyl_ten_moment_grad_closure_set_cu_dev_ptrs(gkyl_ten_moment_grad_closure *gces)
 __global__ static void
 gkyl_ten_moment_grad_closure_calc_cu_ker(const gkyl_ten_moment_grad_closure *gces,
   const struct gkyl_range heat_flux_range, const struct gkyl_range update_range,
-  long *offsets_vertices, long *offsets_centers, int sz_idx,
-  const struct gkyl_array *fluid, const struct gkyl_array *em_tot,
-  struct gkyl_array *cflrate, double dt, struct gkyl_array *heat_flux)
+  long *offsets_vertices, long *offsets_centers, const struct gkyl_array *fluid,
+  const struct gkyl_array *em_tot, struct gkyl_array *cflrate, double dt,
+  struct gkyl_array *heat_flux)
 {
   const double* fluid_d[8];
   const double* em_tot_d[8];
@@ -38,7 +38,7 @@ gkyl_ten_moment_grad_closure_calc_cu_ker(const gkyl_ten_moment_grad_closure *gce
     long linc_vertex = gkyl_range_idx(&heat_flux_range, vidx);
     long linc_center = gkyl_range_idx(&update_range, vidx);
 
-    for (int i=0; i<sz_idx; ++i) {
+    for (int i=0; i<gces->sz_idx; ++i) {
       em_tot_d[i] =  (const double*) gkyl_array_cfetch(em_tot,
         linc_center + offsets_vertices[i]);
       fluid_d[i] = (const double*) gkyl_array_cfetch(fluid,
@@ -55,8 +55,8 @@ gkyl_ten_moment_grad_closure_calc_cu_ker(const gkyl_ten_moment_grad_closure *gce
 __global__ static void
 gkyl_ten_moment_grad_closure_update_cu_ker(const gkyl_ten_moment_grad_closure *gces,
   const struct gkyl_range heat_flux_range, const struct gkyl_range update_range,
-  long *offsets_vertices, long *offsets_centers, int sz_idx,
-  const struct gkyl_array *heat_flux, struct gkyl_array *rhs)
+  long *offsets_vertices, long *offsets_centers, const struct gkyl_array *heat_flux,
+  struct gkyl_array *rhs)
 {
   const double* heat_flux_up[8];
   
@@ -70,7 +70,7 @@ gkyl_ten_moment_grad_closure_update_cu_ker(const gkyl_ten_moment_grad_closure *g
     long linc_vertex = gkyl_range_idx(&heat_flux_range, cidx);
     long linc_center = gkyl_range_idx(&update_range, cidx);
 
-    for (int i=0; i<sz_idx; ++i)
+    for (int i=0; i<gces->sz_idx; ++i)
       heat_flux_up[i] = (const double*) gkyl_array_cfetch(heat_flux,
         linc_vertex + offsets_centers[i]);
 
@@ -108,23 +108,9 @@ gkyl_ten_moment_grad_closure_advance_cu(const gkyl_ten_moment_grad_closure *gces
   // gkyl_cu_memcpy(cfl, gces->cfl, sizeof(double), GKYL_CU_MEMCPY_D2H); // probably don't actually need this? Don't think there's any reason for cfl to be needed on device.
   double cflm = 1.1*gces->cfl;
 
-  int ndim = update_range->ndim;
-  long sz[] = { 2, 4, 8 };
-
-  int sz_idx = sz[ndim-1];
-
-  long offsets_vertices[sz_idx];
-  create_offsets_vertices(update_range, offsets_vertices);
-
-  long offsets_centers[sz_idx];
-  create_offsets_centers(heat_flux_range, offsets_centers);
-
-  gkyl_cu_memcpy(gces->offsets_vertices, offsets_vertices, sizeof(long)*sz_idx, GKYL_CU_MEMCPY_H2D);
-  gkyl_cu_memcpy(gces->offsets_centers, offsets_centers, sizeof(long)*sz_idx, GKYL_CU_MEMCPY_H2D);
-
   gkyl_ten_moment_grad_closure_calc_cu_ker<<<nblocks, nthreads>>>(gces->on_dev,
     *heat_flux_range, *update_range, gces->offsets_vertices, gces->offsets_centers,
-    sz_idx, fluid->on_dev, em_tot->on_dev, cflrate->on_dev, dt, heat_flux->on_dev);
+    fluid->on_dev, em_tot->on_dev, cflrate->on_dev, dt, heat_flux->on_dev);
 
   gkyl_array_reduce(gces->cfla, cflrate, GKYL_MAX);
   gkyl_cu_memcpy(cfla, gces->cfla, sizeof(double), GKYL_CU_MEMCPY_D2H);
@@ -148,7 +134,7 @@ gkyl_ten_moment_grad_closure_advance_cu(const gkyl_ten_moment_grad_closure *gces
 
   gkyl_ten_moment_grad_closure_update_cu_ker<<<nblocks, nthreads>>>(gces->on_dev,
     *heat_flux_range, *update_range, gces->offsets_vertices, gces->offsets_centers,
-     sz_idx, heat_flux->on_dev, rhs->on_dev);
+    heat_flux->on_dev, rhs->on_dev);
 
   // on success, suggest only bigger time-step; (Only way dt can
   // reduce is if the update fails. If the code comes here the update
