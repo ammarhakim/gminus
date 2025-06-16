@@ -12,8 +12,11 @@ tensor_field_raise_or_lower_idx_in_place(struct gkyl_tensor_field *met, int rais
   if (gkyl_array_is_cu_dev(ten->tdata)) { 
 
     // make a temporary amount of memory on device
-    enum gkyl_tensor_index_loc iloc = { GKYL_TENSOR_INDEX_LOWER };
-    struct gkyl_tensor_field *mem = gkyl_tensor_field_cu_dev_new(ten->rank, ten->ndim, ten->size, &iloc);
+    enum gkyl_tensor_index_loc iloc[GKYL_MAX_DIM];
+    for (int i=0; i<GKYL_MAX_DIM; ++i) 
+      iloc[i] = ten->iloc[i];
+
+    struct gkyl_tensor_field *mem = gkyl_tensor_field_cu_dev_new(ten->rank, ten->ndim, ten->size, iloc);
 
     // set the input to the memory, mem
     tensor_field_raise_or_lower_idx_set_cu(met, raised_idx, ten, mem); 
@@ -28,8 +31,10 @@ tensor_field_raise_or_lower_idx_in_place(struct gkyl_tensor_field *met, int rais
 #endif
 
   // temporary tensor at a single point 
-  enum gkyl_tensor_index_loc iloc = { GKYL_TENSOR_INDEX_LOWER };
-  struct gkyl_tensor_field *tensor_out = gkyl_tensor_field_new(ten->rank,ten->ndim,1,&iloc);
+  enum gkyl_tensor_index_loc iloc[GKYL_MAX_DIM];
+  for (int i=0; i<GKYL_MAX_DIM; ++i) 
+    iloc[i] = ten->iloc[i];
+  struct gkyl_tensor_field *tensor_out = gkyl_tensor_field_new(ten->rank,ten->ndim,1,iloc);
 
   // iterate over the field of tensors
   for (long i=0; i<ten->size; ++i){
