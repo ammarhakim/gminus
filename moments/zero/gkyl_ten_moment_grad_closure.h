@@ -9,8 +9,19 @@
 #include <gkyl_util.h>
 
 struct gkyl_ten_moment_grad_closure_inp {
-    const struct gkyl_rect_grid *grid; // grid on which to solve equations
-    double k0; // inversedamping coefficient
+  const struct gkyl_rect_grid *grid; // grid on which to solve equations
+  double k0; // inversedamping coefficient
+  double cfl; // CFL number to use
+  const struct gkyl_range *update_range;
+  struct gkyl_range *heat_flux_range;
+  bool use_gpu; // Boolean to determine whether wave equation object is on host or device
+
+  struct gkyl_comm *comm;
+};
+
+struct gkyl_ten_moment_grad_closure_status {
+  int success; // 1 if step worked, 0 otherwise
+  double dt_suggested; // suggested time-step
 };
 
 // Object type
@@ -42,10 +53,11 @@ gkyl_ten_moment_grad_closure* gkyl_ten_moment_grad_closure_new(struct gkyl_ten_m
  * @param rhs RHS output (NOTE: Returns RHS output of all nfluids)
  */
 
-void gkyl_ten_moment_grad_closure_advance(const gkyl_ten_moment_grad_closure *gces, 
-  const struct gkyl_range *heat_flux_range, const struct gkyl_range *update_range,
-  const struct gkyl_array *fluid, const struct gkyl_array *em_tot,
-  struct gkyl_array *cflrate, struct gkyl_array *heat_flux, struct gkyl_array *rhs);
+struct gkyl_ten_moment_grad_closure_status gkyl_ten_moment_grad_closure_advance(
+  const gkyl_ten_moment_grad_closure *gces, const struct gkyl_range *heat_flux_range,
+  const struct gkyl_range *update_range, const struct gkyl_array *fluid,
+  const struct gkyl_array *em_tot, struct gkyl_array *cflrate, double dt,
+  struct gkyl_array *heat_flux, struct gkyl_array *rhs);
 
 /**
  * Delete updater.

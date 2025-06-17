@@ -44,6 +44,7 @@ static const unsigned QZ = 8;
 
 // Calculate symmetrized gradient 1D
 // Based on Günter, Lackner, & Tichmann 2005 JCP
+GKYL_CU_D
 static inline double
 calc_sym_grad_1D(double dx, double a_l, double a_u)
 {
@@ -51,12 +52,14 @@ calc_sym_grad_1D(double dx, double a_l, double a_u)
 }
 
 // Calculate symmetrized gradients 2D
+GKYL_CU_D
 static inline double
 calc_sym_gradx_2D(double dx, double a_ll, double a_lu, double a_ul, double a_uu)
 {
   return (a_ul + a_uu - a_ll - a_lu)/(2*dx);
 }
 
+GKYL_CU_D
 static inline double
 calc_sym_grady_2D(double dy, double a_ll, double a_lu, double a_ul, double a_uu)
 {
@@ -64,18 +67,21 @@ calc_sym_grady_2D(double dy, double a_ll, double a_lu, double a_ul, double a_uu)
 }
 
 // Calculate symmetrized gradients 3D
+GKYL_CU_D
 static inline double
 calc_sym_gradx_3D(double dx, double a_lll, double a_llu, double a_lul, double a_luu, double a_ull, double a_ulu, double a_uul, double a_uuu)
 {
   return (a_ull + a_ulu + a_uul + a_uuu - a_lll - a_llu - a_lul - a_luu)/(4*dx);
 }
 
+GKYL_CU_D
 static inline double
 calc_sym_grady_3D(double dy, double a_lll, double a_llu, double a_lul, double a_luu, double a_ull, double a_ulu, double a_uul, double a_uuu)
 {
   return (a_lul + a_luu + a_uul + a_uuu - a_lll - a_llu - a_ull - a_ulu)/(4*dy);
 }
 
+GKYL_CU_D
 static inline double
 calc_sym_gradz_3D(double dz, double a_lll, double a_llu, double a_lul, double a_luu, double a_ull, double a_ulu, double a_uul, double a_uuu)
 {
@@ -83,12 +89,14 @@ calc_sym_gradz_3D(double dz, double a_lll, double a_llu, double a_lul, double a_
 }
 
 // In 1D, computes quantity at cell edge of two-cell interface
+GKYL_CU_D
 static inline double
 calc_arithm_avg_1D(double a_l, double a_u)
 {
   return 0.5*(a_l + a_u);
 }
 
+GKYL_CU_D
 static inline double
 calc_harmonic_avg_1D(double a_l, double a_u)
 {
@@ -96,12 +104,14 @@ calc_harmonic_avg_1D(double a_l, double a_u)
 }
 
 // In 2D, computes quantity at cell corner of four-cell interface
+GKYL_CU_D
 static inline double
 calc_arithm_avg_2D(double a_ll, double a_lu, double a_ul, double a_uu)
 {
   return 0.25*(a_ll + a_lu + a_ul + a_uu);
 }
 
+GKYL_CU_D
 static inline double
 calc_harmonic_avg_2D(double a_ll, double a_lu, double a_ul, double a_uu)
 {
@@ -109,12 +119,14 @@ calc_harmonic_avg_2D(double a_ll, double a_lu, double a_ul, double a_uu)
 }
 
 // In 3D, computes quantity at cell corner of eight-cell interface
+GKYL_CU_D
 static inline double
 calc_arithm_avg_3D(double a_lll, double a_llu, double a_lul, double a_luu, double a_ull, double a_ulu, double a_uul, double a_uuu)
 {
   return 0.125*(a_lll + a_llu + a_lul + a_luu + a_ull + a_ulu + a_uul + a_uuu);
 }
 
+GKYL_CU_D
 static inline double
 calc_harmonic_avg_3D(double a_lll, double a_llu, double a_lul, double a_luu, double a_ull, double a_ulu, double a_uul, double a_uuu)
 {
@@ -123,6 +135,7 @@ calc_harmonic_avg_3D(double a_lll, double a_llu, double a_lul, double a_luu, dou
 
 // Calculate grad(u)
 // In 1D, computes tensor at cell edge of two-cell interface
+GKYL_CU_D
 static inline void
 calc_grad_u_1D(double dx, double u_l[3], double u_u[3], double grad_u[3])
 {
@@ -132,6 +145,7 @@ calc_grad_u_1D(double dx, double u_l[3], double u_u[3], double grad_u[3])
 }
 
 // In 2D, computes tensor computes tensor in one corner of four-cell interface
+GKYL_CU_D
 static inline void
 calc_grad_u_2D(double dx, double dy, double u_ll[3], double u_lu[3], double u_ul[3], double u_uu[3], double grad_u[6])
 {
@@ -145,6 +159,7 @@ calc_grad_u_2D(double dx, double dy, double u_ll[3], double u_lu[3], double u_ul
 }
 
 // In 3D, computes tensor in one corner of eight-cell interface
+GKYL_CU_D
 static inline void
 calc_grad_u_3D(double dx, double dy, double dz, double u_lll[3], double u_llu[3], double u_lul[3], double u_luu[3], double u_ull[3], double u_ulu[3], double u_uul[3], double u_uuu[3], double grad_u[9])
 {
@@ -163,6 +178,7 @@ calc_grad_u_3D(double dx, double dy, double dz, double u_lll[3], double u_llu[3]
 
 // Calculate rate of strain tensor
 // In 1D, computes tensor at cell edge of two-cell interface
+GKYL_CU_D
 static inline void
 calc_ros_1D(double dx, double u_l[3], double u_u[3], double w[6])
 {
@@ -178,6 +194,7 @@ calc_ros_1D(double dx, double u_l[3], double u_u[3], double w[6])
 }
 
 // In 2D, computes tensor in one corner of four-cell interface
+GKYL_CU_D
 static inline void
 calc_ros_2D(double dx, double dy, double u_ll[3], double u_lu[3], double u_ul[3], double u_uu[3], double w[6])
 {
@@ -194,6 +211,7 @@ calc_ros_2D(double dx, double dy, double u_ll[3], double u_lu[3], double u_ul[3]
 }
 
 // In 3D, computes tensor in one corner of eight-cell interface
+GKYL_CU_D
 static inline void
 calc_ros_3D(double dx, double dy, double dz, double u_lll[3], double u_llu[3], double u_lul[3], double u_luu[3], double u_ull[3], double u_ulu[3], double u_uul[3], double u_uuu[3], double w[6])
 {
@@ -211,6 +229,7 @@ calc_ros_3D(double dx, double dy, double dz, double u_lll[3], double u_llu[3], d
 
 // Magnetized closure helper functions
 // Calculate the magnitude of the local magnetic field
+GKYL_CU_D
 static inline double
 calc_mag_b(const double em_tot[8])
 {
@@ -218,6 +237,7 @@ calc_mag_b(const double em_tot[8])
 }
 
 // Calculate the cyclotron frequency based on the species' parameters
+GKYL_CU_D
 static inline double
 calc_omega_c(double charge, double mass, const double em_tot[8])
 {
@@ -229,6 +249,7 @@ calc_omega_c(double charge, double mass, const double em_tot[8])
 }
 
 // Calculate magnetic field unit vector
+GKYL_CU_D
 static inline void
 calc_bhat(const double em_tot[8], double b[3])
 {
@@ -247,6 +268,7 @@ calc_bhat(const double em_tot[8], double b[3])
 // Calculate the collision time based on the species' parameters
 // Note: assumes the electron-ion collision frequency so sqrt(2) may be missing
 //       coulomb_log considered constant, rho is mass density, temp is temperature
+GKYL_CU_D
 static inline double
 calc_tau(double coulomb_log, double coll_fac, double epsilon0, double charge1, double charge2, double mass1, double mass2, double rho, double temp)
 {
@@ -254,6 +276,7 @@ calc_tau(double coulomb_log, double coll_fac, double epsilon0, double charge1, d
 }
 
 // Calculate magnetized parallel viscous stress tensor
+GKYL_CU_D
 static void
 calc_pi_par(double eta_par, double b_avg[3], double w[6], double pi_par[6])
 { 
@@ -272,6 +295,7 @@ calc_pi_par(double eta_par, double b_avg[3], double w[6], double pi_par[6])
 }
 
 // Calculate magnetized perpendicular viscous stress tensor
+GKYL_CU_D
 static void
 calc_pi_perp(double eta_perp, double b_avg[3], double w[6], double pi_perp[6])
 {   
@@ -297,6 +321,7 @@ calc_pi_perp(double eta_perp, double b_avg[3], double w[6], double pi_perp[6])
 }
 
 // Calculate magnetized gyroviscous viscous stress tensor
+GKYL_CU_D
 static void
 calc_pi_cross(double eta_cross, double b_avg[3], double w[6], double pi_cross[6])
 {
